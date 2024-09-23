@@ -1,19 +1,17 @@
 package org.inventory.appuser.user.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.inventory.appuser.user.exception.TokenExpiredException;
-import org.inventory.appuser.user.exception.TokenNotFoundException;
-import org.inventory.appuser.user.exception.UserNotFoundException;
+import org.inventory.appuser.exception.TokenExpiredException;
+import org.inventory.appuser.exception.TokenNotFoundException;
+import org.inventory.appuser.exception.UserNotFoundException;
 import org.inventory.appuser.user.helpers.AuthUserRequest;
 import org.inventory.appuser.user.helpers.AuthenticationResponse;
 import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.model.AppUser;
-import org.inventory.appuser.user.model.Role;
 import org.inventory.appuser.user.model.Token;
 import org.inventory.appuser.user.repos.AppUserRepository;
-import org.inventory.appuser.user.repos.RoleRepository;
 import org.inventory.appuser.user.repos.TokenRepository;
-import org.inventory.appuser.user.security.JWTService;
+import org.inventory.appuser.security.JWTService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +32,6 @@ public class AuthenticationService {
     @Value("${application.security.tokenExpirationTime}")
     private Integer tokenExpirationTime;
 
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AppUserRepository appUserRepository;
     private final TokenRepository tokenRepository;
@@ -42,27 +39,16 @@ public class AuthenticationService {
     private final JWTService jwtService;
 
     public Integer register(RegisterUserRequest request) {
-        Role userRole = roleRepository.findByName(request.role())
-                .orElseGet(() -> roleRepository.save(
-                        Role.builder()
-                                .name(request.role())
-                                .build()
-                ));
-
         AppUser appUser = AppUser.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(userRole)
                 .accountLocked(false)
                 .accountEnabled(false)
                 .build();
 
         Integer savedUserId = appUserRepository.save(appUser).getUserId();
-
-        userRole.setAppUser(appUser);
-        roleRepository.save(userRole);
 
         sendValidationEmail(appUser);
         return savedUserId;

@@ -2,7 +2,7 @@ package org.inventory.appuser.user;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.inventory.appuser.user.exception.UserNotFoundException;
+import org.inventory.appuser.exception.UserNotFoundException;
 import org.inventory.appuser.user.helpers.AppUserMapper;
 import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;

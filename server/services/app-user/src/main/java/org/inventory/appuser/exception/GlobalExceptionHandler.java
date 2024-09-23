@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.exception;
+package org.inventory.appuser.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +58,54 @@ public class GlobalExceptionHandler {
                 .body(
                         ErrorResponse.builder()
                                 .businessErrorDesc("Entered token has expired. Check your email for a new one.")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(TeamNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTeamNotFoundException(TeamNotFoundException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("Team not found. Check team id.")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(InsufficientPrivilegesException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientPrivilegesException(InsufficientPrivilegesException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("User cannot make changes to this team.")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(NotTeamMemberException.class)
+    public ResponseEntity<ErrorResponse> handleNotTeamMemberException(NotTeamMemberException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("User is not a member of the team.")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(AlreadyInTeamException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyInTeamException(AlreadyInTeamException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("User is already a team member.")
                                 .error(exp.getMessage())
                                 .build()
                 );

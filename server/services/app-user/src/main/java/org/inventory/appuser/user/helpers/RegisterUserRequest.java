@@ -20,9 +20,8 @@ public record RegisterUserRequest(
         @NotEmpty(message = "Password is required")
         @NotBlank(message = "Password is required")
         @Size(min=8, message = "Password should be 8 characters long minimum")
+        // todo modify regexp
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "Password should contain at least one letter and one number")
-        String password,
-
-        String role
+        String password
         ) {
 }

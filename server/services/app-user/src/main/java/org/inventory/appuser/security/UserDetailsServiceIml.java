@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.security;
+package org.inventory.appuser.security;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.appuser.user.repos.AppUserRepository;

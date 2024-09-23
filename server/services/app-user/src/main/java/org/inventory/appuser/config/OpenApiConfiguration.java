@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.config;
+package org.inventory.appuser.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;

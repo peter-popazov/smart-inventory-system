@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.security;
+package org.inventory.appuser.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

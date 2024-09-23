@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.config;
+package org.inventory.appuser.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.exception;
+package org.inventory.appuser.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

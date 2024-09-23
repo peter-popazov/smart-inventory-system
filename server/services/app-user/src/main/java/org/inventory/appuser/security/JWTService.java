@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.security;
+package org.inventory.appuser.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

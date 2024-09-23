@@ -25,10 +25,6 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "role", cascade = CascadeType.ALL)
-    private AppUser appUser;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

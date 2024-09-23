@@ -1,7 +1,10 @@
-package org.inventory.appuser.user.model;
+package org.inventory.appuser.team;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.inventory.appuser.user.model.AppUser;
+import org.inventory.appuser.user.model.Role;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -17,11 +20,14 @@ import java.time.LocalDateTime;
 public class TeamMembership {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int membershipId;
 
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime joinedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private AppUser appUser;
 
@@ -29,7 +35,7 @@ public class TeamMembership {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
@@ -38,7 +44,6 @@ public class TeamMembership {
         return "TeamMembership{" +
                 "membershipId=" + membershipId +
                 ", joinedAt=" + joinedAt +
-                ", team=" + team +
                 ", role=" + role +
                 '}';
     }
