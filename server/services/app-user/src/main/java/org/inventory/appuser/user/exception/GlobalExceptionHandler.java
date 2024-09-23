@@ -13,10 +13,12 @@ import java.util.HashMap;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundExp(UserNotFoundException exp) {
+    public ResponseEntity<ErrorResponse> handleUserNotFoundExp(UserNotFoundException exp) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(exp.getMessage());
+                .body(
+                        ErrorResponse.builder().error(exp.getMessage()).build()
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -30,9 +32,51 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(errors));
+                .body(
+                        ErrorResponse.builder().errors(errors).build()
+                );
 
     }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTokenNotFoundException(TokenNotFoundException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("Entered token not found")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleTokenExpiredException(TokenExpiredException exp) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("Entered token has expired. Check your email for a new one.")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exp) {
+        // todo logger
+        exp.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                        ErrorResponse.builder()
+                                .businessErrorDesc("Internal Server Error")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
 
 
 }

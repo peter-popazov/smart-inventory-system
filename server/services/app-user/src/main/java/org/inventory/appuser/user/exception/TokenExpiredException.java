@@ -1,16 +1,15 @@
 package org.inventory.appuser.user.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class UserNotFoundException extends RuntimeException {
+public class TokenExpiredException extends RuntimeException {
 
     private final String msg;
 
-    public UserNotFoundException(String string) {
+    public TokenExpiredException(String string) {
         this.msg = string;
     }
 }

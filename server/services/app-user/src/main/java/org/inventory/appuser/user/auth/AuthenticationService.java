@@ -1,6 +1,8 @@
 package org.inventory.appuser.user.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.inventory.appuser.user.exception.TokenExpiredException;
+import org.inventory.appuser.user.exception.TokenNotFoundException;
 import org.inventory.appuser.user.exception.UserNotFoundException;
 import org.inventory.appuser.user.helpers.AuthUserRequest;
 import org.inventory.appuser.user.helpers.AuthenticationResponse;
@@ -40,14 +42,12 @@ public class AuthenticationService {
     private final JWTService jwtService;
 
     public Integer register(RegisterUserRequest request) {
-        // todo set up roles, exceptions
-        Role newRole = Role.builder()
-                .name("USER")
-                .build();
-        roleRepository.save(newRole);
-
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new RuntimeException("User role not found"));
+        Role userRole = roleRepository.findByName(request.role())
+                .orElseGet(() -> roleRepository.save(
+                        Role.builder()
+                                .name(request.role())
+                                .build()
+                ));
 
         AppUser appUser = AppUser.builder()
                 .firstName(request.firstName())
@@ -60,6 +60,10 @@ public class AuthenticationService {
                 .build();
 
         Integer savedUserId = appUserRepository.save(appUser).getUserId();
+
+        userRole.setAppUser(appUser);
+        roleRepository.save(userRole);
+
         sendValidationEmail(appUser);
         return savedUserId;
     }
@@ -114,12 +118,11 @@ public class AuthenticationService {
 
     public Boolean activateAccount(String token) {
         Token savedToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(() -> new TokenNotFoundException("Token not found"));
 
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             // todo send email
-            // todo proper exceptions
-            throw new RuntimeException("New token has been sent");
+            throw new TokenExpiredException("Token has expired. New token has been sent");
         }
 
         AppUser appUser = appUserRepository.findById(savedToken.getAppUser().getUserId())
