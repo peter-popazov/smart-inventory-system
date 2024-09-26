@@ -35,7 +35,7 @@ public class Team {
     private LocalDateTime updatedAt;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMembership> teamMembership;
 
     @Override

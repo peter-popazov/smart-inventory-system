@@ -36,7 +36,8 @@ public class TeamService {
                 () -> roleRepository.save(Role.builder().name("ADMIN").build())
         );
 
-        AppUser teamOwner = appUserRepository.findById(appUser.getUserId()).get();
+        AppUser teamOwner = appUserRepository.findById(appUser.getUserId()).
+                orElseThrow(() -> new UserNotFoundException("User not found with id: " + appUser.getUserId()));
 
         TeamMembership teamMembership = teamMembershipRepository.save(
                 TeamMembership.builder()
