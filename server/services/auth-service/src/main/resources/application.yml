@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: auth-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+app:
+  security:
+    jwt: MT6RD/GBconH31eRBmDUpe4pIXDen/5VmHfSpU69ZbfzLpvvWXcPFBpiMRRW4Cib
+    #    in days
+    expiration: 1
+    activationTokenLen: 6
+    tokenExpirationTime: 15

@@ -1,6 +1,8 @@
 package org.inventory.appuser.user.helpers;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 public record AuthUserRequest(
 

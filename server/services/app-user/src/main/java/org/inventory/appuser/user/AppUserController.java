@@ -2,7 +2,6 @@ package org.inventory.appuser.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
 import org.inventory.appuser.user.model.AppUser;
 import org.springframework.http.ResponseEntity;

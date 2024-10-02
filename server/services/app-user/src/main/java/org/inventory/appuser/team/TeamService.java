@@ -25,7 +25,7 @@ public class TeamService {
     private final TeamMembershipRepository teamMembershipRepository;
 
 
-    public Integer createTeam(CreateTeamRequest request, AppUser appUser) {
+    public Integer createTeam(CreateTeamRequest request, String email) {
         Team team = teamRepository.save(
                 Team.builder()
                         .teamName(request.teamName())
@@ -35,6 +35,8 @@ public class TeamService {
         Role userTeamRole = roleRepository.findByName("ADMIN").orElseGet(
                 () -> roleRepository.save(Role.builder().name("ADMIN").build())
         );
+
+        AppUser appUser = getAppuser(email);
 
         AppUser teamOwner = appUserRepository.findById(appUser.getUserId()).
                 orElseThrow(() -> new UserNotFoundException("User not found with id: " + appUser.getUserId()));
@@ -51,10 +53,12 @@ public class TeamService {
         return teamRepository.save(team).getTeamId();
     }
 
-    public void addTeamMembers(AddTeamMemberRequest request, AppUser appUser) {
+    public void addTeamMembers(AddTeamMemberRequest request, String email) {
 
         Team team = teamRepository.findById(request.teamId()).orElseThrow(() ->
                 new TeamNotFoundException("Team with entered ID not found: " + request.teamId()));
+
+        AppUser appUser = getAppuser(email);
 
         validateUserTeamOwnership(appUser, team);
 
@@ -87,10 +91,12 @@ public class TeamService {
 
     // todo
     @Transactional
-    public void deleteTeam(Integer teamId, AppUser appUser) {
+    public void deleteTeam(Integer teamId, String email) {
 
         Team team = teamRepository.findById(teamId).orElseThrow(() ->
                 new TeamNotFoundException("Team with entered ID not found: " + teamId));
+
+        AppUser appUser = getAppuser(email);
 
         validateUserTeamOwnership(appUser, team);
 
@@ -114,10 +120,12 @@ public class TeamService {
 
     }
 
-    public void removeTeamMembers(RemoveTeamMemberRequest request, AppUser appUser) {
+    public void removeTeamMembers(RemoveTeamMemberRequest request, String email) {
 
         Team team = teamRepository.findById(request.teamId())
                 .orElseThrow(() -> new TeamNotFoundException("Team with entered ID not found: " + request.teamId()));
+
+        AppUser appUser = getAppuser(email);
 
         validateUserTeamOwnership(appUser, team);
 
@@ -136,4 +144,8 @@ public class TeamService {
         teamMembershipRepository.delete(membershipToRemove);
     }
 
+    private AppUser getAppuser(String email) {
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email))
+    }
 }

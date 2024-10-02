@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.inventory.appuser.team.requests.AddTeamMemberRequest;
 import org.inventory.appuser.team.requests.CreateTeamRequest;
 import org.inventory.appuser.team.requests.RemoveTeamMemberRequest;
-import org.inventory.appuser.user.model.AppUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,9 +19,9 @@ public class TeamController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createTeam(@RequestBody CreateTeamRequest request,
-                                                          @AuthenticationPrincipal AppUser appUser) {
+                                                          @PathVariable("emil") String email) {
         Map<String, Object> response = new HashMap<>();
-        response.put("teamId", teamService.createTeam(request, appUser));
+        response.put("teamId", teamService.createTeam(request, email));
         response.put("message", "Team created successfully");
 
          return ResponseEntity.ok(response);
@@ -31,21 +29,21 @@ public class TeamController {
 
     @PostMapping("/add-members")
     public ResponseEntity<?> addTeamMembers(@RequestBody AddTeamMemberRequest request,
-                                            @AuthenticationPrincipal AppUser appUser) {
-        teamService.addTeamMembers(request, appUser);
+                                            @PathVariable("email") String email) {
+        teamService.addTeamMembers(request, email);
         return ResponseEntity.ok("Team added successfully");
     }
 
     @DeleteMapping("/remove-members")
     public ResponseEntity<?> removeTeamMembers(@RequestBody RemoveTeamMemberRequest request,
-                                            @AuthenticationPrincipal AppUser appUser) {
-        teamService.removeTeamMembers(request, appUser);
+                                               @PathVariable("email") String email) {
+        teamService.removeTeamMembers(request, email);
         return ResponseEntity.ok("Team member [%s] removed successfully".formatted(request.userEmail()));
     }
 
     @DeleteMapping("/{teamId}")
-    public ResponseEntity<?> deleteTeam(@PathVariable Integer teamId, @AuthenticationPrincipal AppUser appUser) {
-        teamService.deleteTeam(teamId, appUser);
+    public ResponseEntity<?> deleteTeam(@PathVariable Integer teamId, @PathVariable("email") String email) {
+        teamService.deleteTeam(teamId, email);
         return ResponseEntity.ok("Team deleted successfully");
     }
 }

@@ -8,7 +8,7 @@ spring:
 application:
   security:
     jwt: MT6RD/GBconH31eRBmDUpe4pIXDen/5VmHfSpU69ZbfzLpvvWXcPFBpiMRRW4Cib
-#    in days
+    #    in days
     expiration: 1
     activationTokenLen: 6
     tokenExpirationTime: 15
