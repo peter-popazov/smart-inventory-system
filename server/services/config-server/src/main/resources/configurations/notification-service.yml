@@ -1,0 +1,40 @@
+spring:
+  data:
+    mongodb:
+      username: peter
+      password: peter
+      host: localhost
+      port: 27017
+      database: messages
+      authentication-database: admin
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: emailConfirmation, orderConfirmation
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # For development; replace in production with trusted packages
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping: email:org.peter.notification.kafka.EmailConfirmation
+
+  mail:
+    host: localhost
+    port: 1025
+    username: peter
+    password: peter
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+server:
+  port: 8020

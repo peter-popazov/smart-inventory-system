@@ -146,6 +146,6 @@ public class TeamService {
 
     private AppUser getAppuser(String email) {
         return appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email))
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 }

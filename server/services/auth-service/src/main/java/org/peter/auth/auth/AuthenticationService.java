@@ -9,6 +9,8 @@ import org.peter.auth.exception.UserNotFoundException;
 import org.peter.auth.helpers.AuthUserRequest;
 import org.peter.auth.helpers.AuthenticationResponse;
 import org.peter.auth.helpers.RegisterUserRequest;
+import org.peter.auth.kafka.Email;
+import org.peter.auth.kafka.EmailProducer;
 import org.peter.auth.model.AppUser;
 import org.peter.auth.model.Token;
 import org.peter.auth.repository.AppUserRepository;
@@ -42,6 +44,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final UserDetailsServiceIml userDetailsService;
+    private final EmailProducer emailProducer;
 
     public ServerResponse<Integer> register(@Valid RegisterUserRequest request) {
         AppUser appUser = AppUser.builder()
@@ -61,7 +64,10 @@ public class AuthenticationService {
 
     private void sendValidationEmail(AppUser appUser) {
         String token = generateAndSaveActivationToken(appUser);
-        // todo send email -> kafka -> notification microservice (2.33)
+        emailProducer.sendEmail(Email.builder()
+                .userEmail(appUser.getEmail())
+                .payload(token)
+                .build());
         System.out.println("____________________" + token);
     }
 

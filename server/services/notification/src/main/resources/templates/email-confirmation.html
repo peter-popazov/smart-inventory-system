@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Confirmation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f7;
+            color: #333;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-header {
+            background-color: #2f855a;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .email-header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .email-body {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .email-body p {
+            font-size: 16px;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .confirmation-code {
+            display: inline-block;
+            background-color: #f7fafc;
+            border: 1px dashed #2f855a;
+            color: #2f855a;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 20px;
+            margin: 20px 0;
+            letter-spacing: 3px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 20px;
+            background-color: #2f855a;
+            color: #ffffff;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #276749;
+        }
+
+        .footer {
+            background-color: #e2e8f0;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="email-header">
+        <h1>Confirm Your Email</h1>
+    </div>
+    <div class="email-body">
+        <p>You're almost ready to start using our inventory management app. Please confirm your email by clicking
+            the link below:</p>
+        <!--        todo redirect to client app-->
+        <a th:href="@{|http://localhost:8222/api/v1/auth/activate-account?token=${token}|}" class="button">Activate My
+            Account</a>
+        <p>If the link doesn't work, you can also use the 6-digit confirmation code below:</p>
+        <div class="confirmation-code" th:text="${token}"></div>
+        <p>If you didn't request this, you can safely ignore this email.</p>
+    </div>
+    <div class="footer">
+        <p>Thank you for using our service!</p>
+        <p>Inventory Management System | All rights reserved © 2024</p>
+    </div>
+</div>
+</body>
+</html>
