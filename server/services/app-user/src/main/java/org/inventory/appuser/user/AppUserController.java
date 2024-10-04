@@ -2,6 +2,7 @@ package org.inventory.appuser.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
 import org.inventory.appuser.user.model.AppUser;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,14 @@ public class AppUserController {
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody @Valid UpdateUserRequest user) {
         return ResponseEntity.ok(service.updateUser(user));
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> registerUser(@PathVariable("user-id") Integer userId,
+                                             @PathVariable("user-email") String userEmail
+    ) {
+        service.registerUser(userId, userEmail);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{email}")

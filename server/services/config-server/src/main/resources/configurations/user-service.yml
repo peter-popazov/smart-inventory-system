@@ -13,6 +13,17 @@ spring:
         format_sql: true
     database: postgresql
 
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: userRegistered
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping: request:org.inventory.appuser.kafka.UserRegisteredRequest
 
 server:
   port: 8090

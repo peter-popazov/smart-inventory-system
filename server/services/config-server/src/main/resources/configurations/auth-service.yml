@@ -15,7 +15,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: email:org.peter.auth.kafka.Email
+        spring.json.type.mapping: email:org.peter.auth.kafka.Email, request:org.peter.auth.kafka.UserRegisteredRequest
 
 server:
   port: 8010

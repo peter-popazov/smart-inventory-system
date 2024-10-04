@@ -2,6 +2,7 @@ package org.peter.auth.auth;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.peter.auth.ServerResponse;
 import org.peter.auth.exception.TokenExpiredException;
 import org.peter.auth.exception.TokenNotFoundException;
@@ -11,6 +12,8 @@ import org.peter.auth.helpers.AuthenticationResponse;
 import org.peter.auth.helpers.RegisterUserRequest;
 import org.peter.auth.kafka.Email;
 import org.peter.auth.kafka.EmailProducer;
+import org.peter.auth.kafka.UserRegisteredProducer;
+import org.peter.auth.kafka.UserRegisteredRequest;
 import org.peter.auth.model.AppUser;
 import org.peter.auth.model.Token;
 import org.peter.auth.repository.AppUserRepository;
@@ -45,6 +48,7 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final UserDetailsServiceIml userDetailsService;
     private final EmailProducer emailProducer;
+    private final UserRegisteredProducer userRegisteredProducer;
 
     public ServerResponse<Integer> register(@Valid RegisterUserRequest request) {
         AppUser appUser = AppUser.builder()
@@ -59,6 +63,7 @@ public class AuthenticationService {
         Integer savedUserId = appUserRepository.save(appUser).getUserId();
 
         sendValidationEmail(appUser);
+        userRegisteredMessage(appUser.getEmail(), appUser.getUserId());
         return ServerResponse.<Integer>builder().response(savedUserId).build();
     }
 
@@ -68,7 +73,15 @@ public class AuthenticationService {
                 .userEmail(appUser.getEmail())
                 .payload(token)
                 .build());
-        System.out.println("____________________" + token);
+    }
+
+    private void userRegisteredMessage(String userEmail, Integer userId) {
+        userRegisteredProducer.userRegistered(
+                UserRegisteredRequest.builder()
+                        .userEmail(userEmail)
+                        .userId(userId)
+                        .build()
+        );
     }
 
     private String generateAndSaveActivationToken(AppUser appUser) {

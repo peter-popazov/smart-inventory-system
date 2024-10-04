@@ -34,9 +34,6 @@ public class AppUser {
     private String email;
 
     @JsonIgnore
-    private String password;
-
-    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<TeamMembership> teamMembership;
 
@@ -48,10 +45,6 @@ public class AppUser {
     @Column(insertable = false)
     private LocalDateTime updatedAt;
 
-    private boolean accountLocked;
-
-    private boolean accountEnabled;
-
     @Override
     public String toString() {
         return "AppUser{" +
@@ -59,11 +52,8 @@ public class AppUser {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", accountLocked=" + accountLocked +
-                ", accountEnabled=" + accountEnabled +
                 '}';
     }
 }

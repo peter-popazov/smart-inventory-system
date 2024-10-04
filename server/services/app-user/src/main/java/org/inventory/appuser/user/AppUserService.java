@@ -17,9 +17,11 @@ public class AppUserService {
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
 
-    public int registerUser(RegisterUserRequest request) {
-        AppUser user = repository.save(mapper.toUser(request));
-        return user.getUserId();
+    public void registerUser(Integer userId, String email) {
+        repository.save(AppUser.builder()
+                .userId(userId)
+                .email(email)
+                .build());
     }
 
     public Void updateUser(UpdateUserRequest request) {
