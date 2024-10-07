@@ -1,3 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+.active {
+  @apply block bg-white p-2 rounded-2xl -m-2 transition-all duration-300;
+}
