@@ -65,4 +65,8 @@ public class Product {
 
     @CreatedDate
     private LocalDateTime updatedAt;
+
+    @PositiveOrZero(message = "Cannot be negative")
+    @Column(nullable = false)
+    private Integer userId;
 }

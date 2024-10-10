@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @GetMapping("/validate-token")
-    public ResponseEntity<Boolean> validateToken(@RequestParam("token") String token,
+    public ResponseEntity<Integer> validateToken(@RequestParam("token") String token,
                                                  @RequestParam("email") String email) {
         return new ResponseEntity<>(service.validateToken(token, email), HttpStatus.OK);
     }

@@ -19,16 +19,18 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll()
+    public List<ProductResponse> getAllProducts(String userId) {
+        return productRepository.findAllByUserId(Integer.parseInt(userId))
                 .stream()
                 .map(ProductMapper::toProductResponse)
                 .toList();
     }
 
-    public ProductResponse getProductById(Integer id) {
+    public ProductResponse getProductById(Integer id, String userId) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+
+        validateUser(userId, product.getUserId());
 
         return ProductResponse.builder()
                 .name(product.getName())
@@ -39,7 +41,7 @@ public class ProductService {
                 .build();
     }
 
-    public ServerResponse<Integer> createProduct(CreateProductRequest productRequest) {
+    public ServerResponse<Integer> createProduct(CreateProductRequest productRequest, String userId) {
 
         Category productCategory = categoryRepository.findByName(productRequest.name())
                 .orElseGet(() -> Category.builder()
@@ -61,6 +63,7 @@ public class ProductService {
                 .description(productRequest.description())
                 .price(productRequest.price())
                 .category(productCategory)
+                .userId(Integer.parseInt(userId))
                 .width(productRequest.width())
                 .height(productRequest.height())
                 .depth(productRequest.depth())
@@ -73,10 +76,12 @@ public class ProductService {
         return ServerResponse.<Integer>builder().response(productId).build();
     }
 
-    public ServerResponse<Integer> updateProduct(Integer id, CreateProductRequest productRequest) {
+    public ServerResponse<Integer> updateProduct(Integer id, CreateProductRequest productRequest, String userId) {
 
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
+
+        validateUser(userId, existingProduct.getUserId());
 
         Category category = categoryRepository.findByName(productRequest.category())
                 .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.category() + " not found"));
@@ -98,11 +103,19 @@ public class ProductService {
         return ServerResponse.<Integer>builder().response(productRepository.save(existingProduct).getProductId()).build();
     }
 
-    public String deleteProductById(Integer id) {
+    public String deleteProductById(Integer id, String userId) {
         Product productOptional = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
 
+        validateUser(userId, productOptional.getUserId());
+
         productRepository.deleteById(id);
         return "Deleted product with ID " + id;
+    }
+
+    private void validateUser(String userId, Integer productUserId) {
+        if (productUserId != Integer.parseInt(userId)) {
+            throw new RuntimeException("User id mismatch");
+        }
     }
 }

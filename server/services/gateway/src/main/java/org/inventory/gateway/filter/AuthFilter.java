@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +33,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         return (((exchange, chain) -> {
+            ServerHttpRequest request = null;
             if (validator.isSecured.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     throw new BadCredentialsException("Unauthorized");
@@ -45,28 +47,31 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     token = authHeaders.substring(7);
                     String email = jwtService.extractUsername(token);
 
-                    Boolean isValid = validateToken(token, email);
-                    if (!isValid) throw new BadCredentialsException("Invalid token");
+                    Integer loggedInUserId = validateToken(token, email);
+                    request = exchange.getRequest()
+                            .mutate()
+                            .header("loggedInUserId", String.valueOf(loggedInUserId))
+                            .build();
                 }
             }
 
-            return chain.filter(exchange);
+            assert request != null;
+            return chain.filter(exchange.mutate().request(request).build());
         }));
     }
 
-    private Boolean validateToken(String token, String email) {
+    private Integer validateToken(String token, String email) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        String url = "http://localhost:8010/validate-token?token=" + token + "&email=" + email;
-//        Boolean isValid = restTemplate.getForObject(url, Boolean.class);
-        ResponseEntity<Boolean> response = restTemplate.exchange(
+        String url = "http://localhost:8010/api/v1/auth/validate-token?token=" + token + "&email=" + email;
+        ResponseEntity<Integer> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 entity,
-                Boolean.class
+                Integer.class
         );
-        return Objects.equals(response.getBody(), Boolean.TRUE);
+        return response.getBody();
     }
 
     public static class Config {

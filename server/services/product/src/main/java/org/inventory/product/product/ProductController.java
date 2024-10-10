@@ -17,29 +17,31 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    public ResponseEntity<List<ProductResponse>> getAllProducts(@RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.getAllProducts(loggedInUserId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
-        return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id,
+                                                          @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.getProductById(id, loggedInUserId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ServerResponse<Integer>> createProduct(@RequestBody CreateProductRequest product) {
-        return new ResponseEntity<>(productService.createProduct(product), HttpStatus.CREATED);
+    public ResponseEntity<ServerResponse<Integer>> createProduct(@RequestBody CreateProductRequest product,
+                                                                 @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.createProduct(product, loggedInUserId), HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody CreateProductRequest productRequest,
-                                                                 @PathVariable Integer id) {
-        return new ResponseEntity<>(productService.updateProduct(id, productRequest), HttpStatus.OK);
+                                                                 @PathVariable Integer id, @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.updateProduct(id, productRequest, loggedInUserId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
-        return new ResponseEntity<>(productService.deleteProductById(id), HttpStatus.OK);
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer id, @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.deleteProductById(id, loggedInUserId), HttpStatus.OK);
     }
 }

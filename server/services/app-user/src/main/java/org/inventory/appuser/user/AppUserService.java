@@ -3,8 +3,6 @@ package org.inventory.appuser.user;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.inventory.appuser.exception.UserNotFoundException;
-import org.inventory.appuser.user.helpers.AppUserMapper;
-import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
 import org.inventory.appuser.user.model.AppUser;
 import org.inventory.appuser.user.repos.AppUserRepository;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class AppUserService {
 
     private final AppUserRepository repository;
-    private final AppUserMapper mapper;
 
     public void registerUser(Integer userId, String email) {
         repository.save(AppUser.builder()
