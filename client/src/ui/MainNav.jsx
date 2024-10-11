@@ -5,7 +5,7 @@ import { IoAnalyticsOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
 import { FaRegUser } from "react-icons/fa";
 
-const ICONS_SIZE = 32;
+const ICONS_SIZE = 24;
 const navItems = [
   {
     to: "/dashboard",
@@ -36,19 +36,19 @@ const navItems = [
 
 function MainNav() {
   return (
-    <nav className="mt-6 p-4 h-full flex flex-col">
-      <ul className="flex flex-col gap-6 flex-grow">
+    <nav className="mt-4 flex h-full flex-col p-4">
+      <ul className="flex flex-grow flex-col gap-6">
         {navItems.map((item, index) => (
           <SideBarNavLink item={item} key={index} />
         ))}
       </ul>
 
-      <div className="bg-white p-3 rounded-2xl -m-2">
-        <div className="flex flex-row gap-7 items-center hover:text-gray-950 transition-all duration-300 ">
+      <div className="-m-2 rounded-2xl bg-white p-3">
+        <div className="flex flex-row items-center gap-7 transition-all duration-300 hover:text-gray-950">
           <div>
             <FaRegUser size={ICONS_SIZE - 4} />
           </div>
-          <div className="flex flex-col w-2/3 gap-1">
+          <div className="flex w-2/3 flex-col gap-1">
             <div className="flex flex-row items-center justify-between">
               <span className="text-lg font-bold">John</span>
               <span className="text-sm font-thin">Admin</span>
@@ -67,9 +67,9 @@ function SideBarNavLink({ item }) {
   return (
     <li>
       <NavLink to={item.to}>
-        <div className="flex flex-row gap-6 items-center hover:text-gray-950 transition-all duration-300">
+        <div className="hover:slate-gray-950 flex flex-row items-center gap-4 text-slate-700 transition-all duration-300">
           <div>{item.icon}</div>
-          <span className="md:text-xl text-lg">{item.label}</span>
+          <span className="text-lg">{item.label}</span>
         </div>
       </NavLink>
     </li>

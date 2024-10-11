@@ -1,7 +1,11 @@
 import PropTypes from "prop-types";
 
 function Main({ children }) {
-  return <main className="bg-gray-50">{children}</main>;
+  return (
+    <main className="ml-3 rounded-3xl bg-[#E7DDFC] bg-opacity-30">
+      {children}
+    </main>
+  );
 }
 
 Main.propTypes = {

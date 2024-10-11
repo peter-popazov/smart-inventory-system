@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import AppLayout from "./pages/AppLayout";
 import { Toaster } from "react-hot-toast";
+import Inventory from "./pages/Inventory";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/inventory",
-        element: <div>Inventory</div>,
+        element: <Inventory />,
       },
       {
         index: true,
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         element: <div>Messages</div>,
       },
     ],
+  },
+  {
+    path: "/auth",
+    element: <div>REGISTR/LOGIN</div>,
   },
   {
     path: "*",
