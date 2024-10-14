@@ -1,12 +1,14 @@
-package org.inventory.product.product;
+package org.inventory.product.dto;
 
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Builder
 public record ProductResponse(
 
+        Integer productId,
         String productCode,
         String name,
         String description,
@@ -15,6 +17,6 @@ public record ProductResponse(
         String categoryName,
         Integer minStockLevel,
         Integer maxStockLevel,
-        Integer availableQuantity
+        List<InventoryResponse> inventories
 ) {
 }

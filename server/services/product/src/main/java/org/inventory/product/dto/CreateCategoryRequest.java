@@ -1,4 +1,4 @@
-package org.inventory.product.category;
+package org.inventory.product.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

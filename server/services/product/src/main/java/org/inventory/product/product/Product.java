@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -55,9 +56,16 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "inventoy_id")
-    private Inventory inventory;
+    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Inventory> inventory;
+
+    @PositiveOrZero(message = "Cannot be negative")
+    @Column(nullable = false)
+    private Integer minStockLevel;
+
+    @PositiveOrZero(message = "Cannot be negative")
+    @Column(nullable = false)
+    private Integer maxStockLevel;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

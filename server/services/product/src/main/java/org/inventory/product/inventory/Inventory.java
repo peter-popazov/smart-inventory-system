@@ -1,8 +1,10 @@
 package org.inventory.product.inventory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+import org.inventory.product.product.Product;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,17 +25,28 @@ public class Inventory {
 
     @PositiveOrZero(message = "Cannot be negative")
     @Column(nullable = false)
-    private Integer quantityAvailable;
+    private Integer stockAvailable;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @PositiveOrZero(message = "Cannot be negative")
     @Column(nullable = false)
-    private Integer minStockLevel;
-
-    @PositiveOrZero(message = "Cannot be negative")
-    @Column(nullable = false)
-    private Integer maxStockLevel;
+    private Integer warehouseId;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "inventoryId=" + inventoryId +
+                ", stockAvailable=" + stockAvailable +
+                ", warehouseId=" + warehouseId +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

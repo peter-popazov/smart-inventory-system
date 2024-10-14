@@ -30,6 +30,15 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(InsufficientQuantityException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundExp(InsufficientQuantityException exp) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        ErrorResponse.builder().error(exp.getMessage()).build()
+                );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodNotValidExp(MethodArgumentNotValidException exp) {
         HashMap<String, String> errors = new HashMap<>();

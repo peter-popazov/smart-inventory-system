@@ -2,7 +2,10 @@ package org.inventory.product.product;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
-import org.inventory.product.category.CreateProductRequest;
+import org.inventory.product.dto.CreateProductRequest;
+import org.inventory.product.dto.ProductResponse;
+import org.inventory.product.dto.UpdateProductRequest;
+import org.inventory.product.dto.WarehouseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +38,7 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody CreateProductRequest productRequest,
+    public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody UpdateProductRequest productRequest,
                                                                  @PathVariable Integer id, @RequestHeader("loggedInUserId") String loggedInUserId) {
         return new ResponseEntity<>(productService.updateProduct(id, productRequest, loggedInUserId), HttpStatus.OK);
     }
@@ -43,5 +46,10 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id, @RequestHeader("loggedInUserId") String loggedInUserId) {
         return new ResponseEntity<>(productService.deleteProductById(id, loggedInUserId), HttpStatus.OK);
+    }
+
+    @GetMapping("/warehouses")
+    public ResponseEntity<List<Integer>> getWarehousesByUserId(@RequestParam("userId") String userId) {
+        return new ResponseEntity<>(productService.getWarehousesId(userId), HttpStatus.OK);
     }
 }

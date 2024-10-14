@@ -2,6 +2,8 @@ package org.inventory.product.category;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
+import org.inventory.product.dto.CategoryResponse;
+import org.inventory.product.dto.CreateCategoryRequest;
 import org.inventory.product.exceptions.CategoryNotFoundException;
 import org.springframework.stereotype.Service;
 

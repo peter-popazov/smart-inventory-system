@@ -1,10 +1,13 @@
-package org.inventory.product.category;
+package org.inventory.product.dto;
 
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record CreateProductRequest(
+public record UpdateProductRequest(
+
+        @PositiveOrZero
+        Integer inventoryId,
 
         @NotBlank(message = "Product code is required")
         String productCode,
@@ -50,8 +53,11 @@ public record CreateProductRequest(
 
         @NotEmpty(message = "Available quantity is required")
         @PositiveOrZero(message = "Available quantity must be zero or positive")
-        Integer quantityAvailable
+        Integer quantityAvailable,
 
+        @NotEmpty(message = "Warehouse Id is required")
+        @PositiveOrZero(message = "Warehouse Id must be zero or positive")
+        Integer warehouseId
 
 ) {
 }

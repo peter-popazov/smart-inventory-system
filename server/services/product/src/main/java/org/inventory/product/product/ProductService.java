@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.category.Category;
 import org.inventory.product.category.CategoryRepository;
-import org.inventory.product.category.CreateProductRequest;
+import org.inventory.product.dto.*;
 import org.inventory.product.exceptions.CategoryNotFoundException;
 import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.inventory.Inventory;
+import org.inventory.product.inventory.InventoryMapper;
+import org.inventory.product.inventory.InventoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,11 +21,14 @@ public class ProductService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final InventoryRepository inventoryRepository;
+    private final WarehouseClient warehouseClient;
+    private final ProductMapper productMapper;
 
     public List<ProductResponse> getAllProducts(String userId) {
         return productRepository.findAllByUserId(Integer.parseInt(userId))
                 .stream()
-                .map(ProductMapper::toProductResponse)
+                .map(productMapper::toProductResponse)
                 .toList();
     }
 
@@ -32,28 +38,37 @@ public class ProductService {
 
         validateUser(userId, product.getUserId());
 
+        List<InventoryResponse> inventories = product.getInventory().stream()
+                .map(inventory -> {
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
+                    return InventoryMapper.toInventoryResponse(inventory, warehouse);
+                })
+                .toList();
+
         return ProductResponse.builder()
+                .productId(product.getProductId())
                 .name(product.getName())
+                .description(product.getDescription())
                 .price(product.getPrice())
-                .availableQuantity(product.getInventory().getQuantityAvailable())
-                .minStockLevel(product.getInventory().getMinStockLevel())
-                .maxStockLevel(product.getInventory().getMaxStockLevel())
+                .inventories(inventories)
+                .categoryName(product.getCategory().getName())
+                .photoUrl("URL")
                 .build();
     }
 
     public ServerResponse<Integer> createProduct(CreateProductRequest productRequest, String userId) {
 
         Category productCategory = categoryRepository.findByName(productRequest.name())
-                .orElseGet(() -> Category.builder()
-                        .name(productRequest.name())
-                        .build());
-
-        categoryRepository.save(productCategory);
+                .orElseGet(() -> {
+                    Category newCategory = Category.builder()
+                            .name(productRequest.name())
+                            .build();
+                    return categoryRepository.save(newCategory);
+                });
 
         Inventory productInventory = Inventory.builder()
-                .minStockLevel(productRequest.minStockLevel())
-                .maxStockLevel(productRequest.minStockLevel())
-                .quantityAvailable(productRequest.quantityAvailable())
+                .stockAvailable(productRequest.quantityAvailable())
+                .warehouseId(productRequest.warehouseId())
                 .build();
 
         Product product = Product.builder()
@@ -68,23 +83,31 @@ public class ProductService {
                 .height(productRequest.height())
                 .depth(productRequest.depth())
                 .weight(productRequest.weight())
-                .inventory(productInventory)
+                .minStockLevel(productRequest.minStockLevel())
+                .maxStockLevel(productRequest.maxStockLevel())
+                .inventory(List.of(productInventory))
                 .build();
+
+        productInventory.setProduct(product);
 
         Integer productId = productRepository.save(product).getProductId();
 
         return ServerResponse.<Integer>builder().response(productId).build();
     }
 
-    public ServerResponse<Integer> updateProduct(Integer id, CreateProductRequest productRequest, String userId) {
+    public ServerResponse<Integer> updateProduct(Integer productId,
+                                                 UpdateProductRequest productRequest, String userId) {
 
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productId + " not found"));
 
         validateUser(userId, existingProduct.getUserId());
 
         Category category = categoryRepository.findByName(productRequest.category())
                 .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.category() + " not found"));
+
+        Inventory inventory = inventoryRepository.findById(productRequest.inventoryId())
+                .orElseThrow(() -> new RuntimeException("Inventory with ID " + productRequest.inventoryId() + " not found"));
 
         existingProduct.setProductCode(productRequest.productCode());
         existingProduct.setBarcode(productRequest.barcode());
@@ -96,9 +119,13 @@ public class ProductService {
         existingProduct.setDepth(productRequest.depth());
         existingProduct.setWidth(productRequest.width());
         existingProduct.setCategory(category);
-        existingProduct.getInventory().setMinStockLevel(productRequest.minStockLevel());
-        existingProduct.getInventory().setMaxStockLevel(productRequest.maxStockLevel());
-        existingProduct.getInventory().setQuantityAvailable(productRequest.quantityAvailable());
+        existingProduct.setMaxStockLevel(productRequest.maxStockLevel());
+        existingProduct.setMinStockLevel(productRequest.minStockLevel());
+
+        inventory.setStockAvailable(productRequest.quantityAvailable());
+        inventory.setWarehouseId(productRequest.warehouseId());
+
+        inventoryRepository.save(inventory);
 
         return ServerResponse.<Integer>builder().response(productRepository.save(existingProduct).getProductId()).build();
     }
@@ -111,6 +138,16 @@ public class ProductService {
 
         productRepository.deleteById(id);
         return "Deleted product with ID " + id;
+    }
+
+    public List<Integer> getWarehousesId(String userId) {
+
+        List<Product> products = productRepository.findAllByUserId(Integer.parseInt(userId));
+        return products.stream()
+                .flatMap(product -> product.getInventory().stream())
+                .map(Inventory::getWarehouseId)
+                .distinct()
+                .toList();
     }
 
     private void validateUser(String userId, Integer productUserId) {

@@ -2,11 +2,16 @@ package org.inventory.product.inventory;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
+import org.inventory.product.dto.InventoryResponse;
+import org.inventory.product.dto.UpdateInventoryRequest;
+import org.inventory.product.dto.WarehouseResponse;
 import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.product.Product;
 import org.inventory.product.product.ProductRepository;
+import org.inventory.product.product.WarehouseClient;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,21 +19,21 @@ import java.util.Optional;
 public class InventoryService {
 
     private final ProductRepository productRepository;
+    private final InventoryRepository inventoryRepository;
+    private final WarehouseClient warehouseClient;
 
-
-    public InventoryResponse getInventoryForProduct(Integer productId) {
+    public List<InventoryResponse> getInventoryForProduct(Integer productId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
 
-        Inventory productInventory = product.getInventory();
+        List<Inventory> productInventory = product.getInventory();
 
-        return InventoryResponse.builder()
-                .productName(product.getName())
-                .quantityAvailable(productInventory.getQuantityAvailable())
-                .maxStockLevel(productInventory.getMaxStockLevel())
-                .minStockLevel(productInventory.getMinStockLevel())
-                .build();
+        return productInventory.stream()
+                .map(inventory -> {
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
+                    return InventoryMapper.toInventoryResponse(inventory, warehouse);
+                }).toList();
     }
 
     public ServerResponse<String> updateInventoryForProduct(Integer productId, UpdateInventoryRequest request) {
@@ -44,11 +49,12 @@ public class InventoryService {
 
         Product product = productOptional.get();
 
-        Inventory inventoryToUpdate = product.getInventory();
+        // todo
+        Inventory inventoryToUpdate = inventoryRepository.findById(request.inventoryId())
+                .orElseThrow(() -> new RuntimeException("Inventory not found with id: " + request.inventoryId()));
 
-        inventoryToUpdate.setQuantityAvailable(request.quantityAvailable());
-        inventoryToUpdate.setMinStockLevel(request.minStockLevel());
-        inventoryToUpdate.setMaxStockLevel(request.maxStockLevel());
+        inventoryToUpdate.setStockAvailable(request.quantityAvailable());
+        inventoryToUpdate.setWarehouseId(request.warehouseId());
 
         productRepository.save(product);
 

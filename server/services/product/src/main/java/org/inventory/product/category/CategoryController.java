@@ -2,6 +2,8 @@ package org.inventory.product.category;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
+import org.inventory.product.dto.CategoryResponse;
+import org.inventory.product.dto.CreateCategoryRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
