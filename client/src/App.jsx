@@ -7,6 +7,9 @@ import {
 import AppLayout from "./pages/AppLayout";
 import { Toaster } from "react-hot-toast";
 import Inventory from "./pages/Inventory";
+import RegisterForm from "./features/auth/RegisterForm";
+import AuthLoyout from "./features/auth/AuthLoyout";
+import LoginForm from "./features/auth/LoginForm";
 
 const router = createBrowserRouter([
   {
@@ -46,8 +49,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <div>REGISTR/LOGIN</div>,
+    element: <AuthLoyout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate replace to="login" />,
+      },
+      {
+        path: "/auth/login",
+        element: <LoginForm />,
+      },
+      {
+        path: "/auth/register",
+        element: <RegisterForm />,
+      },
+    ],
   },
+
   {
     path: "*",
     element: <div>Not Found</div>,

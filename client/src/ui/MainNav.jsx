@@ -1,5 +1,5 @@
 import { HiOutlineUserGroup, HiOutlineHome } from "react-icons/hi";
-import { NavLink } from "react-router-dom";
+import SideBarNavLink from "./SideBarNavLink";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { IoAnalyticsOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
@@ -60,27 +60,5 @@ function MainNav() {
     </nav>
   );
 }
-
-import PropTypes from "prop-types";
-
-function SideBarNavLink({ item }) {
-  return (
-    <li>
-      <NavLink to={item.to}>
-        <div className="hover:slate-gray-950 flex flex-row items-center gap-4 text-slate-700 transition-all duration-300">
-          <div>{item.icon}</div>
-          <span className="text-lg">{item.label}</span>
-        </div>
-      </NavLink>
-    </li>
-  );
-}
-SideBarNavLink.propTypes = {
-  item: PropTypes.shape({
-    to: PropTypes.string.isRequired,
-    icon: PropTypes.element.isRequired,
-    label: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 export default MainNav;
