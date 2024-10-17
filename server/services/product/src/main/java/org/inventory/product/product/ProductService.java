@@ -12,8 +12,9 @@ import org.inventory.product.inventory.InventoryMapper;
 import org.inventory.product.inventory.InventoryRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.inventory.product.helpers.UserHelpers.validateUser;
 
 @Service
 @RequiredArgsConstructor
@@ -131,10 +132,10 @@ public class ProductService {
     }
 
     public String deleteProductById(Integer id, String userId) {
-        Product productOptional = productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
 
-        validateUser(userId, productOptional.getUserId());
+        validateUser(userId, product.getUserId());
 
         productRepository.deleteById(id);
         return "Deleted product with ID " + id;
@@ -150,9 +151,4 @@ public class ProductService {
                 .toList();
     }
 
-    private void validateUser(String userId, Integer productUserId) {
-        if (productUserId != Integer.parseInt(userId)) {
-            throw new RuntimeException("User id mismatch");
-        }
-    }
 }

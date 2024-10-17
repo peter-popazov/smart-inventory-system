@@ -17,8 +17,9 @@ public class AppUserController {
     private final AppUserService service;
 
     @PutMapping
-    public ResponseEntity<Void> updateUser(@RequestBody @Valid UpdateUserRequest user) {
-        return ResponseEntity.ok(service.updateUser(user));
+    public ResponseEntity<Void> updateUser(@RequestBody @Valid UpdateUserRequest user,
+                                           @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(service.updateUser(user, loggedInUserId));
     }
 
     @PostMapping
@@ -30,8 +31,9 @@ public class AppUserController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<AppUser> getUser(@PathVariable String email) {
-        return ResponseEntity.ok(service.getUser(email));
+    public ResponseEntity<AppUser> getUser(@PathVariable String email,
+                                           @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(service.getUser(email, loggedInUserId));
     }
 
     @GetMapping("/exists/{email}")
@@ -40,7 +42,8 @@ public class AppUserController {
     }
 
     @DeleteMapping("/{email}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable String email) {
-        return ResponseEntity.ok(service.deleteUser(email));
+    public ResponseEntity<Boolean> deleteUser(@PathVariable String email,
+                                              @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(service.deleteUser(email, loggedInUserId));
     }
 }

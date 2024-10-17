@@ -53,8 +53,8 @@ public class AuthenticationService {
 
     public ServerResponse<Integer> register(@Valid RegisterUserRequest request) {
         AppUser appUser = AppUser.builder()
-                .firstName(capitalizeFirstLetter(request.firstName()))
-                .lastName(capitalizeFirstLetter(request.lastName()))
+//                .firstName(capitalizeFirstLetter(request.firstName()))
+//                .lastName(capitalizeFirstLetter(request.lastName()))
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .accountLocked(false)

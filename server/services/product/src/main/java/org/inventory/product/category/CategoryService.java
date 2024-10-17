@@ -5,26 +5,37 @@ import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.CategoryResponse;
 import org.inventory.product.dto.CreateCategoryRequest;
 import org.inventory.product.exceptions.CategoryNotFoundException;
+import org.inventory.product.product.Product;
+import org.inventory.product.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.inventory.product.helpers.UserHelpers.*;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public List<CategoryResponse> getAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
+    public List<CategoryResponse> getAllCategories(String userId) {
+        List<Product> products = productRepository.findAllByUserId(Integer.parseInt(userId));
+
+        return products.stream()
+                .map(Product::getCategory)
+                .distinct()
                 .map(CategoryMapper::toCategoryResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    public CategoryResponse getCategoryByName(String name) {
+    public CategoryResponse getCategoryByName(String name, String userId) {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        validateUser(userId, category.getProducts().get(0).getUserId());
 
         return CategoryMapper.toCategoryResponse(category);
     }
@@ -43,9 +54,11 @@ public class CategoryService {
                 .build();
     }
 
-    public CategoryResponse updateCategory(String name, CreateCategoryRequest request) {
+    public CategoryResponse updateCategory(String name, CreateCategoryRequest request, String userId) {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        validateUser(userId, category.getProducts().get(0).getUserId());
 
         if (request.name() != null) {
             category.setName(request.name());
@@ -58,9 +71,11 @@ public class CategoryService {
         );
     }
 
-    public ServerResponse<String> deleteCategory(String name) {
+    public ServerResponse<String> deleteCategory(String name, String userId) {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        validateUser(userId, category.getProducts().get(0).getUserId());
 
         if (!category.getProducts().isEmpty()) {
             return ServerResponse.<String>builder()

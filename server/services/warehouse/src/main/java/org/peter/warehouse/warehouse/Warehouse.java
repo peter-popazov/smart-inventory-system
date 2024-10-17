@@ -24,4 +24,6 @@ public class Warehouse extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
+
+    private Integer userId;
 }

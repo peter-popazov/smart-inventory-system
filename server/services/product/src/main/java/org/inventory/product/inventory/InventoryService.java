@@ -5,6 +5,7 @@ import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.InventoryResponse;
 import org.inventory.product.dto.UpdateInventoryRequest;
 import org.inventory.product.dto.WarehouseResponse;
+import org.inventory.product.exceptions.InventoryNotFoundException;
 import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.product.Product;
 import org.inventory.product.product.ProductRepository;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.inventory.product.helpers.UserHelpers.validateUser;
+
 @Service
 @RequiredArgsConstructor
 public class InventoryService {
@@ -22,10 +25,12 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final WarehouseClient warehouseClient;
 
-    public List<InventoryResponse> getInventoryForProduct(Integer productId) {
+    public List<InventoryResponse> getInventoryForProduct(Integer productId, String userId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
+
+        validateUser(userId, product.getUserId());
 
         List<Inventory> productInventory = product.getInventory();
 
@@ -36,10 +41,9 @@ public class InventoryService {
                 }).toList();
     }
 
-    public ServerResponse<String> updateInventoryForProduct(Integer productId, UpdateInventoryRequest request) {
+    public ServerResponse<String> updateInventoryForProduct(Integer productId, UpdateInventoryRequest request, String userId) {
 
         Optional<Product> productOptional = productRepository.findById(productId);
-
 
         if (productOptional.isEmpty()) {
             return ServerResponse.<String>builder()
@@ -49,9 +53,10 @@ public class InventoryService {
 
         Product product = productOptional.get();
 
-        // todo
+        validateUser(userId, product.getUserId());
+
         Inventory inventoryToUpdate = inventoryRepository.findById(request.inventoryId())
-                .orElseThrow(() -> new RuntimeException("Inventory not found with id: " + request.inventoryId()));
+                .orElseThrow(() -> new InventoryNotFoundException("Inventory not found with id: " + request.inventoryId()));
 
         inventoryToUpdate.setStockAvailable(request.quantityAvailable());
         inventoryToUpdate.setWarehouseId(request.warehouseId());

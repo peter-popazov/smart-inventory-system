@@ -18,13 +18,14 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(categoryService.getAllCategories(loggedInUserId), HttpStatus.OK);
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<CategoryResponse> getCategory(@PathVariable String name) {
-        return new ResponseEntity<>(categoryService.getCategoryByName(name), HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getCategory(@PathVariable String name,
+                                                        @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(categoryService.getCategoryByName(name, loggedInUserId), HttpStatus.OK);
     }
 
     @PostMapping
@@ -34,12 +35,14 @@ public class CategoryController {
 
     @PutMapping("/{name}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable String name,
-                                                           @RequestBody CreateCategoryRequest request) {
-        return new ResponseEntity<>(categoryService.updateCategory(name, request), HttpStatus.OK);
+                                                           @RequestBody CreateCategoryRequest request,
+                                                           @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(categoryService.updateCategory(name, request, loggedInUserId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<ServerResponse<String>> deleteCategory(@PathVariable String name) {
-        return new ResponseEntity<>(categoryService.deleteCategory(name), HttpStatus.ACCEPTED);
+    public ResponseEntity<ServerResponse<String>> deleteCategory(@PathVariable String name,
+                                                                 @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(categoryService.deleteCategory(name, loggedInUserId), HttpStatus.ACCEPTED);
     }
 }

@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateWarehouseRequest(
 
+        @NotBlank(message = "Warehouse id is required")
+        Integer warehouseId,
+
         @NotBlank(message = "Warehouse name is required")
         String name,
 

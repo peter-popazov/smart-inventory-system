@@ -20,31 +20,33 @@ public class WarehouseController {
     private final WarehouseService warehouseService;
 
     @PostMapping
-    public ResponseEntity<ServerResponse<Integer>> createWarehouse(@RequestBody CreateWarehouseRequest request) {
-        return new ResponseEntity<>(warehouseService.createWarehouse(request), HttpStatus.CREATED);
+    public ResponseEntity<ServerResponse<Integer>> createWarehouse(@RequestBody CreateWarehouseRequest request,
+                                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(warehouseService.createWarehouse(request, loggedInUserId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WarehouseResponse> getWarehouseById(@PathVariable Integer id) {
-        return new ResponseEntity<>(warehouseService.getWarehouseById(id), HttpStatus.OK);
+    public ResponseEntity<WarehouseResponse> getWarehouseById(@PathVariable Integer id,
+                                                              @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(warehouseService.getWarehouseById(id, loggedInUserId), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<WarehouseResponse>> getAllWarehouses(@RequestHeader("loggedInUserId") String loggedInUserId) {
-        List<WarehouseResponse> warehouses = warehouseService.getAllWarehouses(loggedInUserId);
-        return new ResponseEntity<>(warehouses, HttpStatus.OK);
+        return new ResponseEntity<>(warehouseService.getAllWarehouses(loggedInUserId), HttpStatus.OK);
     }
 
     @GetMapping("/exists/{id}")
-    public ResponseEntity<ServerResponse<Boolean>> existsWarehouse(@PathVariable Integer id) {
-        return new ResponseEntity<>(warehouseService.existsById(id), HttpStatus.OK);
+    public ResponseEntity<ServerResponse<Boolean>> existsWarehouse(@PathVariable Integer id,
+                                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(warehouseService.existsById(id, loggedInUserId), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<Warehouse> updateWarehouse(
-            @PathVariable Integer id,
+            @RequestHeader("loggedInUserId") String loggedInUserId,
             @RequestBody @Valid UpdateWarehouseRequest request) {
-        return new ResponseEntity<>(warehouseService.updateWarehouse(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(warehouseService.updateWarehouse(request, loggedInUserId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

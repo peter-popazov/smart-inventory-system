@@ -11,7 +11,6 @@ import org.peter.warehouse.dto.CreateWarehouseRequest;
 import org.peter.warehouse.dto.UpdateWarehouseRequest;
 import org.peter.warehouse.dto.LocationResponse;
 import org.peter.warehouse.dto.WarehouseResponse;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public class WarehouseService {
     private final LocationRepository locationRepository;
     private final ProductClient productClient;
 
-    public ServerResponse<Integer> createWarehouse(CreateWarehouseRequest request) {
+    public ServerResponse<Integer> createWarehouse(CreateWarehouseRequest request, String userId) {
         Location location = locationRepository.findByPostalCode(request.postalCode())
                 .orElseGet(() -> Location.builder()
                         .city(request.city())
@@ -38,6 +37,7 @@ public class WarehouseService {
                 .name(request.name())
                 .isRefrigerated(request.isRefrigerated())
                 .location(location)
+                .userId(Integer.parseInt(userId))
                 .build();
 
         Integer id = warehouseRepository.save(warehouse).getWarehouseId();
@@ -46,9 +46,13 @@ public class WarehouseService {
 
     }
 
-    public WarehouseResponse getWarehouseById(Integer id) {
+    public WarehouseResponse getWarehouseById(Integer id, String userId) {
         Warehouse warehouse = warehouseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
+
+        if (warehouse.getUserId() != Integer.parseInt(userId)) {
+            throw new WarehouseNotFoundException("User not found");
+        }
 
         return WarehouseResponse.builder()
                 .warehouseId(warehouse.getWarehouseId())
@@ -62,9 +66,13 @@ public class WarehouseService {
                 .build();
     }
 
-    public Warehouse updateWarehouse(Integer id, UpdateWarehouseRequest request) {
-        Warehouse warehouse = warehouseRepository.findById(id)
+    public Warehouse updateWarehouse(UpdateWarehouseRequest request, String userId) {
+        Warehouse warehouse = warehouseRepository.findById(request.warehouseId())
                 .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
+
+        if (warehouse.getUserId() != Integer.parseInt(userId)) {
+            throw new WarehouseNotFoundException("User not found");
+        }
 
         warehouse.setName(request.name());
         warehouse.setRefrigerated(request.isRefrigerated());
@@ -85,8 +93,10 @@ public class WarehouseService {
         warehouseRepository.delete(warehouse);
     }
 
-    public ServerResponse<Boolean> existsById(Integer id) {
-        return ServerResponse.<Boolean>builder().response(warehouseRepository.existsById(id)).build();
+    public ServerResponse<Boolean> existsById(Integer id, String userId) {
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseNotFoundException("Warehouse not found"));
+        return ServerResponse.<Boolean>builder().response(warehouse.getUserId() == Integer.parseInt(userId)).build();
     }
 
     public List<WarehouseResponse> getAllWarehouses(String loggedInUserId) {

@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team")
+@RequestMapping("/api/v1/teams")
 public class TeamController {
 
     private final TeamService teamService;
@@ -27,14 +27,14 @@ public class TeamController {
          return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add-members")
+    @PostMapping("/add-member/{email}")
     public ResponseEntity<?> addTeamMembers(@RequestBody AddTeamMemberRequest request,
                                             @PathVariable("email") String email) {
         teamService.addTeamMembers(request, email);
         return ResponseEntity.ok("Team added successfully");
     }
 
-    @DeleteMapping("/remove-members")
+    @DeleteMapping("/remove-member/{email}")
     public ResponseEntity<?> removeTeamMembers(@RequestBody RemoveTeamMemberRequest request,
                                                @PathVariable("email") String email) {
         teamService.removeTeamMembers(request, email);

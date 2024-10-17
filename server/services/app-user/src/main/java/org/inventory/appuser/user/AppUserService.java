@@ -21,15 +21,20 @@ public class AppUserService {
                 .build());
     }
 
-    public Void updateUser(UpdateUserRequest request) {
-        var user = repository.findByEmail(request.email())
+    public Void updateUser(UpdateUserRequest request, String userId) {
+        AppUser user = repository.findByEmail(request.email())
                 .orElseThrow(() -> new UserNotFoundException("Cannot update user. User not found with email: " + request.email()));
+
+        if (user.getUserId() != Integer.parseInt(userId)) {
+            throw new RuntimeException("Cannot update user");
+        }
+
         mergeCustomer(user, request);
         repository.save(user);
         return null;
     }
 
-    public AppUser getUser(String email) {
+    public AppUser getUser(String email, String userId) {
         return repository.findByEmail(email).
                 orElseThrow(() -> new UserNotFoundException("Cannot get user. User not found with email: " + email));
     }
@@ -54,11 +59,11 @@ public class AppUserService {
         return repository.findByEmail(email).isPresent();
     }
 
-    public Boolean deleteUser(String email) {
+    public Boolean deleteUser(String email, String userId) {
         if (!existsByEmail(email)) {
             return false;
         }
-        repository.delete(getUser(email));
+        repository.delete(getUser(email, userId));
         return true;
     }
 }

@@ -15,7 +15,8 @@ public class TransferController {
     private final TransferService transferService;
 
     @PostMapping
-    public ResponseEntity<ServerResponse<String>> transferProduct(@RequestBody TransferRequest transferRequest) {
-        return new ResponseEntity<>(transferService.transferProduct(transferRequest), HttpStatus.CREATED);
+    public ResponseEntity<ServerResponse<String>> transferProduct(@RequestBody TransferRequest transferRequest,
+                                                                  @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(transferService.transferProduct(transferRequest, loggedInUserId), HttpStatus.CREATED);
     }
 }

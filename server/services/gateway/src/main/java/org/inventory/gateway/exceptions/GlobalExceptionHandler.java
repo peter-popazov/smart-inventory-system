@@ -1,5 +1,6 @@
-package org.inventory.product.exceptions;
+package org.inventory.gateway.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,8 +13,8 @@ import java.util.HashMap;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundExp(CategoryNotFoundException exp) {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsExp(BadCredentialsException exp) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
@@ -21,37 +22,10 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundExp(ProductNotFoundException exp) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(
-                        ErrorResponse.builder().error(exp.getMessage()).build()
-                );
-    }
-
-    @ExceptionHandler(InsufficientQuantityException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundExp(InsufficientQuantityException exp) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(
-                        ErrorResponse.builder().error(exp.getMessage()).build()
-                );
-    }
-
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorizedAccessExp(UnauthorizedAccessException exp) {
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredJwtExp(ExpiredJwtException exp) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        ErrorResponse.builder().error(exp.getMessage()).build()
-                );
-    }
-
-    @ExceptionHandler(InventoryNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleInventoryNotFoundExceptionExp(InventoryNotFoundException exp) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
                 .body(
                         ErrorResponse.builder().error(exp.getMessage()).build()
                 );

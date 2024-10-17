@@ -23,6 +23,10 @@ public class TransferService {
         Warehouse warehouseFrom = warehouseRepository.findById(request.warehouseIdFrom())
                 .orElseThrow(() -> new RuntimeException("Warehouse not found"));
 
+        if (warehouseTo.isRefrigerated() == warehouseFrom.isRefrigerated()) {
+            throw new RuntimeException("Destination warehouse not refrigerated");
+        }
+
         TransferStatus status;
         try {
             status = TransferStatus.valueOf(request.status());

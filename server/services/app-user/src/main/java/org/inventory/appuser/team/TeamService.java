@@ -60,7 +60,7 @@ public class TeamService {
 
         AppUser appUser = getAppuser(email);
 
-        validateUserTeamOwnership(appUser, team);
+        validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
         AppUser appUserAddingToTeam = appUserRepository.findByEmail(request.userEmail())
                 .orElseThrow(() -> new UserNotFoundException("User with entered email not found"));
@@ -89,7 +89,6 @@ public class TeamService {
         teamMembershipRepository.save(userTeamMembership);
     }
 
-    // todo
     @Transactional
     public void deleteTeam(Integer teamId, String email) {
 
@@ -98,7 +97,7 @@ public class TeamService {
 
         AppUser appUser = getAppuser(email);
 
-        validateUserTeamOwnership(appUser, team);
+        validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
         List<TeamMembership> memberships = team.getTeamMembership();
         for (TeamMembership membership : memberships) {
@@ -112,9 +111,9 @@ public class TeamService {
         teamRepository.delete(team);
     }
 
-    private void validateUserTeamOwnership(AppUser appUser, Team team) {
-        appUser.getTeamMembership().stream()
-                .filter(teamMembership -> teamMembership.getTeam().getTeamId() == team.getTeamId())
+    private void validateUserTeamOwnership(List<TeamMembership> userTeamMemberships, Integer teamId) {
+        userTeamMemberships.stream()
+                .filter(teamMembership -> teamMembership.getTeam().getTeamId() == teamId)
                 .findFirst()
                 .orElseThrow(() -> new InsufficientPrivilegesException("Current user cannot make changes to the team they do not own"));
 
@@ -127,7 +126,7 @@ public class TeamService {
 
         AppUser appUser = getAppuser(email);
 
-        validateUserTeamOwnership(appUser, team);
+        validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
         AppUser removeUserMembership = appUserRepository.findByEmail(request.userEmail())
                 .orElseThrow(() -> new UserNotFoundException("User with entered email not found"));
