@@ -37,6 +37,8 @@ public class AppUser {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<TeamMembership> teamMembership;
 
+    private Integer registeredUserId;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

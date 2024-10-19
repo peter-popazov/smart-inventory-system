@@ -29,7 +29,7 @@ public class ProductService {
     public List<ProductResponse> getAllProducts(String userId) {
         return productRepository.findAllByUserId(Integer.parseInt(userId))
                 .stream()
-                .map(productMapper::toProductResponse)
+                .map(product -> productMapper.toProductResponse(product, userId))
                 .toList();
     }
 
@@ -41,7 +41,7 @@ public class ProductService {
 
         List<InventoryResponse> inventories = product.getInventory().stream()
                 .map(inventory -> {
-                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId(), userId);
                     return InventoryMapper.toInventoryResponse(inventory, warehouse);
                 })
                 .toList();

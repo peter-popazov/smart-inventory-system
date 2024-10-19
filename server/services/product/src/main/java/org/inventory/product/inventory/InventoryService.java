@@ -36,7 +36,7 @@ public class InventoryService {
 
         return productInventory.stream()
                 .map(inventory -> {
-                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId(), userId);
                     return InventoryMapper.toInventoryResponse(inventory, warehouse);
                 }).toList();
     }

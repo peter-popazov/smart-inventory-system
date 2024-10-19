@@ -15,10 +15,11 @@ public class AppUserService {
     private final AppUserRepository repository;
 
     public void registerUser(Integer userId, String email) {
-        repository.save(AppUser.builder()
-                .userId(userId)
+       repository.save(AppUser.builder()
+                .registeredUserId(userId)
                 .email(email)
                 .build());
+
     }
 
     public Void updateUser(UpdateUserRequest request, String userId) {

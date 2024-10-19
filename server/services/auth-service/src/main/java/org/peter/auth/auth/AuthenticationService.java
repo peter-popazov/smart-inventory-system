@@ -53,19 +53,17 @@ public class AuthenticationService {
 
     public ServerResponse<Integer> register(@Valid RegisterUserRequest request) {
         AppUser appUser = AppUser.builder()
-//                .firstName(capitalizeFirstLetter(request.firstName()))
-//                .lastName(capitalizeFirstLetter(request.lastName()))
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .accountLocked(false)
                 .accountEnabled(false)
                 .build();
 
-        Integer savedUserId = appUserRepository.save(appUser).getUserId();
+        AppUser appUserRegistered = appUserRepository.save(appUser);
 
-        sendValidationEmail(appUser);
-        userRegisteredMessage(appUser.getEmail(), appUser.getUserId());
-        return ServerResponse.<Integer>builder().response(savedUserId).build();
+        sendValidationEmail(appUserRegistered);
+        userRegisteredMessage(appUserRegistered.getEmail(), appUserRegistered.getUserId());
+        return ServerResponse.<Integer>builder().response(appUserRegistered.getUserId()).build();
     }
 
     private void sendValidationEmail(AppUser appUser) {

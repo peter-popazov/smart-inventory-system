@@ -24,14 +24,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class AppUser implements UserDetails, Principal{
+public class AppUser implements UserDetails, Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
-
-    private String firstName;
-    private String lastName;
 
     @Column(unique = true)
     private String email;
@@ -83,15 +80,13 @@ public class AppUser implements UserDetails, Principal{
 
     @Override
     public String getName() {
-        return firstName;
+        return this.email;
     }
 
     @Override
     public String toString() {
         return "AppUser{" +
                 "userId=" + userId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
