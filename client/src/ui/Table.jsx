@@ -2,14 +2,16 @@ import PropTypes from "prop-types";
 import { createContext, useContext } from "react";
 
 const TableContext = createContext();
-const commonRow = `grid gap-x-4 items-center transition-none text-center`;
+const commonRow = `grid gap-x-4 items-center transition-none`;
 
 function Table({ cols, children }) {
   return (
     <TableContext.Provider value={{ cols }}>
-      <table className="w-full border-collapse overflow-hidden rounded-b-xl bg-white">
-        {children}
-      </table>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border-collapse rounded-b-xl bg-white">
+          {children}
+        </table>
+      </div>
     </TableContext.Provider>
   );
 }
@@ -19,40 +21,59 @@ Table.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function Header({ headers }) {
+function Header({ data, render }) {
   const { cols } = useContext(TableContext);
   return (
     <thead>
       <tr
-        className={`${commonRow} ${cols} text-md border-b border-b-gray-300 px-4 py-4 font-bold tracking-wide text-gray-800`}
+        className={`${commonRow} ${cols} text-md border-b border-b-gray-300 p-4 font-bold tracking-wide text-gray-800`}
       >
-        {headers.map((header, index) => (
-          <td key={index}>{header}</td>
-        ))}
+        {data.map(render)}
       </tr>
     </thead>
   );
 }
 
 Header.propTypes = {
-  headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+  data: PropTypes.arrayOf(PropTypes.string).isRequired,
+  render: PropTypes.func.isRequired,
 };
 
 function Row({ children }) {
   const { cols } = useContext(TableContext);
-  return <tr className={`${commonRow} ${cols} h-16`}>{children}</tr>;
+  return (
+    <tr
+      className={`${commonRow} ${cols} h-16 w-full border-b border-b-gray-200 px-4`}
+    >
+      {children}
+    </tr>
+  );
 }
 
 Row.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function Body({ children }) {
-  return <tbody className="rounded-b-xl text-gray-700">{children}</tbody>;
+function Body({ data, render }) {
+  if (data.length === 0) {
+    return (
+      <tbody className="text-gray-700">
+        <tr>
+          <td colSpan="100%">
+            <div className="flex h-16 items-center justify-center rounded-b-xl">
+              No data available
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+  return <tbody className="text-gray-700">{data.map(render)}</tbody>;
 }
 
 Body.propTypes = {
-  children: PropTypes.node.isRequired,
+  data: PropTypes.array.isRequired,
+  render: PropTypes.func.isRequired,
 };
 
 function Footer({ children }) {
@@ -60,9 +81,7 @@ function Footer({ children }) {
     <tfoot>
       <tr>
         <td colSpan="100%">
-          <div
-            className={`flex h-16 items-center justify-center rounded-b-xl border-t border-t-gray-300`}
-          >
+          <div className={`flex h-16 items-center justify-center rounded-b-xl`}>
             {children}
           </div>
         </td>

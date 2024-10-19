@@ -1,10 +1,10 @@
-import Button from "./Button";
-import { LuDownload } from "react-icons/lu";
-import { BiExport } from "react-icons/bi";
-import Input from "./Input";
 import { useState } from "react";
-import Row from "./Row";
+import { BiExport } from "react-icons/bi";
 import { IoSearch } from "react-icons/io5";
+import Input from "./Input";
+import Row from "./Row";
+import Button from "./Button";
+import AddInventory from "../features/inventory/AddInventory";
 
 function TableActions() {
   const [query, setQuery] = useState("");
@@ -21,30 +21,19 @@ function TableActions() {
         />
 
         <Row type="horizontal">
+          <AddInventory />
           <Button
             type="submit"
             variant="primary"
             size="md"
             textColor="text-white"
-            bgColor="bg-teal-400"
+            bgColor="bg-teal-500"
+            className="hover:bg-teal-600"
             rounded="rounded-xl"
             icon={<BiExport size={20} />}
             onClick={() => console.log("Button clicked")}
           >
             Export
-          </Button>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            textColor="text-white"
-            bgColor="bg-violet-500"
-            rounded="rounded-xl"
-            icon={<LuDownload size={20} />}
-            onClick={() => console.log("Button clicked")}
-          >
-            Import
           </Button>
         </Row>
       </Row>

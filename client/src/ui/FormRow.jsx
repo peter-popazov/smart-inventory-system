@@ -3,13 +3,9 @@ import PropTypes from "prop-types";
 function FormRow({ label, error, children }) {
   return (
     <div>
-      {label && (
-        <label className="mb-2 block font-medium">
-          {label}
-        </label>
-      )}
+      {label && <label className="mb-2 block font-medium" htmlFor={children.props.id}>{label}</label>}
       {children}
-      {error && <p className="text-red-700">{error}</p>}
+      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 }

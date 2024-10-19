@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 const baseStyles = "font-semibold focus:outline-none transition";
 
 const sizes = {
+  iconOnly: "p-2",
   sm: "px-3 py-1 text-sm",
   md: "px-4 py-2 text-[14px]",
   lg: "px-6 py-3 text-lg",
@@ -23,7 +24,7 @@ function Button({
   return (
     <button
       type={type}
-      className={`${className} ${baseStyles} ${bgColor} ${textColor} ${rounded} ${sizes[size]} transition-all duration-200 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${
+      className={`${className} ${baseStyles} ${bgColor} ${textColor} ${rounded} ${sizes[size]} transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${
         disabled ? "cursor-not-allowed opacity-50" : ""
       } ${icon ? "flex items-center justify-center gap-2" : ""}`}
       onClick={onClick}

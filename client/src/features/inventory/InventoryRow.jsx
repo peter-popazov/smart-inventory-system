@@ -1,27 +1,17 @@
+import PropTypes from "prop-types";
 import Table from "../../ui/Table";
 
-const item = {
-  sku: "P12345",
-  productName: "Wireless Mouse",
-  price: 25.99,
-  quantity: 100,
-  category: "Electronics",
-  minStockLevel: 10,
-  provider: "TechSupply Inc.",
-  image: "https://via.placeholder.com/50",
-};
-
-function InventoryRow() {
+function InventoryRow({ item }) {
   return (
     <Table.Row>
       <td>
-        <span>{item.sku}</span>
+        <span>{item.SKU.replace("SKU", "")}</span>
       </td>
       <td className="flex items-center">
-        <div className="mr-4 flex h-16 items-center">
-          <img src={item.image} alt={item.productName} />
+        <div className="mr-4 hidden h-16 items-center md:flex">
+          <img src="https://via.placeholder.com/50" alt={item.product} />
         </div>
-        <span>{item.productName}</span>
+        <span>{item.product}</span>
       </td>
       <td>
         <span></span>${item.price}
@@ -33,13 +23,18 @@ function InventoryRow() {
         <span>{item.category}</span>
       </td>
       <td>
-        <span>{item.minStockLevel}</span>
+        <span>{item.reorderLevel}</span>
       </td>
       <td>
         <span>{item.provider}</span>
       </td>
+      <td>;</td>
     </Table.Row>
   );
 }
+
+InventoryRow.propTypes = {
+  item: PropTypes.object.isRequired,
+};
 
 export default InventoryRow;
