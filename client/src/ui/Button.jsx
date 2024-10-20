@@ -31,7 +31,7 @@ function Button({
       disabled={disabled}
     >
       {icon && <span>{icon}</span>}
-      <span>{children}</span>
+      <span className={`${icon && "hidden md:block"}`}>{children}</span>
     </button>
   );
 }

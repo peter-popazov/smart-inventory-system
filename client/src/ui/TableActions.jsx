@@ -13,11 +13,12 @@ function TableActions() {
       <Row type="horizontal">
         <Input
           type="email"
-          placeholder="Search..."
+          placeholder="Name"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           required
           icon={<IoSearch size={18} />}
+          className="max-w-[400px] flex-1"
         />
 
         <Row type="horizontal">

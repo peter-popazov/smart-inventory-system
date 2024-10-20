@@ -24,12 +24,31 @@ const warehouses = [
   { id: 3, name: "Warehouse 3", value: "warehouse3" },
 ];
 
-function AddInventoryForm({ onCloseModal, isAddItem }) {
+function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
+  const { SKU: editSKU } = productToEdit;
+
+  const editValues = {
+    productSKU: productToEdit.SKU,
+    productName: productToEdit.product,
+    price: productToEdit.price,
+    stockAvailable: productToEdit.quantity,
+    minStockLevel: productToEdit.reorderLevel,
+    //
+    description: "",
+    category: productToEdit.category,
+    warehouse: productToEdit.warehouse,
+    provider: productToEdit.provider,
+    //
+  };
+
+  const isEditItem = Boolean(editSKU);
   const {
     register: addItem,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: isEditItem ? editValues : {},
+  });
 
   function onSubmit(data) {
     console.log("Form Data:", data);
@@ -42,7 +61,7 @@ function AddInventoryForm({ onCloseModal, isAddItem }) {
   return (
     <>
       <h1 className="mb-2 text-lg font-bold text-gray-900 md:mb-5 md:text-2xl">
-        {isAddItem ? "Add new" : "Edit"} item
+        {isEditItem ? "Edit" : "Add new"} item
       </h1>
       <form
         className="space-y-4 text-gray-800"
@@ -192,8 +211,9 @@ function AddInventoryForm({ onCloseModal, isAddItem }) {
             bgColor="bg-violet-600"
             rounded="rounded-xl"
             className="hover:bg-violet-700"
+            onClick={onCloseModal}
           >
-            {isAddItem ? "Add" : "Edit"}
+            {isEditItem ? "Edit" : "Add"}
           </Button>
           <Button
             type="reset"
@@ -213,6 +233,7 @@ function AddInventoryForm({ onCloseModal, isAddItem }) {
 
 AddInventoryForm.propTypes = {
   onCloseModal: PropTypes.func,
+  productToEdit: PropTypes.object,
   isAddItem: PropTypes.bool,
 };
 

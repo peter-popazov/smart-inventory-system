@@ -14,11 +14,12 @@ function Input({
   height = "h-9",
   useFormHook = {},
   children,
+  className,
   ...props
 }) {
   return (
     <div
-      className={`group ${height} flex items-center rounded-xl border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
+      className={`group ${height} flex ${className} w-16 items-center rounded-xl border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
     >
       {icon && <span className="ml-1 mr-3 text-gray-500">{icon}</span>}
       <input
@@ -36,7 +37,7 @@ function Input({
           error ? "border-red-500" : "border-gray-300"
         } ${disabled ? "cursor-not-allowed" : ""}`}
       />
-      {children && <span className="flex items-center mr-2">{children}</span>} 
+      {children && <span className="mr-2 flex items-center">{children}</span>}
       {error && <span className="text-sm text-red-500">{error}</span>}
     </div>
   );
@@ -56,6 +57,7 @@ Input.propTypes = {
   height: PropTypes.string,
   useFormHook: PropTypes.object,
   children: PropTypes.node,
+  className: PropTypes.string,
 };
 
 export default Input;

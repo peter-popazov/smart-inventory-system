@@ -1,9 +1,13 @@
 import PropTypes from "prop-types";
-import Table from "../../ui/Table";
+import Menus from "@/ui/Menus";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import Modal from "@/ui/Modal";
+import AddInventoryForm from "./AddInventoryForm";
 
 function InventoryRow({ item }) {
   return (
-    <Table.Row>
+    <Modal>
       <td>
         <span>{item.SKU.replace("SKU", "")}</span>
       </td>
@@ -14,7 +18,7 @@ function InventoryRow({ item }) {
         <span>{item.product}</span>
       </td>
       <td>
-        <span></span>${item.price}
+        <span>${item.price}</span>
       </td>
       <td>
         <span>{item.quantity}</span>
@@ -28,8 +32,28 @@ function InventoryRow({ item }) {
       <td>
         <span>{item.provider}</span>
       </td>
-      <td>;</td>
-    </Table.Row>
+      <td>
+        <Menus.Menu>
+          <Menus.Toggle id={item.SKU} />
+          <Menus.List id={item.SKU}>
+            <Modal.Open opens="edit">
+              <Menus.Button icon={<MdEdit size={16} />}>Edit</Menus.Button>
+            </Modal.Open>
+
+            <Modal.Open opens="delete">
+              <Menus.Button icon={<MdDelete size={16} />}>Delete</Menus.Button>
+            </Modal.Open>
+          </Menus.List>
+
+          <Modal.Window name="edit">
+            <AddInventoryForm productToEdit={item} />
+          </Modal.Window>
+          <Modal.Window name="delete">
+            <div>Delete window content goes here.</div>
+          </Modal.Window>
+        </Menus.Menu>
+      </td>
+    </Modal>
   );
 }
 

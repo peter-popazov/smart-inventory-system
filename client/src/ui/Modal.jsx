@@ -39,7 +39,7 @@ function Window({ children, name }) {
 
   if (name !== openName) return null;
   return createPortal(
-    <div className="overflow-y-auto bg-backdrop fixed left-0 top-0 h-screen w-full backdrop-blur-sm transition-all duration-500">
+    <div className="bg-backdrop fixed left-0 top-0 h-screen w-full overflow-y-auto backdrop-blur-sm transition-all duration-500">
       <div
         className="fixed left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-gray-50 p-8 shadow-lg lg:h-auto lg:w-auto"
         // ref={ref}

@@ -8,7 +8,7 @@ function Table({ cols, children }) {
   return (
     <TableContext.Provider value={{ cols }}>
       <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse rounded-b-xl bg-white">
+        <table className="min-w-full border-collapse rounded-b-xl bg-white text-sm lg:text-base">
           {children}
         </table>
       </div>
@@ -39,11 +39,11 @@ Header.propTypes = {
   render: PropTypes.func.isRequired,
 };
 
-function Row({ children }) {
+function Row({ children, bgColor }) {
   const { cols } = useContext(TableContext);
   return (
     <tr
-      className={`${commonRow} ${cols} h-16 w-full border-b border-b-gray-200 px-4`}
+      className={`${commonRow} ${cols} ${bgColor} h-16 w-full border-b border-b-gray-200 px-4`}
     >
       {children}
     </tr>
@@ -52,12 +52,13 @@ function Row({ children }) {
 
 Row.propTypes = {
   children: PropTypes.node.isRequired,
+  bgColor: PropTypes.string,
 };
 
 function Body({ data, render }) {
   if (data.length === 0) {
     return (
-      <tbody className="text-gray-700">
+      <tbody className="overflow-x-scroll text-gray-700">
         <tr>
           <td colSpan="100%">
             <div className="flex h-16 items-center justify-center rounded-b-xl">
@@ -68,7 +69,16 @@ function Body({ data, render }) {
       </tbody>
     );
   }
-  return <tbody className="text-gray-700">{data.map(render)}</tbody>;
+
+  return (
+    <tbody className="text-gray-700">
+      {data.map((item, index) => (
+        <Row key={index} bgColor={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+          {render(item)}
+        </Row>
+      ))}
+    </tbody>
+  );
 }
 
 Body.propTypes = {
