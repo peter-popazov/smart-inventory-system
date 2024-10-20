@@ -38,5 +38,12 @@ spring:
           filters:
             AuthFilter
 
+        - id: product-service-categories
+          uri: lb:http://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/customers/**
+          filters:
+            AuthFilter
+
 server:
   port: 8222

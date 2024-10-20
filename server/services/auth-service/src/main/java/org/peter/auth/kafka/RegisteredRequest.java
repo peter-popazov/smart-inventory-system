@@ -3,7 +3,7 @@ package org.peter.auth.kafka;
 import lombok.Builder;
 
 @Builder
-public record UserRegisteredRequest(
+public record RegisteredRequest(
 
         String userEmail,
         Integer userId

@@ -11,15 +11,25 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserRegisteredProducer {
+public class RegisteredProducer {
 
-    private final KafkaTemplate<String, UserRegisteredRequest> kafkaTemplate;
+    private final KafkaTemplate<String, RegisteredRequest> kafkaTemplate;
 
-    public void userRegistered(UserRegisteredRequest request) {
+    public void userRegistered(RegisteredRequest request) {
         log.info("User registered");
-        Message<UserRegisteredRequest> message = MessageBuilder
+        Message<RegisteredRequest> message = MessageBuilder
                 .withPayload(request)
                 .setHeader(KafkaHeaders.TOPIC, "user-registered-topic")
+                .build();
+
+        kafkaTemplate.send(message);
+    }
+
+    public void customerRegistered(RegisteredRequest request) {
+        log.info("Customer registered");
+        Message<RegisteredRequest> message = MessageBuilder
+                .withPayload(request)
+                .setHeader(KafkaHeaders.TOPIC, "customer-registered-topic")
                 .build();
 
         kafkaTemplate.send(message);

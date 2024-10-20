@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.peter.auth.ServerResponse;
 import org.peter.auth.helpers.AuthUserRequest;
 import org.peter.auth.helpers.AuthenticationResponse;
-import org.peter.auth.helpers.RegisterUserRequest;
+import org.peter.auth.helpers.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<ServerResponse<Integer>> registerUser(@RequestBody @Valid RegisterUserRequest request) {
+    public ResponseEntity<ServerResponse<Integer>> register(@RequestBody @Valid RegisterRequest request) {
         return new ResponseEntity<>(service.register(request), HttpStatus.OK);
     }
 

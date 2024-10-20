@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppUserMapper {
 
-    public AppUser toUser(RegisterUserRequest request) {
+    public AppUser toUser(RegisterRequest request) {
         if (request == null) return null;
 
         return AppUser.builder()

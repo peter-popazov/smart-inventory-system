@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.peter.auth.exception.UserNotFoundException;
 import org.peter.auth.helpers.AppUserMapper;
-import org.peter.auth.helpers.RegisterUserRequest;
+import org.peter.auth.helpers.RegisterRequest;
 import org.peter.auth.helpers.UpdateUserRequest;
 import org.peter.auth.model.AppUser;
 import org.peter.auth.repository.AppUserRepository;
@@ -17,7 +17,7 @@ public class AppUserService {
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
 
-    public int registerUser(RegisterUserRequest request) {
+    public int registerUser(RegisterRequest request) {
         AppUser user = repository.save(mapper.toUser(request));
         return user.getUserId();
     }

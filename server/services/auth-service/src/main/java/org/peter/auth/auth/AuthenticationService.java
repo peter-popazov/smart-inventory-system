@@ -8,12 +8,13 @@ import org.peter.auth.exception.TokenNotFoundException;
 import org.peter.auth.exception.UserNotFoundException;
 import org.peter.auth.helpers.AuthUserRequest;
 import org.peter.auth.helpers.AuthenticationResponse;
-import org.peter.auth.helpers.RegisterUserRequest;
+import org.peter.auth.helpers.RegisterRequest;
 import org.peter.auth.kafka.Email;
 import org.peter.auth.kafka.EmailProducer;
-import org.peter.auth.kafka.UserRegisteredProducer;
-import org.peter.auth.kafka.UserRegisteredRequest;
+import org.peter.auth.kafka.RegisteredProducer;
+import org.peter.auth.kafka.RegisteredRequest;
 import org.peter.auth.model.AppUser;
+import org.peter.auth.model.RoleType;
 import org.peter.auth.model.Token;
 import org.peter.auth.repository.AppUserRepository;
 import org.peter.auth.repository.TokenRepository;
@@ -49,9 +50,9 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final UserDetailsServiceIml userDetailsService;
     private final EmailProducer emailProducer;
-    private final UserRegisteredProducer userRegisteredProducer;
+    private final RegisteredProducer registeredProducer;
 
-    public ServerResponse<Integer> register(@Valid RegisterUserRequest request) {
+    public ServerResponse<Integer> register(@Valid RegisterRequest request) {
         AppUser appUser = AppUser.builder()
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
@@ -62,7 +63,13 @@ public class AuthenticationService {
         AppUser appUserRegistered = appUserRepository.save(appUser);
 
         sendValidationEmail(appUserRegistered);
-        userRegisteredMessage(appUserRegistered.getEmail(), appUserRegistered.getUserId());
+
+        if (request.registeringPerson() == RoleType.USER) {
+            userRegisteredMessage(appUserRegistered.getEmail(), appUserRegistered.getUserId());
+        } else if (request.registeringPerson() == RoleType.CUSTOMER) {
+            customerRegisteredMessage(appUserRegistered.getEmail(), appUserRegistered.getUserId());
+        }
+
         return ServerResponse.<Integer>builder().response(appUserRegistered.getUserId()).build();
     }
 
@@ -75,13 +82,23 @@ public class AuthenticationService {
     }
 
     private void userRegisteredMessage(String userEmail, Integer userId) {
-        userRegisteredProducer.userRegistered(
-                UserRegisteredRequest.builder()
+        registeredProducer.userRegistered(
+                RegisteredRequest.builder()
                         .userEmail(userEmail)
                         .userId(userId)
                         .build()
         );
     }
+
+    private void customerRegisteredMessage(String userEmail, Integer userId) {
+        registeredProducer.customerRegistered(
+                RegisteredRequest.builder()
+                        .userEmail(userEmail)
+                        .userId(userId)
+                        .build()
+        );
+    }
+
 
     private String generateAndSaveActivationToken(AppUser appUser) {
         String generatedToken = generateActivationToken(activationTokenLength);
