@@ -11,7 +11,6 @@ function Input({
   required = false,
   error,
   icon,
-  height = "h-9",
   useFormHook = {},
   children,
   className,
@@ -19,7 +18,7 @@ function Input({
 }) {
   return (
     <div
-      className={`group ${height} flex ${className} w-16 items-center rounded-xl border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
+      className={`group flex ${className} w-16 items-center rounded-xl border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
     >
       {icon && <span className="ml-1 mr-3 text-gray-500">{icon}</span>}
       <input
@@ -33,7 +32,7 @@ function Input({
         required={required}
         {...useFormHook}
         {...props}
-        className={`flex-grow bg-transparent placeholder:text-[16px] placeholder:text-slate-400 focus:outline-none ${
+        className={`flex-grow bg-transparent placeholder:text-[14px] placeholder:text-slate-400 focus:outline-none ${
           error ? "border-red-500" : "border-gray-300"
         } ${disabled ? "cursor-not-allowed" : ""}`}
       />

@@ -72,7 +72,7 @@ const sampleData = [
 
 function InventoryTable() {
   return (
-    <div className="shadow-md shadow-purple-200">
+    <div className="mx-2 mt-2 shadow-md shadow-purple-200 lg:mx-6 lg:mt-6">
       <TableActions />
       <Menus>
         <Table cols="grid-cols-[0.6fr_1.5fr_0.6fr_0.6fr_1fr_1fr_1fr_0.2fr]">

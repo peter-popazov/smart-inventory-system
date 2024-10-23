@@ -8,7 +8,7 @@ function Table({ cols, children }) {
   return (
     <TableContext.Provider value={{ cols }}>
       <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse rounded-b-xl bg-white text-sm lg:text-base">
+        <table className="min-w-full border-collapse rounded-b-xl bg-white text-sm">
           {children}
         </table>
       </div>
@@ -26,7 +26,7 @@ function Header({ data, render }) {
   return (
     <thead>
       <tr
-        className={`${commonRow} ${cols} text-md border-b border-b-gray-300 p-4 font-bold tracking-wide text-gray-800`}
+        className={`${commonRow} ${cols} text-md border-b border-b-gray-300 p-4 font-bold tracking-wide text-gray-600`}
       >
         {data.map(render)}
       </tr>
@@ -43,7 +43,7 @@ function Row({ children, bgColor }) {
   const { cols } = useContext(TableContext);
   return (
     <tr
-      className={`${commonRow} ${cols} ${bgColor} h-16 w-full border-b border-b-gray-200 px-4`}
+      className={`${commonRow} ${cols} ${bgColor} h-12 w-full border-b border-b-gray-200 px-4 hover:bg-gray-50`}
     >
       {children}
     </tr>
@@ -73,9 +73,7 @@ function Body({ data, render }) {
   return (
     <tbody className="text-gray-700">
       {data.map((item, index) => (
-        <Row key={index} bgColor={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
-          {render(item)}
-        </Row>
+        <Row key={index}>{render(item)}</Row>
       ))}
     </tbody>
   );

@@ -7,6 +7,7 @@ import {
 import AppLayout from "./pages/AppLayout";
 import { Toaster } from "react-hot-toast";
 import Inventory from "./pages/Inventory";
+import Dashboard from "./pages/Dashboard";
 import RegisterForm from "./features/auth/RegisterForm";
 import AuthLoyout from "./features/auth/AuthLoyout";
 import LoginForm from "./features/auth/LoginForm";
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/dashboard",
-        element: <div>Dashboard</div>,
+        element: <Dashboard />,
       },
       {
         index: true,

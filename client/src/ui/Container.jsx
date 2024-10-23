@@ -1,7 +1,11 @@
 import PropTypes from "prop-types";
 
 function Container({ children }) {
-  return <div className="flex flex-col mx-auto h-screen max-w-[120rem]">{children}</div>;
+  return (
+    <div className="mx-auto flex h-screen max-w-[120rem] flex-col overflow-y-scroll">
+      {children}
+    </div>
+  );
 }
 
 Container.propTypes = {

@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import Menus from "@/ui/Menus";
-import { MdEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
 import Modal from "@/ui/Modal";
 import AddInventoryForm from "./AddInventoryForm";
+import ConfirmDelete from "@/ui/ComfirmDelete";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 
 function InventoryRow({ item }) {
   return (
@@ -12,7 +13,7 @@ function InventoryRow({ item }) {
         <span>{item.SKU.replace("SKU", "")}</span>
       </td>
       <td className="flex items-center">
-        <div className="mr-4 hidden h-16 items-center md:flex">
+        <div className="mr-4 hidden w-8 shrink-0 items-center md:flex">
           <img src="https://via.placeholder.com/50" alt={item.product} />
         </div>
         <span>{item.product}</span>
@@ -49,7 +50,7 @@ function InventoryRow({ item }) {
             <AddInventoryForm productToEdit={item} />
           </Modal.Window>
           <Modal.Window name="delete">
-            <div>Delete window content goes here.</div>
+            <ConfirmDelete resource={`Item ${item.SKU}`} />
           </Modal.Window>
         </Menus.Menu>
       </td>

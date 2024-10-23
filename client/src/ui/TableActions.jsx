@@ -9,7 +9,7 @@ import AddInventory from "../features/inventory/AddInventory";
 function TableActions() {
   const [query, setQuery] = useState("");
   return (
-    <div className="rounded-t-xl border border-gray-300 bg-white p-4">
+    <div className="rounded-t-xl border border-gray-300 bg-white p-3">
       <Row type="horizontal">
         <Input
           type="email"
@@ -18,7 +18,7 @@ function TableActions() {
           onChange={(e) => setQuery(e.target.value)}
           required
           icon={<IoSearch size={18} />}
-          className="max-w-[400px] flex-1"
+          className="max-w-[300px] flex-1 h-8"
         />
 
         <Row type="horizontal">
