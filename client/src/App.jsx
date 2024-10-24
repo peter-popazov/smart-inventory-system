@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import RegisterForm from "./features/auth/RegisterForm";
 import AuthLoyout from "./features/auth/AuthLoyout";
 import LoginForm from "./features/auth/LoginForm";
+import Messages from "@/pages/Messages";
 
 const router = createBrowserRouter([
   {
@@ -44,7 +45,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/messages",
-        element: <div>Messages</div>,
+        element: <Messages />,
       },
     ],
   },

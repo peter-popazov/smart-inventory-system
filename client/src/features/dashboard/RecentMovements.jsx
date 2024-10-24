@@ -5,16 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { ArrowRightIcon } from "lucide-react";
 import Button from "@/ui/Button";
+import Table from "@/ui/Table";
+import RecentMovementsRow from "./RecentMovementsRow";
+
+const headers = ["ID", "Item", "Type", "Quantity", "Date"];
 
 const recentMovements = [
   {
@@ -65,27 +61,21 @@ function RecentMovements() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentMovements.map((movement) => (
-                <TableRow key={movement.id}>
-                  <TableCell>{movement.id}</TableCell>
-                  <TableCell>{movement.item}</TableCell>
-                  <TableCell>{movement.type}</TableCell>
-                  <TableCell>{movement.quantity}</TableCell>
-                  <TableCell>{movement.date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+          <Table cols="grid-cols-[0.5fr_1.5fr_1fr_1fr_1fr]">
+            <Table.Header
+              data={headers}
+              render={(header) => (
+                <th key={header} className="pl-4 text-left">
+                  {header}
+                </th>
+              )}
+            />
+            <Table.Body
+              data={recentMovements}
+              render={(movement) => (
+                <RecentMovementsRow key={movement.id} movement={movement} />
+              )}
+            />
           </Table>
         </CardContent>
       </Card>
