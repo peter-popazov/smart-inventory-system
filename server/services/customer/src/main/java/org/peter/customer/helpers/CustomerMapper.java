@@ -30,7 +30,7 @@ public class CustomerMapper {
                 .lastName(customer.getLastName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .address(addressMapper.toAddressResponse(customer.getAddress()))
+                .address(customer.getAddress() == null ? null : addressMapper.toAddressResponse(customer.getAddress()))
                 .build();
     }
 }

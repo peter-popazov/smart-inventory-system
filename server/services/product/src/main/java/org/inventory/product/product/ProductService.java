@@ -6,12 +6,15 @@ import org.inventory.product.category.Category;
 import org.inventory.product.category.CategoryRepository;
 import org.inventory.product.dto.*;
 import org.inventory.product.exceptions.CategoryNotFoundException;
+import org.inventory.product.exceptions.InsufficientQuantityException;
 import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.inventory.Inventory;
 import org.inventory.product.inventory.InventoryMapper;
 import org.inventory.product.inventory.InventoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.inventory.product.helpers.UserHelpers.validateUser;
@@ -150,5 +153,69 @@ public class ProductService {
                 .distinct()
                 .toList();
     }
+
+    public List<PurchaseProductsResponse> purchaseProducts(List<PurchaseProductsRequest> requests) {
+        List<Integer> productIds = requests.stream()
+                .map(PurchaseProductsRequest::productId)
+                .toList();
+
+        List<Product> products = productRepository.findAllById(productIds);
+
+        if (productIds.size() != products.size()) {
+            throw new ProductNotFoundException("Some products were not found in the database.");
+        }
+
+        List<PurchaseProductsRequest> sortedRequests = requests.stream()
+                .sorted(Comparator.comparing(PurchaseProductsRequest::productId))
+                .toList();
+
+        List<PurchaseProductsResponse> purchasedProducts = new ArrayList<>();
+
+        for (int index = 0; index < sortedRequests.size(); index++) {
+            Product product = products.get(index);
+            PurchaseProductsRequest productRequest = sortedRequests.get(index);
+
+            Integer quantityRequested = productRequest.quantity();
+            List<Inventory> sortedInventory = product.getInventory().stream()
+                    .sorted(Comparator.comparingInt(Inventory::getStockAvailable).reversed())
+                    .toList();
+
+            List<Integer> usedWarehouseIds = new ArrayList<>();
+            List<Inventory> usedInventories = new ArrayList<>();
+            double remainingQuantity = quantityRequested;
+
+            for (Inventory inventory : sortedInventory) {
+                if (remainingQuantity <= 0) break;
+
+                int stockAvailable = inventory.getStockAvailable();
+                if (stockAvailable > 0) {
+                    int quantityToDeduct = (int) Math.min(stockAvailable, remainingQuantity);
+                    inventory.setStockAvailable(stockAvailable - quantityToDeduct);
+                    usedInventories.add(inventory);
+
+                    usedWarehouseIds.add(inventory.getWarehouseId());
+                    remainingQuantity -= quantityToDeduct;
+                }
+            }
+
+            if (remainingQuantity > 0) {
+                throw new InsufficientQuantityException("Not enough stock for product ID: " + productRequest.productId());
+            }
+
+            inventoryRepository.saveAll(usedInventories);
+
+            purchasedProducts.add(PurchaseProductsResponse.builder()
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .description(product.getDescription())
+                    .productId(product.getProductId())
+                    .warehousesId(usedWarehouseIds)
+                    .build()
+            );
+        }
+
+        return purchasedProducts;
+    }
+
 
 }

@@ -1,11 +1,9 @@
 package org.inventory.product.product;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
-import org.inventory.product.dto.CreateProductRequest;
-import org.inventory.product.dto.ProductResponse;
-import org.inventory.product.dto.UpdateProductRequest;
-import org.inventory.product.dto.WarehouseResponse;
+import org.inventory.product.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +49,10 @@ public class ProductController {
     @GetMapping("/warehouses")
     public ResponseEntity<List<Integer>> getWarehousesByUserId(@RequestParam("userId") String userId) {
         return new ResponseEntity<>(productService.getWarehousesId(userId), HttpStatus.OK);
+    }
+
+    @PostMapping("/purchase")
+    public ResponseEntity<List<PurchaseProductsResponse>> purchaseProducts(@RequestBody List<PurchaseProductsRequest> purchaseProductsRequests) {
+        return new ResponseEntity<>(productService.purchaseProducts(purchaseProductsRequests), HttpStatus.OK);
     }
 }

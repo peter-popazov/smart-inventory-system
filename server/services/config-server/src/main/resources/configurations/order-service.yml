@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/order
+    username: user_java
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+server:
+  port: 8040
+
+application:
+  config:
+    customer-service: http://localhost:8030/api/v1/customers
+    product-service: http://localhost:8050/api/v1/products
+    payment-service: http://localhost:8222/api/v1/payments

@@ -45,5 +45,12 @@ spring:
           filters:
             AuthFilter
 
+        - id: order-service
+          uri: lb:http://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            AuthFilter
+
 server:
   port: 8222

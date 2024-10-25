@@ -101,13 +101,10 @@ public class WarehouseService {
 
     public List<WarehouseResponse> getAllWarehouses(String loggedInUserId) {
 
-        List<Integer> warehousesId = productClient.getWarehousesByUserId(loggedInUserId);
+        List<Warehouse> warehouses = warehouseRepository.findAllByUserId(Integer.parseInt(loggedInUserId));
 
-        return warehousesId.stream()
-                .map(id -> warehouseRepository.findById(id)
-                        .map(WarehousesMapper::toResponse)
-                        .orElseThrow(() -> new WarehouseNotFoundException("Warehouse not found with id: " + id))
-                )
+        return warehouses.stream()
+                .map(WarehousesMapper::toResponse)
                 .toList();
     }
 
