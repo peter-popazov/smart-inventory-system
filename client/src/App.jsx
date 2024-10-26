@@ -12,6 +12,7 @@ import RegisterForm from "./features/auth/RegisterForm";
 import AuthLoyout from "./features/auth/AuthLoyout";
 import LoginForm from "./features/auth/LoginForm";
 import Messages from "@/pages/Messages";
+import Team from "./pages/Team";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/team",
-        element: <div>Team</div>,
+        element: <Team/>,
       },
       {
         index: true,
