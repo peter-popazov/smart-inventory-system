@@ -10,4 +10,6 @@ public class AuthenticationResponse {
 
     @JsonProperty("jwt_token")
     private String token;
+
+    private UserResponse user;
 }

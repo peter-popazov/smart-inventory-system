@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import {
   createBrowserRouter,
   Navigate,
@@ -9,10 +9,11 @@ import { Toaster } from "react-hot-toast";
 import Inventory from "./pages/Inventory";
 import Dashboard from "./pages/Dashboard";
 import RegisterForm from "./features/auth/RegisterForm";
-import AuthLoyout from "./features/auth/AuthLoyout";
+import AuthLayout from "./features/auth/AuthLayout";
 import LoginForm from "./features/auth/LoginForm";
 import Messages from "@/pages/Messages";
 import Team from "./pages/Team";
+import ProtectedRoute from "./ui/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -24,35 +25,50 @@ const router = createBrowserRouter([
         element: <Navigate replace to="dashboard" />,
       },
       {
-        index: true,
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
-        index: true,
         path: "/team",
-        element: <Team/>,
+        element: (
+          <ProtectedRoute>
+            <Team />
+          </ProtectedRoute>
+        ),
       },
       {
-        index: true,
         path: "/inventory",
-        element: <Inventory />,
+        element: (
+          <ProtectedRoute>
+            <Inventory />
+          </ProtectedRoute>
+        ),
       },
       {
-        index: true,
         path: "/analytics",
-        element: <div>Analytics</div>,
+        element: (
+          <ProtectedRoute>
+            <div>Analytics</div>
+          </ProtectedRoute>
+        ),
       },
       {
-        index: true,
         path: "/messages",
-        element: <Messages />,
+        element: (
+          <ProtectedRoute>
+            <Messages />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
   {
     path: "/auth",
-    element: <AuthLoyout />,
+    element: <AuthLayout />,
     children: [
       {
         index: true,
@@ -68,14 +84,13 @@ const router = createBrowserRouter([
       },
     ],
   },
-
   {
     path: "*",
     element: <div>Not Found</div>,
   },
 ]);
 
-const queryClinet = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
@@ -86,8 +101,8 @@ const queryClinet = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClinet}>
-      <RouterProvider router={router}></RouterProvider>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
       <Toaster
         position="top-center"
         gutter={12}
@@ -101,10 +116,10 @@ function App() {
           },
           style: {
             fontSize: "16px",
-            maxWidth: "500pxm",
+            maxWidth: "500px",
             padding: "16px 24px",
-            backgroundColor: "var(--color-grey-0)",
-            color: "var(--color-grey-700)",
+            backgroundColor: "#fff",
+            color: "#000",
           },
         }}
       />

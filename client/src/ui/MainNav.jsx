@@ -3,9 +3,9 @@ import SideBarNavLink from "./SideBarNavLink";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { IoAnalyticsOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
-import { FaRegUser } from "react-icons/fa";
+import { ICONS_SIZE } from "@/constants/iconSize";
+import LoggedUser from "@/features/user/LoggedUser";
 
-const ICONS_SIZE = 24;
 const navItems = [
   {
     to: "/dashboard",
@@ -43,20 +43,7 @@ function MainNav() {
         ))}
       </ul>
 
-      <div className="-m-2 rounded-2xl bg-white p-3">
-        <div className="flex flex-row items-center gap-7 transition-all duration-300 hover:text-gray-950">
-          <div>
-            <FaRegUser size={ICONS_SIZE - 4} />
-          </div>
-          <div className="flex w-2/3 flex-col gap-1">
-            <div className="flex flex-row items-center justify-between">
-              <span className="text-lg font-bold">John</span>
-              <span className="text-sm font-thin">Admin</span>
-            </div>
-            <span className="text-sm text-gray-500">user@gmail.com</span>
-          </div>
-        </div>
-      </div>
+      <LoggedUser />
     </nav>
   );
 }

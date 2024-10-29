@@ -37,4 +37,9 @@ public class AuthController {
                                                  @RequestParam("email") String email) {
         return new ResponseEntity<>(service.validateToken(token, email), HttpStatus.OK);
     }
+
+    @GetMapping("/exists/{email}")
+    public ResponseEntity<Boolean> existsByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(service.existsByEmail(email));
+    }
 }

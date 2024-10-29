@@ -1,3 +1,4 @@
+import { useQueryClient } from "react-query";
 import Table from "../../ui/Table";
 import TableActions from "../../ui/TableActions";
 import InventoryRow from "./InventoryRow";
@@ -71,6 +72,10 @@ const sampleData = [
 ];
 
 function InventoryTable() {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData("user");
+  const token = user?.jwt_token;
+  console.log("JWT Token:", token);
   return (
     <div className="mx-2 mt-2 shadow-md shadow-purple-200 lg:mx-6 lg:mt-6">
       <TableActions />

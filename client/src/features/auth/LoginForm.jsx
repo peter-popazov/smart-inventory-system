@@ -6,6 +6,7 @@ import Input from "../../ui/Input";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useLogin } from "./useLogin";
 
 function LoginForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -15,8 +16,10 @@ function LoginForm() {
     formState: { errors },
   } = useForm();
 
+  const { login, isLoading } = useLogin();
+
   function onSubmit(data) {
-    console.log("Form Data:", data);
+    login(data);
   }
 
   function onError(errors) {
@@ -34,8 +37,10 @@ function LoginForm() {
           id="email"
           placeholder="example@example.com"
           height="h-10"
+          className="w-full"
           autoComplete="username"
           icon={<MdEmail />}
+          disabled={isLoading}
           useFormHook={{
             ...register("email", { required: "Email is required" }),
           }}
@@ -44,12 +49,14 @@ function LoginForm() {
 
       <FormRow label="Password" error={errors?.password?.message}>
         <Input
-          type={passwordVisible ? "text" : "password"}
+          type={!passwordVisible ? "text" : "password"}
           id="password"
           placeholder="**********"
           height="h-10"
+          className="w-full"
           autoComplete="current-password"
           icon={<RiLockPasswordFill />}
+          disabled={isLoading}
           useFormHook={{
             ...register("password", {
               required: "Password is required",
@@ -73,7 +80,7 @@ function LoginForm() {
           textColor="text-white"
           type="submit"
         >
-          Login
+          {isLoading ? "Loading..." : "Login"}
         </Button>
       </div>
     </form>

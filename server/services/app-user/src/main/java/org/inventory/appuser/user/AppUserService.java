@@ -3,6 +3,7 @@ package org.inventory.appuser.user;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.inventory.appuser.exception.UserNotFoundException;
+import org.inventory.appuser.user.helpers.AppUserResponse;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
 import org.inventory.appuser.user.model.AppUser;
 import org.inventory.appuser.user.repos.AppUserRepository;
@@ -15,7 +16,7 @@ public class AppUserService {
     private final AppUserRepository repository;
 
     public void registerUser(Integer userId, String email) {
-       repository.save(AppUser.builder()
+        repository.save(AppUser.builder()
                 .registeredUserId(userId)
                 .email(email)
                 .build());
@@ -26,7 +27,7 @@ public class AppUserService {
         AppUser user = repository.findByEmail(request.email())
                 .orElseThrow(() -> new UserNotFoundException("Cannot update user. User not found with email: " + request.email()));
 
-        if (user.getUserId() != Integer.parseInt(userId)) {
+        if (user.getRegisteredUserId() != Integer.parseInt(userId)) {
             throw new RuntimeException("Cannot update user");
         }
 
@@ -35,9 +36,20 @@ public class AppUserService {
         return null;
     }
 
-    public AppUser getUser(String email, String userId) {
-        return repository.findByEmail(email).
+    public AppUserResponse getUser(String email, String userId) {
+        AppUser appUser = repository.findByEmail(email).
                 orElseThrow(() -> new UserNotFoundException("Cannot get user. User not found with email: " + email));
+
+        if (appUser.getRegisteredUserId() != Integer.parseInt(userId)) {
+            throw new RuntimeException("Not enough permissions to retrieve user");
+        }
+        return AppUserResponse.builder()
+                .email(appUser.getEmail())
+                .firstName(appUser.getFirstName())
+                .lastName(appUser.getLastName())
+                // todo
+                .role(null)
+                .build();
     }
 
     private void mergeCustomer(AppUser user, UpdateUserRequest request) {
@@ -61,10 +73,15 @@ public class AppUserService {
     }
 
     public Boolean deleteUser(String email, String userId) {
-        if (!existsByEmail(email)) {
-            return false;
+        AppUser appUser = repository.findByEmail(email).orElseThrow(
+                () -> new UserNotFoundException("Cannot delete user. User not found with email: " + email)
+        );
+
+        if (appUser.getRegisteredUserId() != Integer.parseInt(userId)) {
+            throw new RuntimeException("Not enough permissions to delete user");
         }
-        repository.delete(getUser(email, userId));
+
+        repository.delete(appUser);
         return true;
     }
 }

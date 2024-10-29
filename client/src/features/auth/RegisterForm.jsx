@@ -6,6 +6,7 @@ import Input from "../../ui/Input";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRegister } from "./useRegister";
 
 function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -15,8 +16,10 @@ function RegisterForm() {
     formState: { errors },
   } = useForm();
 
+  const { registerApi, isLoading } = useRegister();
+
   function onSubmit(data) {
-    console.log("Form Data:", data);
+    registerApi({ ...data, role: "USER" });
   }
 
   function onError(errors) {
@@ -34,7 +37,9 @@ function RegisterForm() {
           id="email"
           placeholder="example@example.com"
           height="h-10"
+          className="w-full"
           autoComplete="username"
+          disabled={isLoading}
           icon={<MdEmail />}
           useFormHook={{
             ...register("email", { required: "Email is required" }),
@@ -44,11 +49,13 @@ function RegisterForm() {
 
       <FormRow label="Password" error={errors?.password?.message}>
         <Input
-          type={passwordVisible ? "text" : "password"}
+          type={!passwordVisible ? "text" : "password"}
           id="password"
           placeholder="**********"
           height="h-10"
+          className="w-full"
           autoComplete="current-password"
+          disabled={isLoading}
           icon={<RiLockPasswordFill />}
           useFormHook={{
             ...register("password", {
@@ -73,7 +80,7 @@ function RegisterForm() {
           textColor="text-white"
           type="submit"
         >
-          Register
+          {isLoading ? "Loading..." : "Register"}
         </Button>
       </div>
     </form>

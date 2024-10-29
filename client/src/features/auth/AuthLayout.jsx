@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Logo from "../../ui/Logo";
 
-function AuthLoyout() {
+function AuthLayout() {
   const location = useLocation();
   const isRegister = location.pathname.includes("register");
   return (
@@ -18,10 +18,12 @@ function AuthLoyout() {
             </div>
 
             <div className="flex justify-center">
-              <span>Already a user?&nbsp;</span>
+              <span>
+                {isRegister ? "Already a user?" : "You are new here?"}
+              </span>
               <span className="text-blue-700 underline hover:text-blue-900">
                 <Link to={`/auth/${isRegister ? "login" : "register"}`}>
-                  {isRegister ? "Login" : "Register"}
+                  &nbsp;{isRegister ? "Login" : "Register"}
                 </Link>
               </span>
             </div>
@@ -49,4 +51,4 @@ function AuthLoyout() {
   );
 }
 
-export default AuthLoyout;
+export default AuthLayout;

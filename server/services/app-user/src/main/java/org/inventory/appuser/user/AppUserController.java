@@ -2,9 +2,8 @@ package org.inventory.appuser.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.inventory.appuser.user.helpers.RegisterUserRequest;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
-import org.inventory.appuser.user.model.AppUser;
+import org.inventory.appuser.user.helpers.AppUserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +30,8 @@ public class AppUserController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<AppUser> getUser(@PathVariable String email,
-                                           @RequestHeader("loggedInUserId") String loggedInUserId) {
+    public ResponseEntity<AppUserResponse> getUser(@PathVariable String email,
+                                                @RequestHeader("loggedInUserId") String loggedInUserId) {
         return ResponseEntity.ok(service.getUser(email, loggedInUserId));
     }
 

@@ -9,6 +9,7 @@ import org.peter.auth.exception.UserNotFoundException;
 import org.peter.auth.helpers.AuthUserRequest;
 import org.peter.auth.helpers.AuthenticationResponse;
 import org.peter.auth.helpers.RegisterRequest;
+import org.peter.auth.helpers.UserResponse;
 import org.peter.auth.kafka.Email;
 import org.peter.auth.kafka.EmailProducer;
 import org.peter.auth.kafka.RegisteredProducer;
@@ -20,6 +21,7 @@ import org.peter.auth.repository.AppUserRepository;
 import org.peter.auth.repository.TokenRepository;
 import org.peter.auth.security.JWTService;
 import org.peter.auth.security.UserDetailsServiceIml;
+import org.peter.auth.user.UserClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,6 +53,7 @@ public class AuthenticationService {
     private final UserDetailsServiceIml userDetailsService;
     private final EmailProducer emailProducer;
     private final RegisteredProducer registeredProducer;
+    private final UserClient userClient;
 
     public ServerResponse<Integer> register(@Valid RegisterRequest request) {
         AppUser appUser = AppUser.builder()
@@ -124,7 +127,7 @@ public class AuthenticationService {
         return sb.toString();
     }
 
-    public AuthenticationResponse authenticate(@Valid AuthUserRequest request) {
+    public AuthenticationResponse authenticate(AuthUserRequest request) {
         try {
             var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -139,8 +142,11 @@ public class AuthenticationService {
             claims.put("email", appUser.getEmail());
             var jwt = jwtService.generateToken(claims, appUser);
 
+            UserResponse user = userClient.getUser(appUser.getEmail(), String.valueOf(appUser.getUserId()));
+
             return AuthenticationResponse.builder()
                     .token(jwt)
+                    .user(user)
                     .build();
 
         } catch (DisabledException ex) {
@@ -191,5 +197,9 @@ public class AuthenticationService {
         }
         AppUser appUser = (AppUser) userDetails;
         return appUser.getUserId();
+    }
+
+    public Boolean existsByEmail(String email) {
+        return appUserRepository.findByEmail(email).isPresent();
     }
 }
