@@ -10,40 +10,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
+import { useCreateProduct } from "./useCreateProduct";
 import FormRow from "../../ui/FormRow";
-
-const categories = [
-  { id: 1, name: "Category 1", value: "category1" },
-  { id: 2, name: "Category 2", value: "category2" },
-  { id: 3, name: "Category 3", value: "category3" },
-];
-
-const warehouses = [
-  { id: 1, name: "Warehouse 1", value: "warehouse1" },
-  { id: 2, name: "Warehouse 2", value: "warehouse2" },
-  { id: 3, name: "Warehouse 3", value: "warehouse3" },
-];
+import Warehouse from "./warehouse/Warehouse";
+import Category from "./category/Category";
+import { useState } from "react";
+import { useUpdateProduct } from "./useUpdateProduct";
 
 function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
-  const { SKU: editSKU } = productToEdit;
+  const [totalStock, setTotalStock] = useState(0);
+  const { createProduct, isCreateing } = useCreateProduct();
+  const { updateProduct, isUpdating } = useUpdateProduct();
 
+  const { productId } = productToEdit;
+  const isEditItem = Boolean(productId);
   const editValues = {
+    productId: productToEdit.productId,
     productSKU: productToEdit.SKU,
+    barCode: productToEdit.barCode,
     productName: productToEdit.product,
     price: productToEdit.price,
-    stockAvailable: productToEdit.quantity,
+    stockAvailable: productToEdit?.inventories?.at(0)?.stockAvailable,
     minStockLevel: productToEdit.reorderLevel,
-    //
-    description: "",
+    maxStockLevel: productToEdit.maxStockLevel,
+    description: productToEdit.description,
     category: productToEdit.category,
-    warehouse: productToEdit.warehouse,
+    warehouse: productToEdit?.inventories?.at(0)?.warehouse?.warehouseId,
     provider: productToEdit.provider,
-    //
+    inventories: productToEdit.inventories,
+    quantity: productToEdit?.inventories?.reduce((total, inventory) => {
+      return total + inventory.stockAvailable;
+    }, 0),
   };
 
-  const isEditItem = Boolean(editSKU);
   const {
-    register: addItem,
+    register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -51,11 +53,69 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
   });
 
   function onSubmit(data) {
-    console.log("Form Data:", data);
+    if (!isEditItem) {
+      createProduct({
+        barcode: data.barCode,
+        productCode: data.productSKU,
+        productName: data.productName,
+        description: data.description,
+        price: parseFloat(data.price),
+        categoryName: data.category,
+        minStockLevel: data.minStockLevel,
+        maxStockLevel: data.maxStockLevel,
+        quantityAvailable: data.stockAvailable,
+        warehouseId: data.warehouse,
+        //
+        weight: 0.1,
+        height: 0.1,
+        depth: 0.1,
+        width: 0.1,
+        //
+      });
+    } else {
+      let inventoryToUpdate = productToEdit.inventories
+        .filter(
+          (inventory) => inventory.warehouse.warehouseId === data.warehouse,
+        )
+        .map((inventory) => inventory.inventoryId)
+        ?.at(0);
+
+      console.log("->", data.warehouse);
+
+      updateProduct({
+        inventoryId: inventoryToUpdate,
+        productId: data.productId,
+        productCode: data.productSKU,
+        barcode: parseInt(data.barCode),
+        productName: data.productName,
+        description: data.description,
+        price: parseFloat(data.price),
+        categoryName: data.category,
+        minStockLevel: data.minStockLevel,
+        maxStockLevel: data.maxStockLevel,
+        quantityAvailable: data.stockAvailable,
+        warehouseId: data.warehouse,
+        //
+        weight: 0.1,
+        height: 0.1,
+        depth: 0.1,
+        width: 0.1,
+        //
+      });
+    }
+    onCloseModal?.();
   }
 
   function onError() {
     console.error("Form Errors:", errors);
+  }
+
+  if (isCreateing) {
+    return <div>Adding product...</div>;
+  }
+
+  if (isUpdating) {
+    return <div>Updating product...</div>;
   }
 
   return (
@@ -67,13 +127,13 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         className="space-y-4 text-gray-800"
         onSubmit={handleSubmit(onSubmit, onError)}
       >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="space-y-2">
             <FormRow label="Item name" error={errors?.productName?.message}>
               <Input
                 id="productName"
                 placeholder="Input text"
-                {...addItem("productName", {
+                {...register("productName", {
                   required: "Item name is required",
                 })}
               />
@@ -84,8 +144,35 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
               <Input
                 id="productSKU"
                 placeholder="Input text"
-                {...addItem("productSKU", {
+                {...register("productSKU", {
                   required: "Product SKU is required",
+                })}
+              />
+            </FormRow>
+          </div>
+          <div className="space-y-2">
+            {/* <div className="absolute top-3 right-3">
+              <BsUpcScan size={ICONS_SIZE - 6} />
+            </div> */}
+            <FormRow label="Barcode" error={errors?.barCode?.message}>
+              <Input
+                id="barCode"
+                placeholder="Input text"
+                {...register("barCode", {
+                  required: "Bar Code is required",
+                })}
+              />
+            </FormRow>
+          </div>
+          <div className="space-y-2">
+            <FormRow label="Price" error={errors?.price?.message}>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                placeholder="Input text"
+                {...register("price", {
+                  required: "Price is required",
                 })}
               />
             </FormRow>
@@ -97,7 +184,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
             <Textarea
               id="description"
               placeholder="Input text"
-              {...addItem("description", {
+              {...register("description", {
                 required: "Description is required",
               })}
             />
@@ -106,88 +193,79 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="space-y-2">
-            <FormRow label="Category" error={errors?.category?.message}>
-              <Select>
-                <SelectTrigger id="category">
-                  <SelectValue placeholder="Input text" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.value}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormRow>
+            <Warehouse
+              errors={errors}
+              setValue={setValue}
+              productToEdit={productToEdit}
+              isEditItem={isEditItem}
+            />
           </div>
           <div className="space-y-2">
-            <FormRow label="Warehouse" error={errors?.warehouse?.message}>
-              <Select
-                onValueChange={() => {
-                  const currentValue = addItem("warehouse").value;
-                  addItem("warehouse").onChange({
-                    target: { value: currentValue },
-                  });
-                }}
-              >
-                <SelectTrigger id="warehouse">
-                  <SelectValue placeholder="Input text" />
-                </SelectTrigger>
-                <SelectContent>
-                  {warehouses.map((warehouse) => (
-                    <SelectItem key={warehouse.id} value={warehouse.value}>
-                      {warehouse.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormRow>
+            <Category
+              errors={errors}
+              setValue={setValue}
+              productToEdit={productToEdit}
+              isEditItem={isEditItem}
+            />
           </div>
-          <div className="space-y-2">
-            <FormRow label="Provider" error={errors?.provider?.message}>
-              <Select>
-                <SelectTrigger id="provider" disabled={true}>
-                  <SelectValue placeholder="Input text" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="provider1">Provider 1</SelectItem>
-                  <SelectItem value="provider2">Provider 2</SelectItem>
-                  <SelectItem value="provider3">Provider 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormRow>
-          </div>
+
+          <FormRow label="Provider" error={errors?.provider?.message}>
+            <Select
+              defaultValue={isEditItem ? productToEdit.provider : ""}
+              onValueChange={(value) => setValue("provider", value)}
+            >
+              <SelectTrigger id="provider">
+                <SelectValue placeholder="Select a provider" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="provider1">Provider 1</SelectItem>
+              </SelectContent>
+            </Select>
+          </FormRow>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="space-y-2">
-            <FormRow label="Price" error={errors?.price?.message}>
-              <Input
-                id="price"
-                placeholder="Input text"
-                type="number"
-                {...addItem("price", {
-                  required: "Price is required",
-                })}
-              />
-            </FormRow>
-          </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="space-y-2">
             <FormRow
-              label="Stock available"
+              label="Warehouse stock"
               error={errors?.stockAvailable?.message}
             >
               <Input
                 id="stockAvailable"
+                type="number"
                 placeholder="Input number"
-                {...addItem("stockAvailable", {
+                {...register("stockAvailable", {
                   required: "Stock available is required",
                 })}
+                onChange={(e) => {
+                  setTotalStock(e.target.value);
+                }}
               />
             </FormRow>
           </div>
           <div className="space-y-3">
+            <FormRow label="Total Stock" error={errors?.totalStock?.message}>
+              <div
+                id="totalStock"
+                className="border-1 flex h-9 items-center rounded-md border p-1 shadow-sm"
+              >
+                <span className="ml-2 text-sm">
+                  {isEditItem ? (
+                    productToEdit.quantity
+                  ) : (
+                    <span
+                      className={`${totalStock > 0 ? "text-gray-800" : "text-gray-500"}`}
+                    >
+                      {totalStock > 0
+                        ? totalStock
+                        : "Warehouse stock"}
+                    </span>
+                  )}
+                </span>
+              </div>
+            </FormRow>
+          </div>
+          <div className="space-y-2">
             <FormRow
               label="Min stock level"
               error={errors?.minStockLevel?.message}
@@ -196,8 +274,23 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
                 id="minStockLevel"
                 placeholder="Input text"
                 type="number"
-                {...addItem("minStockLevel", {
+                {...register("minStockLevel", {
                   required: "Min stock level is required",
+                })}
+              />
+            </FormRow>
+          </div>
+          <div className="space-y-2">
+            <FormRow
+              label="Max stock level"
+              error={errors?.maxStockLevel?.message}
+            >
+              <Input
+                id="maxStockLevel"
+                placeholder="Input text"
+                type="number"
+                {...register("maxStockLevel", {
+                  required: "Max stock level is required",
                 })}
               />
             </FormRow>
@@ -211,7 +304,6 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
             bgColor="bg-violet-600"
             rounded="rounded-xl"
             className="hover:bg-violet-700"
-            onClick={onCloseModal}
           >
             {isEditItem ? "Edit" : "Add"}
           </Button>

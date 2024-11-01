@@ -29,8 +29,9 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ServerResponse<String>> createCategory(@RequestBody CreateCategoryRequest request) {
-        return new ResponseEntity<>(categoryService.createCategory(request), HttpStatus.CREATED);
+    public ResponseEntity<ServerResponse<String>> createCategory(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                 @RequestBody CreateCategoryRequest request) {
+        return new ResponseEntity<>(categoryService.createCategory(request, loggedInUserId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{name}")

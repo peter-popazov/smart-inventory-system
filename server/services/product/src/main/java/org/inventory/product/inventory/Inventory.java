@@ -33,7 +33,7 @@ public class Inventory {
     private Product product;
 
     @PositiveOrZero(message = "Cannot be negative")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Integer warehouseId;
 
     @CreatedDate

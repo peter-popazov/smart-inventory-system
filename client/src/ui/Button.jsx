@@ -20,6 +20,7 @@ function Button({
   children,
   icon,
   className,
+  hideText = true,
 }) {
   return (
     <button
@@ -31,7 +32,7 @@ function Button({
       disabled={disabled}
     >
       {icon && <span>{icon}</span>}
-      <span className={`${icon && "hidden md:block"}`}>{children}</span>
+      <span className={`${(icon && hideText) && "hidden md:block"}`}>{children}</span>
     </button>
   );
 }
@@ -45,7 +46,8 @@ Button.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+  hideText: PropTypes.bool,
+  children: PropTypes.node,
   icon: PropTypes.node,
 };
 

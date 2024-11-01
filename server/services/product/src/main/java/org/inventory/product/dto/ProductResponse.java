@@ -10,6 +10,7 @@ public record ProductResponse(
 
         Integer productId,
         String productCode,
+        String barCode,
         String name,
         String description,
         String photoUrl,

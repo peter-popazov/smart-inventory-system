@@ -9,7 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRegister } from "./useRegister";
 
 function RegisterForm() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(true);
   const {
     register,
     handleSubmit,

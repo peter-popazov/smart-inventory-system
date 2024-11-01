@@ -62,10 +62,10 @@ public class ProductService {
 
     public ServerResponse<Integer> createProduct(CreateProductRequest productRequest, String userId) {
 
-        Category productCategory = categoryRepository.findByName(productRequest.name())
+        Category productCategory = categoryRepository.findByName(productRequest.categoryName())
                 .orElseGet(() -> {
                     Category newCategory = Category.builder()
-                            .name(productRequest.name())
+                            .name(productRequest.categoryName().toLowerCase())
                             .build();
                     return categoryRepository.save(newCategory);
                 });
@@ -78,7 +78,7 @@ public class ProductService {
         Product product = Product.builder()
                 .productCode(productRequest.productCode())
                 .barcode(productRequest.barcode())
-                .name(productRequest.name())
+                .name(productRequest.productName())
                 .description(productRequest.description())
                 .price(productRequest.price())
                 .category(productCategory)
@@ -99,23 +99,22 @@ public class ProductService {
         return ServerResponse.<Integer>builder().response(productId).build();
     }
 
-    public ServerResponse<Integer> updateProduct(Integer productId,
-                                                 UpdateProductRequest productRequest, String userId) {
+    public ServerResponse<Integer> updateProduct(UpdateProductRequest productRequest, String userId) {
 
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productId + " not found"));
+        Product existingProduct = productRepository.findById(productRequest.productId())
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productRequest.productId() + " not found"));
 
         validateUser(userId, existingProduct.getUserId());
 
-        Category category = categoryRepository.findByName(productRequest.category())
-                .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.category() + " not found"));
+        Category category = categoryRepository.findByName(productRequest.categoryName())
+                .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.categoryName() + " not found"));
 
         Inventory inventory = inventoryRepository.findById(productRequest.inventoryId())
                 .orElseThrow(() -> new RuntimeException("Inventory with ID " + productRequest.inventoryId() + " not found"));
 
         existingProduct.setProductCode(productRequest.productCode());
         existingProduct.setBarcode(productRequest.barcode());
-        existingProduct.setName(productRequest.name());
+        existingProduct.setName(productRequest.productName());
         existingProduct.setDescription(productRequest.description());
         existingProduct.setPrice(productRequest.price());
         existingProduct.setWeight(productRequest.weight());

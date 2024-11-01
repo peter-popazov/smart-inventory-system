@@ -13,12 +13,13 @@ function Input({
   icon,
   useFormHook = {},
   children,
+  rounded = "rounded-xl",
   className,
   ...props
 }) {
   return (
     <div
-      className={`group flex ${className} w-16 items-center rounded-xl border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
+      className={`group flex ${className} ${rounded} w-16 items-center border border-gray-400 px-2 py-2 transition-all duration-300 focus-within:-translate-y-1 focus-within:border-gray-700`}
     >
       {icon && <span className="ml-1 mr-3 text-gray-500">{icon}</span>}
       <input
@@ -57,6 +58,7 @@ Input.propTypes = {
   useFormHook: PropTypes.object,
   children: PropTypes.node,
   className: PropTypes.string,
+  rounded: PropTypes.string,
 };
 
 export default Input;

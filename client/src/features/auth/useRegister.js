@@ -26,7 +26,6 @@ export function useRegister() {
       navigate("/auth/login");
     },
     onError: (error) => {
-      console.log("!!!!!!!!!!Register error:", error);
       const errorMessages = error.response?.data?.errors;
 
       if (errorMessages) {

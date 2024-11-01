@@ -5,8 +5,12 @@ import AddInventoryForm from "./AddInventoryForm";
 import ConfirmDelete from "@/ui/ComfirmDelete";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
+import { useDeleteProduct } from "./useDeleteInventory";
 
 function InventoryRow({ item }) {
+  const { deleteProduct, isDeleting } = useDeleteProduct();
+  if (isDeleting) return <div>Loading...</div>;
+  
   return (
     <Modal>
       <td>
@@ -35,8 +39,8 @@ function InventoryRow({ item }) {
       </td>
       <td>
         <Menus.Menu>
-          <Menus.Toggle id={item.SKU} />
-          <Menus.List id={item.SKU}>
+          <Menus.Toggle id={String(item.productId)} />
+          <Menus.List id={String(item.productId)}>
             <Modal.Open opens="edit">
               <Menus.Button icon={<MdEdit size={16} />}>Edit</Menus.Button>
             </Modal.Open>
@@ -49,8 +53,11 @@ function InventoryRow({ item }) {
           <Modal.Window name="edit">
             <AddInventoryForm productToEdit={item} />
           </Modal.Window>
-          <Modal.Window name="delete">
-            <ConfirmDelete resource={`Item ${item.SKU}`} />
+          <Modal.Window name="delete" width="max-w-[700px] w-full">
+            <ConfirmDelete
+              resource={`Item ${item.SKU}`}
+              onConfirm={() => deleteProduct(item.productId)}
+            />
           </Modal.Window>
         </Menus.Menu>
       </td>

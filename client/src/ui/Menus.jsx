@@ -36,7 +36,6 @@ function Toggle({ id }) {
   function handleClick(e) {
     openId === "" || openId !== id ? open(id) : close();
     const pos = e.target.closest("button").getBoundingClientRect();
-    console.log(pos);
     setPos({
       x: window.innerWidth - pos.width - pos.x,
       y: pos.y + pos.height + 8,

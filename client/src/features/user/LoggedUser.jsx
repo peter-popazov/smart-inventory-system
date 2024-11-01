@@ -24,7 +24,7 @@ function LoggedUser() {
             <span className="text-sm font-thin">Admin</span>
             <Button
               onClick={handleLogout}
-              type="iconOnly"
+              sizes="iconOnly"
               icon={<IoLogInOutline size={ICONS_SIZE - 4} />}
             />
           </div>

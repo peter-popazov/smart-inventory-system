@@ -22,13 +22,9 @@ public class CategoryService {
     private final ProductRepository productRepository;
 
     public List<CategoryResponse> getAllCategories(String userId) {
-        List<Product> products = productRepository.findAllByUserId(Integer.parseInt(userId));
+        List<Category> categories = categoryRepository.findAllByUserId(Integer.parseInt(userId));
 
-        return products.stream()
-                .map(Product::getCategory)
-                .distinct()
-                .map(CategoryMapper::toCategoryResponse)
-                .collect(Collectors.toList());
+        return categories.stream().map(CategoryMapper::toCategoryResponse).toList();
     }
 
     public CategoryResponse getCategoryByName(String name, String userId) {
@@ -40,9 +36,12 @@ public class CategoryService {
         return CategoryMapper.toCategoryResponse(category);
     }
 
-    public ServerResponse<String> createCategory(CreateCategoryRequest request) {
+    public ServerResponse<String> createCategory(CreateCategoryRequest request, String loggedInUserId) {
         Category category = categoryRepository.findByName(request.name())
-                .orElseGet(() -> Category.builder().name(request.name()).build());
+                .orElseGet(() -> Category.builder()
+                        .name(request.name())
+                        .userId(Integer.parseInt(loggedInUserId))
+                        .build());
 
         if (category != null) {
             categoryRepository.save(category);
@@ -66,9 +65,10 @@ public class CategoryService {
 
         Category updatedCategory = categoryRepository.save(category);
 
-        return new CategoryResponse(
-                updatedCategory.getName()
-        );
+        return CategoryResponse.builder()
+                .id(updatedCategory.getCategoryId())
+                .name(updatedCategory.getName())
+                .build();
     }
 
     public ServerResponse<String> deleteCategory(String name, String userId) {

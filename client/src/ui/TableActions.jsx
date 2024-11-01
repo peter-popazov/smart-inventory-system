@@ -1,4 +1,4 @@
-import { useState } from "react";
+import PropTypes from "prop-types";
 import { BiExport } from "react-icons/bi";
 import { IoSearch } from "react-icons/io5";
 import Input from "./Input";
@@ -6,8 +6,7 @@ import Row from "./Row";
 import Button from "./Button";
 import AddInventory from "../features/inventory/AddInventory";
 
-function TableActions() {
-  const [query, setQuery] = useState("");
+function TableActions({ query, setQuery }) {
   return (
     <div className="rounded-t-xl border border-gray-300 bg-white p-3">
       <Row type="horizontal">
@@ -18,7 +17,7 @@ function TableActions() {
           onChange={(e) => setQuery(e.target.value)}
           required
           icon={<IoSearch size={18} />}
-          className="max-w-[300px] flex-1 h-8"
+          className="h-8 max-w-[300px] flex-1 text-sm"
         />
 
         <Row type="horizontal">
@@ -41,5 +40,10 @@ function TableActions() {
     </div>
   );
 }
+
+TableActions.propTypes = {
+  query: PropTypes.string.isRequired,
+  setQuery: PropTypes.func.isRequired,
+};
 
 export default TableActions;

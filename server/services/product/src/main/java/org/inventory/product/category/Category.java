@@ -25,6 +25,8 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private Integer userId;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

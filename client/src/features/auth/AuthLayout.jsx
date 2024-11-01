@@ -21,9 +21,10 @@ function AuthLayout() {
               <span>
                 {isRegister ? "Already a user?" : "You are new here?"}
               </span>
+              <span>&nbsp;</span>
               <span className="text-blue-700 underline hover:text-blue-900">
                 <Link to={`/auth/${isRegister ? "login" : "register"}`}>
-                  &nbsp;{isRegister ? "Login" : "Register"}
+                  {isRegister ? "Login" : "Register"}
                 </Link>
               </span>
             </div>

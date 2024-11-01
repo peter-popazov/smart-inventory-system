@@ -7,6 +7,7 @@ public class InventoryMapper {
 
     public static InventoryResponse toInventoryResponse(Inventory inventory, WarehouseResponse warehouse) {
         return InventoryResponse.builder()
+                .inventoryId(inventory.getInventoryId())
                 .stockAvailable(inventory.getStockAvailable())
                 .warehouse(warehouse)
                 .build();

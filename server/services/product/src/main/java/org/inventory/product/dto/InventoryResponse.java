@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record InventoryResponse(
 
+        Integer inventoryId,
         Integer stockAvailable,
         WarehouseResponse warehouse
 ) {

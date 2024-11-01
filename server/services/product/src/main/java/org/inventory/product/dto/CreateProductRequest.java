@@ -13,7 +13,7 @@ public record CreateProductRequest(
         String barcode,
 
         @NotBlank(message = "Name is required")
-        String name,
+        String productName,
 
         @NotBlank(message = "Description is required")
         @Size(max = 500, message = "Description should not exceed 500 characters")
@@ -36,9 +36,9 @@ public record CreateProductRequest(
         @PositiveOrZero(message = "Width must be zero or positive")
         Double width,
 
-        @NotEmpty(message = "Category ID is required")
-        @NotNull(message = "Category ID is required")
-        String category,
+        @NotEmpty(message = "Category name is required")
+        @NotNull(message = "Category name is required")
+        String categoryName,
 
         @NotEmpty(message = "Minimal stock level is required")
         @PositiveOrZero(message = "Minimal stock level must be zero or positive")

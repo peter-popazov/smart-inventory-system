@@ -9,6 +9,9 @@ public record UpdateProductRequest(
         @PositiveOrZero
         Integer inventoryId,
 
+        @PositiveOrZero
+        Integer productId,
+
         @NotBlank(message = "Product code is required")
         String productCode,
 
@@ -16,7 +19,7 @@ public record UpdateProductRequest(
         String barcode,
 
         @NotBlank(message = "Name is required")
-        String name,
+        String productName,
 
         @NotBlank(message = "Description is required")
         @Size(max = 500, message = "Description should not exceed 500 characters")
@@ -26,22 +29,17 @@ public record UpdateProductRequest(
         @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
         BigDecimal price,
 
-        @NotNull(message = "Weight is required")
-        @Positive(message = "Weight must be positive")
         Double weight,
 
-        @PositiveOrZero(message = "Height must be zero or positive")
         Double height,
 
-        @PositiveOrZero(message = "Depth must be zero or positive")
         Double depth,
 
-        @PositiveOrZero(message = "Width must be zero or positive")
         Double width,
 
-        @NotEmpty(message = "Category ID is required")
-        @NotNull(message = "Category ID is required")
-        String category,
+        @NotEmpty(message = "Category name is required")
+        @NotNull(message = "Category name is required")
+        String categoryName,
 
         @NotEmpty(message = "Minimal stock level is required")
         @PositiveOrZero(message = "Minimal stock level must be zero or positive")
@@ -58,6 +56,5 @@ public record UpdateProductRequest(
         @NotEmpty(message = "Warehouse Id is required")
         @PositiveOrZero(message = "Warehouse Id must be zero or positive")
         Integer warehouseId
-
 ) {
 }

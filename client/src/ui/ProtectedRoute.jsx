@@ -8,13 +8,15 @@ function ProtectedRoute({ children }) {
   const queryClient = useQueryClient();
   const [isUserLoaded, setIsUserLoaded] = useState(false);
 
+  queryClient.setQueryData(["user"], {
+    jwt_token:
+      "eyJhbGciOiJIUzM4NCJ9.eyJlbWFpbCI6InBldGVyQGdtYWlsLmNvbSIsInN1YiI6InBldGVyQGdtYWlsLmNvbSIsImlhdCI6MTczMDQ5MDUxMCwiZXhwIjoxNzMwNTc2OTEwLCJhdXRob3JpdGllcyI6W119.Gace1NmW1oVnTqqpT4FgWaD6_tZPg6mblsDjE7kSAPslDlYQKHiKliRPJTny1EWT",
+  });
   useEffect(() => {
     const user = queryClient.getQueryData("user");
-    console.log("user", user);
 
     if (!user) {
       navigate("/auth/login");
-      console.log("NOT LOGGED IN", user);
     } else {
       setIsUserLoaded(true);
     }

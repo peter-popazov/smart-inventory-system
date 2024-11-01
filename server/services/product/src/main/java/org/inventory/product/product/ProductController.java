@@ -1,6 +1,5 @@
 package org.inventory.product.product;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.*;
@@ -35,10 +34,10 @@ public class ProductController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody UpdateProductRequest productRequest,
-                                                                 @PathVariable Integer id, @RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(productService.updateProduct(id, productRequest, loggedInUserId), HttpStatus.OK);
+                                                                 @RequestHeader("loggedInUserId") String loggedInUserId) {
+        return new ResponseEntity<>(productService.updateProduct(productRequest, loggedInUserId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
