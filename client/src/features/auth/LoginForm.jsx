@@ -7,6 +7,7 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLogin } from "./useLogin";
+import Spinner from "@/ui/Spinner";
 
 function LoginForm() {
   const [passwordVisible, setPasswordVisible] = useState(true);
@@ -79,6 +80,8 @@ function LoginForm() {
           bgColor="bg-violet-600"
           textColor="text-white"
           type="submit"
+          hideText={false}
+          icon={isLoading ? <Spinner className="text-white" /> : <></>}
         >
           {isLoading ? "Loading..." : "Login"}
         </Button>

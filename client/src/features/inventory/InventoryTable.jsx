@@ -19,7 +19,7 @@ const headers = [
 function InventoryTable() {
   const [query, setQuery] = useState("");
   const { isLoading, inventory } = useInventory();
-  const inventoryTransformed = Array.isArray(inventory)
+  const inventoryFiltered = Array.isArray(inventory)
     ? transformData(inventory).filter((item) =>
         item.product.toLowerCase().includes(query.toLowerCase()),
       )
@@ -28,6 +28,8 @@ function InventoryTable() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  console.log(inventoryFiltered);
 
   return (
     <div className="mx-2 mt-2 shadow-md shadow-purple-200 lg:mx-6 lg:mt-6">
@@ -43,7 +45,7 @@ function InventoryTable() {
             )}
           />
           <Table.Body
-            data={inventoryTransformed}
+            data={inventoryFiltered}
             render={(item, index) => <InventoryRow key={index} item={item} />}
           />
           <Table.Footer>

@@ -9,3 +9,18 @@ export async function getWarehouses(jwtToken) {
   });
   return response.data;
 }
+
+export async function createWarehouse(jwtToken, data) {
+  const response = await axios.post(
+    `${baseUrl}/warehouses`,
+    {
+      ...data,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    },
+  );
+  return response.data;
+}

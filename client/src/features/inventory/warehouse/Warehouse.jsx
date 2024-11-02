@@ -9,6 +9,7 @@ import { useWarehouse } from "./useWarehouse";
 import toast from "react-hot-toast";
 import FormRow from "@/ui/FormRow";
 import PropTypes from "prop-types";
+import AddWarehouse from "./AddWarehouse";
 
 function Warehouse({ errors, setValue, productToEdit, isEditItem }) {
   const {
@@ -51,6 +52,7 @@ function Warehouse({ errors, setValue, productToEdit, isEditItem }) {
   }
 
   return (
+    <>
     <FormRow label="Warehouse" error={errors?.warehouse?.message}>
       <Select
         onValueChange={(value) => {
@@ -84,6 +86,8 @@ function Warehouse({ errors, setValue, productToEdit, isEditItem }) {
         </SelectContent>
       </Select>
     </FormRow>
+    <AddWarehouse />
+    </>
   );
 }
 

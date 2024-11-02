@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Row from "@/ui/Row";
 import { useCreateCategory } from "./useCreateCategoty";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 function AddCategoryForm({ onCloseModal }) {
   const [newCategory, setNewCategory] = useState("");
@@ -22,7 +23,7 @@ function AddCategoryForm({ onCloseModal }) {
   }
 
   if (isCreateing) {
-    return <div>Creating...</div>;
+    return <SpinnerFS />;
   }
 
   return (

@@ -16,6 +16,7 @@ import Warehouse from "./warehouse/Warehouse";
 import Category from "./category/Category";
 import { useState } from "react";
 import { useUpdateProduct } from "./useUpdateProduct";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
   const [totalStock, setTotalStock] = useState(0);
@@ -80,8 +81,6 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         .map((inventory) => inventory.inventoryId)
         ?.at(0);
 
-      console.log("->", data.warehouse);
-
       updateProduct({
         inventoryId: inventoryToUpdate,
         productId: data.productId,
@@ -110,12 +109,8 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
     console.error("Form Errors:", errors);
   }
 
-  if (isCreateing) {
-    return <div>Adding product...</div>;
-  }
-
-  if (isUpdating) {
-    return <div>Updating product...</div>;
+  if (isCreateing || isUpdating) {
+    return <SpinnerFS />;
   }
 
   return (

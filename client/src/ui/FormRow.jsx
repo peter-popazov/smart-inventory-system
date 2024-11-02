@@ -1,11 +1,18 @@
 import PropTypes from "prop-types";
 
-function FormRow({ label, error, children }) {
+function FormRow({ label, error, children, mb = "mb-2", ...props }) {
   return (
-    <div>
-      {label && <label className="mb-2 block font-medium" htmlFor={children.props.id}>{label}</label>}
+    <div {...props}>
+      {label && (
+        <label
+          className={`${mb} block font-medium`}
+          htmlFor={children.props.id}
+        >
+          {label}
+        </label>
+      )}
       {children}
-      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }
@@ -13,6 +20,7 @@ function FormRow({ label, error, children }) {
 FormRow.propTypes = {
   children: PropTypes.node.isRequired,
   label: PropTypes.string.isRequired,
+  mb: PropTypes.string,
   error: PropTypes.string,
 };
 

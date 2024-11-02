@@ -13,6 +13,9 @@ export function useCreateCategory() {
       toast.success("Category created successfully.");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
+    onError: () => {
+      toast.error("Error creating category.");
+    },
   });
 
   return { createCategory, isCreateing };

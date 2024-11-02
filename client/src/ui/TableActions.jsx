@@ -5,8 +5,13 @@ import Input from "./Input";
 import Row from "./Row";
 import Button from "./Button";
 import AddInventory from "../features/inventory/AddInventory";
+import { useQueryClient } from "react-query";
+import { exportToJSON } from "../utils/exportToCSV";
 
 function TableActions({ query, setQuery }) {
+  const queryClient = useQueryClient();
+  const products = queryClient.getQueryData("inventory");
+
   return (
     <div className="rounded-t-xl border border-gray-300 bg-white p-3">
       <Row type="horizontal">
@@ -31,7 +36,7 @@ function TableActions({ query, setQuery }) {
             className="hover:bg-teal-600"
             rounded="rounded-xl"
             icon={<BiExport size={20} />}
-            onClick={() => console.log("Button clicked")}
+            onClick={() => exportToJSON(products, "inventory.json")}
           >
             Export
           </Button>

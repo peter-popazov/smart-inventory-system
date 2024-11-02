@@ -7,6 +7,7 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRegister } from "./useRegister";
+import Spinner from "@/ui/Spinner";
 
 function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(true);
@@ -79,6 +80,7 @@ function RegisterForm() {
           bgColor="bg-violet-600"
           textColor="text-white"
           type="submit"
+          icon={isLoading ? <Spinner className="text-white" /> : <></>}
         >
           {isLoading ? "Loading..." : "Register"}
         </Button>
