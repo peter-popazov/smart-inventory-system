@@ -64,5 +64,12 @@ spring:
           filters:
             - name: AuthFilter
 
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/user/**
+          filters:
+            - name: AuthFilter
+
 server:
   port: 8222

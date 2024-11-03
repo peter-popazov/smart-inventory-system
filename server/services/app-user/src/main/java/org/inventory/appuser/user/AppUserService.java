@@ -20,18 +20,17 @@ public class AppUserService {
                 .registeredUserId(userId)
                 .email(email)
                 .build());
-
     }
 
     public Void updateUser(UpdateUserRequest request, String userId) {
-        AppUser user = repository.findByEmail(request.email())
-                .orElseThrow(() -> new UserNotFoundException("Cannot update user. User not found with email: " + request.email()));
+        AppUser user = repository.findByRegisteredUserId(Integer.parseInt(userId))
+                .orElseThrow(() -> new UserNotFoundException("Cannot update user. User not found"));
 
         if (user.getRegisteredUserId() != Integer.parseInt(userId)) {
             throw new RuntimeException("Cannot update user");
         }
 
-        mergeCustomer(user, request);
+        mergeUser(user, request);
         repository.save(user);
         return null;
     }
@@ -52,20 +51,13 @@ public class AppUserService {
                 .build();
     }
 
-    private void mergeCustomer(AppUser user, UpdateUserRequest request) {
-        if (StringUtils.isNotBlank(request.email())) {
-            user.setEmail(request.email());
-        }
+    private void mergeUser(AppUser user, UpdateUserRequest request) {
         if (StringUtils.isNotBlank(request.firstName())) {
-            user.setEmail(request.firstName());
+            user.setFirstName(request.firstName());
         }
         if (StringUtils.isNotBlank(request.lastName())) {
-            user.setEmail(request.lastName());
+            user.setLastName(request.lastName());
         }
-        if (StringUtils.isNotBlank(request.password())) {
-            user.setEmail(request.password());
-        }
-
     }
 
     public Boolean existsByEmail(String email) {

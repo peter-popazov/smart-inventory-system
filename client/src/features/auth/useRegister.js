@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { baseUrl } from "../../constants/baseUrl";
 import { useMutation } from "react-query";
-import { register as registerFn } from "../user/apiAuth";
+import { register as registerFn } from "./apiAuth";
 import { useNavigate } from "react-router-dom";
 
 export function useRegister() {

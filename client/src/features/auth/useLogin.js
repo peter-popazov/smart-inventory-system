@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { login as loginFn } from "../user/apiAuth";
+import { login as loginFn } from "./apiAuth";
 
 export function useLogin() {
   const queryClient = useQueryClient();

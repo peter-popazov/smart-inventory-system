@@ -146,7 +146,11 @@ public class AuthenticationService {
 
             return AuthenticationResponse.builder()
                     .token(jwt)
-                    .user(user)
+                    .email(user.email())
+                    .firstName(user.firstName())
+                    .lastName(user.lastName())
+                    // todo
+                    .role(null)
                     .build();
 
         } catch (DisabledException ex) {
