@@ -17,8 +17,9 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts(@RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(productService.getAllProducts(loggedInUserId), HttpStatus.OK);
+    public ResponseEntity<List<ProductResponse>> getAllProducts(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(productService.getAllProducts(loggedInUserId, teamAdminId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -29,15 +30,15 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ServerResponse<Integer>> createProduct(@RequestBody CreateProductRequest product,
-                                                                 @RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(productService.createProduct(product, loggedInUserId), HttpStatus.CREATED);
+                                                                 @RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                 @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(productService.createProduct(product, loggedInUserId, teamAdminId), HttpStatus.CREATED);
     }
 
 
     @PutMapping
-    public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody UpdateProductRequest productRequest,
-                                                                 @RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(productService.updateProduct(productRequest, loggedInUserId), HttpStatus.OK);
+    public ResponseEntity<ServerResponse<Integer>> updateProduct(@RequestBody UpdateProductRequest productRequest) {
+        return new ResponseEntity<>(productService.updateProduct(productRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

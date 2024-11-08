@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { IoMdClose } from "react-icons/io";
 import { createPortal } from "react-dom";
 import { cloneElement, createContext, useContext, useState } from "react";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
 // import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const ModalContext = createContext();
@@ -44,6 +45,7 @@ function Window({ children, name, width = "w-full" }) {
   const { openName, close } = useContext(ModalContext);
 
   // const { ref } = useOutsideClick(close);
+  useEscapeKey(close);
 
   if (name !== openName) return null;
   return createPortal(
@@ -51,7 +53,7 @@ function Window({ children, name, width = "w-full" }) {
       className={`bg-backdrop fixed left-0 top-0 h-screen w-full overflow-y-auto backdrop-blur-sm transition-all duration-500`}
     >
       <div
-        className={`fixed left-1/2 top-1/2 ${width} -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-gray-50 p-8 shadow-lg lg:h-auto lg:w-auto`}
+        className={`fixed left-1/2 top-1/2 ${width} -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-gray-50 p-8 shadow-lg lg:h-auto lg:w-1/2`}
         // ref={ref}
       >
         <button

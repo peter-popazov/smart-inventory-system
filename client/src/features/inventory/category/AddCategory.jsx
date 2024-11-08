@@ -2,6 +2,7 @@ import Modal from "@/ui/Modal";
 import Button from "@/ui/Button";
 import { IoAddSharp } from "react-icons/io5";
 import AddCategoryForm from "./AddCategoryForm";
+import { ICONS_SIZE_XS } from "@/constants/iconSize";
 
 function AddCategory() {
   return (
@@ -14,9 +15,9 @@ function AddCategory() {
             rounded="rounded-lg"
             textColor="text-white"
             bgColor="bg-violet-500"
-            className="full h-8 w-full hover:bg-violet-700"
+            className="full h-7 w-full text-xs hover:bg-violet-700"
             hideText={false}
-            icon={<IoAddSharp size={20} />}
+            icon={<IoAddSharp size={ICONS_SIZE_XS} />}
           >
             Add Category
           </Button>

@@ -4,8 +4,10 @@ import Button from "@/ui/Button";
 import { useForm } from "react-hook-form";
 import { useUpdateUser } from "./useUpdateUser";
 import SpinnerFS from "@/ui/SpinnerFS";
+import { useState } from "react";
 
 function AddUserInfo() {
+  const [buttonClicked, setButtonClicked] = useState(0);
   const { updateUser, isUpdating } = useUpdateUser();
   const {
     register,
@@ -16,6 +18,7 @@ function AddUserInfo() {
   function onSubmit(data) {
     console.log(data);
     updateUser(data);
+    setButtonClicked((prev) => prev + 1);
   }
 
   function onError(errors) {
@@ -23,12 +26,17 @@ function AddUserInfo() {
   }
 
   if (isUpdating) {
-    return <SpinnerFS />
+    return <SpinnerFS />;
+  }
+  console.log(buttonClicked);
+
+  if (buttonClicked >= 1) {
+    return <div className="text-sm font-medium">Submitted</div>;
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <div className="space-y-2">
+      <div className="space-y-2 p-2 text-sm">
         <FormRow label="Your firstname" error={errors?.firstName?.message}>
           <Input
             id="firstName"
@@ -38,6 +46,7 @@ function AddUserInfo() {
             })}
           />
         </FormRow>
+
         <FormRow label="Your lastname" error={errors?.lastName?.message}>
           <Input
             id="lastName"
@@ -53,7 +62,7 @@ function AddUserInfo() {
         size="sm"
         textColor="text-gray-50"
         bgColor="bg-violet-600"
-        className="mt-4 w-full"
+        className="mt-4 h-9 w-full"
         rounded="rounded-lg"
       >
         Submit

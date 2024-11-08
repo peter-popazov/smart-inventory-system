@@ -71,5 +71,12 @@ spring:
           filters:
             - name: AuthFilter
 
+        - id: user-service-team
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/teams/**
+          filters:
+            - name: AuthFilter
+
 server:
   port: 8222

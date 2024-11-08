@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,6 +28,8 @@ public class Team {
 
     private String teamName;
 
+    private String teamDescription;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -35,7 +38,7 @@ public class Team {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TeamMembership> teamMembership;
+    private List<TeamMembership> teamMembership = new ArrayList<>();
 
     @Override
     public String toString() {

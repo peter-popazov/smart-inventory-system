@@ -18,8 +18,9 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(categoryService.getAllCategories(loggedInUserId), HttpStatus.OK);
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                   @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(categoryService.getAllCategories(loggedInUserId, teamAdminId), HttpStatus.OK);
     }
 
     @GetMapping("/{name}")
@@ -30,8 +31,9 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ServerResponse<String>> createCategory(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                 @RequestHeader("teamAdminId") String teamAdminId,
                                                                  @RequestBody CreateCategoryRequest request) {
-        return new ResponseEntity<>(categoryService.createCategory(request, loggedInUserId), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.createCategory(request, loggedInUserId, teamAdminId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{name}")

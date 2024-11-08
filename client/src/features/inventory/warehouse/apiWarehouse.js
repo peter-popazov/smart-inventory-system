@@ -11,16 +11,10 @@ export async function getWarehouses(jwtToken) {
 }
 
 export async function createWarehouse(jwtToken, data) {
-  const response = await axios.post(
-    `${baseUrl}/warehouses`,
-    {
-      ...data,
+  const response = await axios.post(`${baseUrl}/warehouses`, data, {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
     },
-    {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    },
-  );
+  });
   return response.data;
 }

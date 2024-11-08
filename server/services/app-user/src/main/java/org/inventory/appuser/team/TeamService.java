@@ -2,9 +2,11 @@ package org.inventory.appuser.team;
 
 import lombok.RequiredArgsConstructor;
 import org.inventory.appuser.exception.*;
-import org.inventory.appuser.team.requests.AddTeamMemberRequest;
-import org.inventory.appuser.team.requests.CreateTeamRequest;
-import org.inventory.appuser.team.requests.RemoveTeamMemberRequest;
+import org.inventory.appuser.team.dto.AddTeamMemberRequest;
+import org.inventory.appuser.team.dto.CreateTeamRequest;
+import org.inventory.appuser.team.dto.RemoveTeamMemberRequest;
+import org.inventory.appuser.team.dto.TeamResponse;
+import org.inventory.appuser.team.helpers.TeamMapper;
 import org.inventory.appuser.user.model.AppUser;
 import org.inventory.appuser.user.model.Role;
 import org.inventory.appuser.user.repos.AppUserRepository;
@@ -23,42 +25,45 @@ public class TeamService {
     private final RoleRepository roleRepository;
     private final TeamRepository teamRepository;
     private final TeamMembershipRepository teamMembershipRepository;
+    private final TeamMapper teamMapper;
 
-
-    public Integer createTeam(CreateTeamRequest request, String email) {
-        Team team = teamRepository.save(
-                Team.builder()
-                        .teamName(request.teamName())
-                        .build());
-
-        // todo ??ROLE_
-        Role userTeamRole = roleRepository.findByName("ADMIN").orElseGet(
-                () -> roleRepository.save(Role.builder().name("ADMIN").build())
-        );
-
-        AppUser appUser = getAppuser(email);
-
-        AppUser teamOwner = appUserRepository.findById(appUser.getUserId()).
-                orElseThrow(() -> new UserNotFoundException("User not found with id: " + appUser.getUserId()));
-
-        TeamMembership teamMembership = teamMembershipRepository.save(
-                TeamMembership.builder()
-                        .team(team)
-                        .role(userTeamRole)
-                        .appUser(teamOwner)
-                        .build()
-        );
-
-        team.getTeamMembership().add(teamMembership);
-        return teamRepository.save(team).getTeamId();
+    public List<TeamResponse> getTeams(String loggedInUserId) {
+        List<Team> teams = teamMembershipRepository.findTeamsByRegisteredUserIdAndRole(Integer.parseInt(loggedInUserId));
+        return teams.stream()
+                .map(teamMapper::toTeamResponse)
+                .toList();
     }
 
-    public void addTeamMembers(AddTeamMemberRequest request, String email) {
+    public void createTeam(CreateTeamRequest request, String loggedInUserId) {
+
+        Role userTeamRole = roleRepository.findByName(TeamRoles.ADMIN.name()).orElseGet(
+                () -> roleRepository.save(Role.builder().name(TeamRoles.ADMIN.name()).build())
+        );
+
+        AppUser teamOwner = getAppuser(loggedInUserId);
+
+        Team team = Team.builder()
+                .teamName(request.teamName())
+                .teamDescription(request.teamDescription())
+                .build();
+
+        TeamMembership teamMembership = TeamMembership.builder()
+                .team(team)
+                .role(userTeamRole)
+                .appUser(teamOwner)
+                .build();
+
+        team.setTeamMembership(List.of(teamMembership));
+
+        teamRepository.save(team);
+    }
+
+    public void addTeamMembers(AddTeamMemberRequest request, String loggedInUserId) {
 
         Team team = teamRepository.findById(request.teamId()).orElseThrow(() ->
                 new TeamNotFoundException("Team with entered ID not found: " + request.teamId()));
 
-        AppUser appUser = getAppuser(email);
+        AppUser appUser = getAppuser(loggedInUserId);
 
         validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
@@ -66,7 +71,7 @@ public class TeamService {
                 .orElseThrow(() -> new UserNotFoundException("User with entered email not found"));
 
         if (appUser.getUserId().equals(appUserAddingToTeam.getUserId())) {
-            throw new AlreadyInTeamException("You are already in a team");
+            throw new AlreadyInTeamException("User is already in a team");
         }
 
         boolean isAlreadyMember = team.getTeamMembership().stream()
@@ -76,8 +81,8 @@ public class TeamService {
             throw new AlreadyInTeamException("User is already a member of this team");
         }
 
-        Role appUserRoleAddingToTeam = roleRepository.findByName(request.role())
-                .orElseGet(() -> roleRepository.save(Role.builder().name(request.role()).build()));
+        Role appUserRoleAddingToTeam = roleRepository.findByName(request.role().toUpperCase())
+                .orElseGet(() -> roleRepository.save(Role.builder().name(request.role().toUpperCase()).build()));
 
         TeamMembership userTeamMembership = TeamMembership.builder()
                 .appUser(appUserAddingToTeam)
@@ -90,12 +95,12 @@ public class TeamService {
     }
 
     @Transactional
-    public void deleteTeam(Integer teamId, String email) {
+    public void deleteTeam(Integer teamId, String loggedInUserId) {
 
         Team team = teamRepository.findById(teamId).orElseThrow(() ->
                 new TeamNotFoundException("Team with entered ID not found: " + teamId));
 
-        AppUser appUser = getAppuser(email);
+        AppUser appUser = getAppuser(loggedInUserId);
 
         validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
@@ -119,12 +124,12 @@ public class TeamService {
 
     }
 
-    public void removeTeamMembers(RemoveTeamMemberRequest request, String email) {
+    public void removeTeamMembers(RemoveTeamMemberRequest request, String loggedInUserId) {
 
         Team team = teamRepository.findById(request.teamId())
                 .orElseThrow(() -> new TeamNotFoundException("Team with entered ID not found: " + request.teamId()));
 
-        AppUser appUser = getAppuser(email);
+        AppUser appUser = getAppuser(loggedInUserId);
 
         validateUserTeamOwnership(appUser.getTeamMembership(), team.getTeamId());
 
@@ -143,8 +148,25 @@ public class TeamService {
         teamMembershipRepository.delete(membershipToRemove);
     }
 
-    private AppUser getAppuser(String email) {
-        return appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    private AppUser getAppuser(String loggedInUserId) {
+        return appUserRepository.findByRegisteredUserId(Integer.parseInt(loggedInUserId))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    public Integer getAdminIdForUserTeam(Integer loggedInUserId) {
+        AppUser appUser = appUserRepository.findByRegisteredUserId(loggedInUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        return teamRepository.findAll().stream()
+                .filter(team -> team.getTeamMembership().stream()
+                        .anyMatch(tm -> tm.getAppUser() != null &&
+                                tm.getAppUser().getUserId().equals(appUser.getUserId())))
+                .flatMap(team -> team.getTeamMembership().stream())
+                .filter(TeamMembership::isUserAdmin)
+                .map(tm -> tm.getAppUser().getUserId())
+                .findFirst()
+                .orElse(null);
     }
 }
+
+

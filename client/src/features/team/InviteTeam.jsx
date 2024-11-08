@@ -6,23 +6,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  SelectContent,
+  SelectItem,
+  SelectValue,
+  Select,
+  SelectTrigger,
+} from "@/Components/ui/select";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { useAddTeam } from "./useInviteTeam";
+import Button from "@/ui/button";
+import Spinner from "@/ui/Spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Button from "@/ui/button";
-import { useState } from "react";
+import { IoIosAdd } from "react-icons/io";
+import { ICONS_SIZE_SM } from "@/constants/iconSize";
+import { useTeams } from "./useTeam";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 function InviteTeam() {
+  const { isLoading, data: teams } = useTeams();
   const [inviteEmail, setInviteEmail] = useState("");
-  const handleInviteMember = (e) => {
+  const [userRole, setUserRole] = useState("");
+  const [teamId, setTeamId] = useState("");
+  const { addTeam, isAdding } = useAddTeam();
+
+  function handleInviteMember(e) {
     e.preventDefault();
-    // Here you would typically send an invitation email to the provided address
-    // toast({
-    //   title: "Invitation Sent",
-    //   description: `An invitation has been sent to ${inviteEmail}.`,
-    // });
-    console.log(`An invitation has been sent to ${inviteEmail}.`);
-    setInviteEmail("");
-  };
+    if (!inviteEmail || !teamId || !userRole) {
+      toast.error("Please fulfill all fields");
+      return;
+    }
+    addTeam({ userEmail: inviteEmail, role: userRole, teamId: teamId });
+  }
+
+  if (isLoading) {
+    return <SpinnerFS />;
+  }
+
   return (
     <Card>
       <form onSubmit={handleInviteMember}>
@@ -42,9 +64,50 @@ function InviteTeam() {
               required
             />
           </div>
+          <div>
+            <Label htmlFor="invite-team">Team</Label>
+            <Select onValueChange={(value) => setTeamId(Number(value))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                {teams?.map((team) => (
+                  <SelectItem key={team.teamId} value={String(team.teamId)}>
+                    {team.teamName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="invite-email">User role</Label>
+            <Input
+              id="invite-user-role"
+              type="text"
+              placeholder="Enter user role"
+              value={userRole}
+              onChange={(e) => setUserRole(e.target.value)}
+              required
+            />
+          </div>
         </CardContent>
         <CardFooter>
-          <Button icon={<span>+</span>}>Send Invitation</Button>
+          <Button
+            type="submit"
+            bgColor="bg-violet-600"
+            textColor="text-gray-50"
+            rounded="rounded-xl"
+            className="hover:bg-violet-700"
+            icon={
+              isAdding ? (
+                <Spinner size={ICONS_SIZE_SM} className="text-white" />
+              ) : (
+                <IoIosAdd size={ICONS_SIZE_SM} />
+              )
+            }
+          >
+            Invite
+          </Button>
         </CardFooter>
       </form>
     </Card>

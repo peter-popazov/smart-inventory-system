@@ -5,31 +5,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Table from "@/ui/Table";
-import ManageTeamRow from "./ManageTeamRow";
-import PropTypes from "prop-types";
-import { filterMembers } from "@/utils/utils";
+import Spinner from "@/ui/Spinner";
+import { useUserTeams } from "./useUserTeams";
 import { useQueryClient } from "react-query";
+import { filterMembers, getFullName } from "@/utils/utils";
 
-const headers = ["Name", "Email", "Role", "Actions"];
+const headers = ["Name", "Email", "Role"];
 
-function ManageTeam({ team }) {
+function MyTeam() {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData("user");
-  console.log(user);
+
+  const { data: initialTeam, isLoading } = useUserTeams();
+  const team = initialTeam?.at(0);
+
+  const [teamMembers, setTeamMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const teamMembers = team.members;
+  useEffect(() => {
+    if (team && team.members) {
+      setTeamMembers(team.members);
+    }
+  }, [team]);
+
   const filteredMembers = filterMembers(teamMembers, searchTerm);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{team.teamName} Members</CardTitle>
-        <CardDescription>Manage your current team members</CardDescription>
+        <CardTitle>{team?.teamName || "Team"}</CardTitle>
+        <CardDescription>
+          {team?.teamDescription || "Description not available"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center">
@@ -41,11 +56,11 @@ function ManageTeam({ team }) {
             className="max-w-sm"
           />
         </div>
-        <Table cols="grid-cols-4">
+        <Table cols="grid-cols-3">
           <Table.Header
             data={headers}
             render={(header) => (
-              <th key={header} className="text-left">
+              <th key={header} className="pl-4 text-left">
                 {header}
               </th>
             )}
@@ -54,12 +69,13 @@ function ManageTeam({ team }) {
             data={filteredMembers}
             hilightRow={(member) => user?.email === member.email}
             render={(member) => (
-              <ManageTeamRow
-                key={member.userId}
-                member={member}
-                user={user}
-                teamId={team.teamId}
-              />
+              <>
+                <td>
+                  {`${member.firstName || member.lastName ? getFullName(member) : "No name"}`}
+                </td>
+                <td>{member.email}</td>
+                <td>{member.role}</td>
+              </>
             )}
           />
         </Table>
@@ -68,8 +84,4 @@ function ManageTeam({ team }) {
   );
 }
 
-ManageTeam.propTypes = {
-  team: PropTypes.object.isRequired,
-};
-
-export default ManageTeam;
+export default MyTeam;

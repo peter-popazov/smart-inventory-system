@@ -149,8 +149,7 @@ public class AuthenticationService {
                     .email(user.email())
                     .firstName(user.firstName())
                     .lastName(user.lastName())
-                    // todo
-                    .role(null)
+                    .role(user.role())
                     .build();
 
         } catch (DisabledException ex) {

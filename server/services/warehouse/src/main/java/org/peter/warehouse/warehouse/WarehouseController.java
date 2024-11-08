@@ -21,8 +21,9 @@ public class WarehouseController {
 
     @PostMapping
     public ResponseEntity<ServerResponse<Integer>> createWarehouse(@RequestBody CreateWarehouseRequest request,
-                                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(warehouseService.createWarehouse(request, loggedInUserId), HttpStatus.CREATED);
+                                                                   @RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                   @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(warehouseService.createWarehouse(request, loggedInUserId, teamAdminId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -32,8 +33,9 @@ public class WarehouseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WarehouseResponse>> getAllWarehouses(@RequestHeader("loggedInUserId") String loggedInUserId) {
-        return new ResponseEntity<>(warehouseService.getAllWarehouses(loggedInUserId), HttpStatus.OK);
+    public ResponseEntity<List<WarehouseResponse>> getAllWarehouses(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                    @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(warehouseService.getAllWarehouses(loggedInUserId, teamAdminId), HttpStatus.OK);
     }
 
     @GetMapping("/exists/{id}")
@@ -53,5 +55,10 @@ public class WarehouseController {
     public ResponseEntity<ServerResponse<Void>> deleteWarehouse(@PathVariable Integer id) {
         warehouseService.deleteWarehouse(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/internal/{id}")
+    public ResponseEntity<WarehouseResponse> getWarehouseById(@PathVariable Integer id) {
+        return new ResponseEntity<>(warehouseService.getWarehouseById(id), HttpStatus.OK);
     }
 }

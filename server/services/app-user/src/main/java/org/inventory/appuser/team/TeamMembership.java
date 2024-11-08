@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -38,6 +39,10 @@ public class TeamMembership {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    public boolean isUserAdmin() {
+        return Objects.equals(role.getName(), TeamRoles.ADMIN.name());
+    }
 
     @Override
     public String toString() {

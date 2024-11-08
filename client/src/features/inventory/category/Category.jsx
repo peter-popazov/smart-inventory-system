@@ -12,6 +12,7 @@ import Input from "@/ui/Input";
 import FormRow from "@/ui/FormRow";
 import AddCategory from "./AddCategory";
 import PropTypes from "prop-types";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 function Category({ errors, setValue, productToEdit, isEditItem }) {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -30,7 +31,7 @@ function Category({ errors, setValue, productToEdit, isEditItem }) {
   );
 
   if (isLoadingCategories) {
-    return <div>Loading...</div>;
+    return <SpinnerFS />;
   }
 
   return (

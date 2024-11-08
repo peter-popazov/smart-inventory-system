@@ -55,7 +55,7 @@ Row.propTypes = {
   bgColor: PropTypes.string,
 };
 
-function Body({ data, render }) {
+function Body({ data, render, hilightRow }) {
   if (data.length === 0) {
     return (
       <tbody className="overflow-x-scroll text-gray-700">
@@ -73,7 +73,12 @@ function Body({ data, render }) {
   return (
     <tbody className="text-gray-700">
       {data.map((item, index) => (
-        <Row key={index}>{render(item)}</Row>
+        <Row
+          key={index}
+          bgColor={hilightRow && hilightRow(item) ? "!bg-violet-100" : ""}
+        >
+          {render(item)}
+        </Row>
       ))}
     </tbody>
   );
@@ -82,6 +87,7 @@ function Body({ data, render }) {
 Body.propTypes = {
   data: PropTypes.array.isRequired,
   render: PropTypes.func.isRequired,
+  hilightRow: PropTypes.func,
 };
 
 function Footer({ children }) {

@@ -22,18 +22,26 @@ function AddWarehouseForm({ onCloseModal, warehouseToEdit = {} }) {
     defaultValues: isEditItem ? editValues : {},
   });
 
-  function onSubmit(data) {
+  function onSubmit(data, e) {
+    e.preventDefault();
     createWarehouse(data);
     onCloseModal?.();
   }
 
-  function onError(error) {
+  function onError(error, e) {
+    console.log(e);
+    e.preventDefault();
     console.log(error);
+  }
+
+  function handleButtonSumbit(e) {
+    handleSubmit(onSubmit, onError)(e);
   }
 
   if (isCreateing) {
     return <SpinnerFS />;
   }
+
   return (
     <>
       <h4 className="text-md mb-4 font-semibold text-gray-900 md:text-lg">
@@ -41,7 +49,6 @@ function AddWarehouseForm({ onCloseModal, warehouseToEdit = {} }) {
       </h4>
       <form
         className="space-y-4 text-gray-800"
-        onSubmit={handleSubmit(onSubmit, onError)}
       >
         <div className="grid gap-4">
           <FormRow label="Warehouse name" error={errors?.name?.message}>
@@ -105,7 +112,7 @@ function AddWarehouseForm({ onCloseModal, warehouseToEdit = {} }) {
 
         <div className="flex space-x-4">
           <Button
-            type="submit"
+            onClick={handleButtonSumbit}
             textColor="text-white"
             bgColor="bg-violet-600"
             rounded="rounded-xl"

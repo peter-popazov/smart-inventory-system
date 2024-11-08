@@ -3,11 +3,15 @@ package org.inventory.appuser.user;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.inventory.appuser.exception.UserNotFoundException;
+import org.inventory.appuser.team.TeamMembership;
 import org.inventory.appuser.user.helpers.AppUserResponse;
 import org.inventory.appuser.user.helpers.UpdateUserRequest;
 import org.inventory.appuser.user.model.AppUser;
+import org.inventory.appuser.user.model.Role;
 import org.inventory.appuser.user.repos.AppUserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +50,8 @@ public class AppUserService {
                 .email(appUser.getEmail())
                 .firstName(appUser.getFirstName())
                 .lastName(appUser.getLastName())
-                // todo
-                .role(null)
+                .role(repository.findUserRole(appUser.getUserId())
+                        .orElse(Role.builder().name("USER").build()).getName())
                 .build();
     }
 
@@ -75,5 +79,15 @@ public class AppUserService {
 
         repository.delete(appUser);
         return true;
+    }
+
+    public List<Integer> getUsersByTeamId(String loggedInUserId) {
+        AppUser appUser = repository.findByRegisteredUserId(Integer.parseInt(loggedInUserId))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        List<TeamMembership> teamMemberships = appUser.getTeamMembership();
+
+        return teamMemberships.stream()
+                .map(tm -> tm.getAppUser().getUserId())
+                .toList();
     }
 }

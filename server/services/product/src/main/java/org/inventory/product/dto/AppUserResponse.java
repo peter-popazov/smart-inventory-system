@@ -1,4 +1,4 @@
-package org.inventory.appuser.user.helpers;
+package org.inventory.product.dto;
 
 import lombok.Builder;
 

@@ -5,6 +5,7 @@ import InventoryRow from "./InventoryRow";
 import Menus from "@/ui/Menus";
 import { useInventory } from "./useInventory";
 import { transformData } from "../../utils/utils";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 const headers = [
   "SKU",
@@ -26,7 +27,7 @@ function InventoryTable() {
     : [];
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerFS />;
   }
 
   console.log(inventoryFiltered);

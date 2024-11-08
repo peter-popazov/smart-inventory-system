@@ -48,9 +48,11 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     String email = jwtService.extractUsername(token);
 
                     Integer loggedInUserId = validateToken(token, email);
+                    Integer adminId = getTeamAdminId(token, String.valueOf(loggedInUserId));
                     request = exchange.getRequest()
                             .mutate()
                             .header("loggedInUserId", String.valueOf(loggedInUserId))
+                            .header("teamAdminId", String.valueOf(adminId != null ? adminId : ""))
                             .build();
                 }
             }
@@ -73,6 +75,21 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         );
         return response.getBody();
     }
+
+    private Integer getTeamAdminId(String token, String userId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = "http://localhost:8090/api/v1/teams/" + userId;
+        ResponseEntity<Integer> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                Integer.class
+        );
+        return response.getBody();
+    }
+
 
     public static class Config {
     }

@@ -1,8 +1,9 @@
-package org.inventory.appuser.team.requests;
+package org.inventory.appuser.team.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.inventory.appuser.team.TeamRoles;
 
 public record AddTeamMemberRequest(
 
@@ -11,13 +12,10 @@ public record AddTeamMemberRequest(
         @Email(message = "Email is not valid")
         String userEmail,
 
-        @NotEmpty(message = "Role is required")
-        @NotBlank(message = "Role is required")
         String role,
 
         @NotEmpty(message = "Team id is required")
         @NotBlank(message = "Team id is required")
         Integer teamId
-
 ) {
 }

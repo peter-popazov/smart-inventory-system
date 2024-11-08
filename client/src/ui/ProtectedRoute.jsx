@@ -9,14 +9,14 @@ function ProtectedRoute({ children }) {
   const queryClient = useQueryClient();
   const [isUserLoaded, setIsUserLoaded] = useState(false);
 
-  queryClient.setQueryData("user", {
-    email: "peter@gmail.com",
-    firstName: "Peter",
-    lastName: "Popazov",
-    role: null,
-    jwt_token:
-      "eyJhbGciOiJIUzM4NCJ9.eyJlbWFpbCI6InBldGVyQGdtYWlsLmNvbSIsInN1YiI6InBldGVyQGdtYWlsLmNvbSIsImlhdCI6MTczMDY1MjIwMSwiZXhwIjoxNzMwNzM4NjAxLCJhdXRob3JpdGllcyI6W119.ttUG5DCEN8rZKj9Elh8dHcXVvAr9nWRIqgHpJciZ43Cma-YwrhI6sITR5phQ3jJc",
-  });
+  // queryClient.setQueryData({
+  //   email: "peter@gmail.com",
+  //   firstName: null,
+  //   lastName: null,
+  //   role: "ADMIN",
+  //   jwt_token:
+  //     "eyJhbGciOiJIUzM4NCJ9.eyJlbWFpbCI6InBldGVyQGdtYWlsLmNvbSIsInN1YiI6InBldGVyQGdtYWlsLmNvbSIsImlhdCI6MTczMTA4MDQxMCwiZXhwIjoxNzMxMTY2ODEwLCJhdXRob3JpdGllcyI6W119.VksTHHLSsQc_VWiTc8AEomawhkiGcI3FR0HGsjkZIAHINPRRiPyoX1MLbxGi9KrR",
+  // });
 
   useEffect(() => {
     const user = queryClient.getQueryData("user");

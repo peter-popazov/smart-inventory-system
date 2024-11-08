@@ -7,28 +7,39 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import Button from "@/ui/button";
+import Button from "@/ui/Button";
+import FormRow from "@/ui/FormRow";
+import { useForm } from "react-hook-form";
+import { IoIosAdd } from "react-icons/io";
+import { ICONS_SIZE_SM } from "@/constants/iconSize";
+import { useCreateTeam } from "./useCreateTeam";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 function CreateTeamForm() {
-  const [teamName, setTeamName] = useState("");
-  const [teamDescription, setTeamDescription] = useState("");
-  const handleCreateTeam = (e) => {
-    e.preventDefault();
-    // Here you would typically send a request to your backend to create the team
-    // toast({
-    //   title: "Team Created",
-    //   description: `Team "${teamName}" has been created successfully.`,
-    // });
-    console.log(`Team "${teamName}" has been created successfully.`);
-    setTeamName("");
-    setTeamDescription("");
-  };
+  const { createTeam, isCreating } = useCreateTeam();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  function onSubmit(data) {
+    console.log(data);
+    createTeam(data);
+  }
+
+  function onError(errors) {
+    console.log(errors);
+  }
+
+  if (isCreating) {
+    return <SpinnerFS />;
+  }
+
   return (
     <Card>
-      <form onSubmit={handleCreateTeam}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <CardHeader>
           <CardTitle>Create New Team</CardTitle>
           <CardDescription>
@@ -37,27 +48,42 @@ function CreateTeamForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="team-name">Team Name</Label>
-            <Input
-              id="team-name"
-              placeholder="Enter team name"
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              required
-            />
+            <FormRow label="Team Name" error={errors?.teamName?.message}>
+              <Input
+                id="teamName"
+                placeholder="Input text"
+                {...register("teamName", {
+                  required: "Team name is required",
+                })}
+              />
+            </FormRow>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="team-description">Team Description</Label>
-            <Textarea
-              id="team-description"
-              placeholder="Describe the team's purpose"
-              value={teamDescription}
-              onChange={(e) => setTeamDescription(e.target.value)}
-            />
+            <FormRow
+              label="Team description"
+              error={errors?.teamDescription?.message}
+            >
+              <Textarea
+                id="teamDescription"
+                placeholder="Input text"
+                {...register("teamDescription", {
+                  required: "Team description is required",
+                })}
+              />
+            </FormRow>
           </div>
         </CardContent>
         <CardFooter>
-          <Button icon={<span>+</span>}>Create Team</Button>
+          <Button
+            type="submit"
+            bgColor="bg-violet-600"
+            textColor="text-gray-50"
+            rounded="rounded-xl"
+            className="hover:bg-violet-700"
+            icon={<IoIosAdd size={ICONS_SIZE_SM} />}
+          >
+            Create Team
+          </Button>
         </CardFooter>
       </form>
     </Card>

@@ -7,6 +7,8 @@ import org.inventory.appuser.user.helpers.AppUserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -31,7 +33,7 @@ public class AppUserController {
 
     @GetMapping("/{email}")
     public ResponseEntity<AppUserResponse> getUser(@PathVariable String email,
-                                                @RequestHeader("loggedInUserId") String loggedInUserId) {
+                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
         return ResponseEntity.ok(service.getUser(email, loggedInUserId));
     }
 
@@ -44,5 +46,10 @@ public class AppUserController {
     public ResponseEntity<Boolean> deleteUser(@PathVariable String email,
                                               @RequestHeader("loggedInUserId") String loggedInUserId) {
         return ResponseEntity.ok(service.deleteUser(email, loggedInUserId));
+    }
+
+    @GetMapping("/team")
+    public ResponseEntity<List<Integer>> getUsersByTeamId(@RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(service.getUsersByTeamId(loggedInUserId));
     }
 }

@@ -11,8 +11,7 @@ export function useRegister() {
   const { mutate: registerApi, isLoading } = useMutation({
     mutationFn: async ({ email, password, role }) => {
       const userExists = await axios.get(`${baseUrl}/auth/exists/${email}`);
-
-      if (userExists) {
+      if (userExists.data) {
         return Promise.reject(
           new Error("User with this email already exists."),
         );

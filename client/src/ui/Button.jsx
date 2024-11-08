@@ -25,14 +25,16 @@ function Button({
   return (
     <button
       type={type}
-      className={`${className} ${baseStyles} ${bgColor} ${textColor} ${rounded} ${sizes[size]} transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${
+      className={`${baseStyles} ${bgColor} ${textColor} ${rounded} ${sizes[size]} transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${className} ${
         disabled ? "cursor-not-allowed opacity-50" : ""
       } ${icon ? "flex items-center justify-center gap-2" : ""}`}
       onClick={onClick}
       disabled={disabled}
     >
       {icon && <span>{icon}</span>}
-      <span className={`${(icon && hideText) && "hidden md:block"}`}>{children}</span>
+      <span className={`${icon && hideText && "hidden md:block"}`}>
+        {children}
+      </span>
     </button>
   );
 }

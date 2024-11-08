@@ -2,6 +2,7 @@ import Modal from "@/ui/Modal";
 import Button from "@/ui/Button";
 import { IoAddSharp } from "react-icons/io5";
 import AddWarehouseForm from "./AddWarehouseForm";
+import { ICONS_SIZE_XS } from "@/constants/iconSize";
 
 function AddWarehouse() {
   return (
@@ -14,15 +15,15 @@ function AddWarehouse() {
             rounded="rounded-lg"
             textColor="text-white"
             bgColor="bg-violet-500"
-            className="full h-8 w-full hover:bg-violet-700"
+            className="full h-7 w-full text-xs hover:bg-violet-700"
             hideText={false}
-            icon={<IoAddSharp size={20} />}
+            icon={<IoAddSharp size={ICONS_SIZE_XS} />}
           >
             Add Warehouse
           </Button>
         </Modal.Open>
-        <Modal.Window name="warehouse-add" width="w-[400px]">
-          <AddWarehouseForm warehouseToEdit />
+        <Modal.Window name="warehouse-add">
+          <AddWarehouseForm />
         </Modal.Window>
       </Modal>
     </div>

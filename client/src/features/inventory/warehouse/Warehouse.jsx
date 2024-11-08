@@ -19,11 +19,11 @@ function Warehouse({ errors, setValue, productToEdit, isEditItem }) {
   } = useWarehouse();
 
   const warehouses = Array.isArray(warehousesApi)
-    ? warehousesApi.map((warehouse) => ({
-        ...warehouse,
-        location: `${warehouse.location.address}, ${warehouse.location.city}, ${warehouse.location.postalCode}`,
-      }))
-    : [];
+  ? warehousesApi.map((warehouse) => ({
+    ...warehouse,
+    location: `${warehouse.location.address}, ${warehouse.location.city}, ${warehouse.location.postalCode}`,
+  }))
+  : [];
 
   function handleWarehouseChange(value) {
     let selectedInventory;
@@ -53,40 +53,40 @@ function Warehouse({ errors, setValue, productToEdit, isEditItem }) {
 
   return (
     <>
-    <FormRow label="Warehouse" error={errors?.warehouse?.message}>
-      <Select
-        onValueChange={(value) => {
-          handleWarehouseChange(value);
-        }}
-        defaultValue={productToEdit?.inventories
-          ?.at(0)
-          ?.warehouse?.warehouseId.toString()}
-      >
-        <SelectTrigger id="warehouse">
-          <SelectValue placeholder="Select warehouse" />
-        </SelectTrigger>
-        <SelectContent>
-          {isEditItem
-            ? productToEdit.inventories.map((inventory) => (
-                <SelectItem
-                  key={inventory.warehouse.warehouseId}
-                  value={inventory.warehouse.warehouseId.toString()}
-                >
-                  {inventory.warehouse.name}
-                </SelectItem>
-              ))
-            : warehouses.map((warehouse) => (
-                <SelectItem
-                  key={warehouse.warehouseId}
-                  value={warehouse.warehouseId.toString()}
-                >
-                  {warehouse.name}
-                </SelectItem>
-              ))}
-        </SelectContent>
-      </Select>
-    </FormRow>
-    <AddWarehouse />
+      <FormRow label="Warehouse" error={errors?.warehouse?.message}>
+        <Select
+          onValueChange={(value) => {
+            handleWarehouseChange(value);
+          }}
+          defaultValue={productToEdit?.inventories
+            ?.at(0)
+            ?.warehouse?.warehouseId.toString()}
+        >
+          <SelectTrigger id="warehouse">
+            <SelectValue placeholder="Select warehouse" />
+          </SelectTrigger>
+          <SelectContent>
+            {isEditItem
+              ? productToEdit.inventories.map((inventory) => (
+                  <SelectItem
+                    key={inventory.warehouse.warehouseId}
+                    value={inventory.warehouse.warehouseId.toString()}
+                  >
+                    {inventory.warehouse.name}
+                  </SelectItem>
+                ))
+              : warehouses.map((warehouse) => (
+                  <SelectItem
+                    key={warehouse.warehouseId}
+                    value={warehouse.warehouseId.toString()}
+                  >
+                    {warehouse.name}
+                  </SelectItem>
+                ))}
+          </SelectContent>
+        </Select>
+      </FormRow>
+      <AddWarehouse />
     </>
   );
 }

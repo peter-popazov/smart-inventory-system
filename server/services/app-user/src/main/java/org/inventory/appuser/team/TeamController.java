@@ -1,14 +1,14 @@
 package org.inventory.appuser.team;
 
 import lombok.RequiredArgsConstructor;
-import org.inventory.appuser.team.requests.AddTeamMemberRequest;
-import org.inventory.appuser.team.requests.CreateTeamRequest;
-import org.inventory.appuser.team.requests.RemoveTeamMemberRequest;
+import org.inventory.appuser.team.dto.AddTeamMemberRequest;
+import org.inventory.appuser.team.dto.CreateTeamRequest;
+import org.inventory.appuser.team.dto.RemoveTeamMemberRequest;
+import org.inventory.appuser.team.dto.TeamResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,33 +17,46 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createTeam(@RequestBody CreateTeamRequest request,
-                                                          @PathVariable("emil") String email) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("teamId", teamService.createTeam(request, email));
-        response.put("message", "Team created successfully");
-
-         return ResponseEntity.ok(response);
+    @GetMapping
+    public ResponseEntity<List<TeamResponse>> getTeams(@RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(teamService.getTeams(loggedInUserId));
     }
 
-    @PostMapping("/add-member/{email}")
+    @GetMapping("/user")
+    public ResponseEntity<List<TeamResponse>> getTeamForUser(@RequestHeader("teamAdminId") String teamAdminId) {
+        return ResponseEntity.ok(teamService.getTeams(teamAdminId));
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createTeam(@RequestBody CreateTeamRequest request,
+                                             @RequestHeader("loggedInUserId") String loggedInUserId) {
+        teamService.createTeam(request, loggedInUserId);
+        return ResponseEntity.ok("Team created successfully");
+    }
+
+    @PostMapping("/invite")
     public ResponseEntity<?> addTeamMembers(@RequestBody AddTeamMemberRequest request,
-                                            @PathVariable("email") String email) {
-        teamService.addTeamMembers(request, email);
+                                            @RequestHeader("loggedInUserId") String loggedInUserId) {
+        teamService.addTeamMembers(request, loggedInUserId);
         return ResponseEntity.ok("Team added successfully");
     }
 
-    @DeleteMapping("/remove-member/{email}")
+    @PostMapping("/remove")
     public ResponseEntity<?> removeTeamMembers(@RequestBody RemoveTeamMemberRequest request,
-                                               @PathVariable("email") String email) {
-        teamService.removeTeamMembers(request, email);
+                                               @RequestHeader("loggedInUserId") String loggedInUserId) {
+        teamService.removeTeamMembers(request, loggedInUserId);
         return ResponseEntity.ok("Team member [%s] removed successfully".formatted(request.userEmail()));
     }
 
     @DeleteMapping("/{teamId}")
-    public ResponseEntity<?> deleteTeam(@PathVariable Integer teamId, @PathVariable("email") String email) {
-        teamService.deleteTeam(teamId, email);
+    public ResponseEntity<?> deleteTeam(@PathVariable Integer teamId,
+                                        @RequestHeader("loggedInUserId") String loggedInUserId) {
+        teamService.deleteTeam(teamId, loggedInUserId);
         return ResponseEntity.ok("Team deleted successfully");
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> adminForUserTeam(@PathVariable Integer userId) {
+        return ResponseEntity.ok(teamService.getAdminIdForUserTeam(userId));
     }
 }

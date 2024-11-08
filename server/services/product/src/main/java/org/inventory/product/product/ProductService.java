@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.category.Category;
 import org.inventory.product.category.CategoryRepository;
+import org.inventory.product.clints.UserClient;
 import org.inventory.product.dto.*;
 import org.inventory.product.exceptions.CategoryNotFoundException;
 import org.inventory.product.exceptions.InsufficientQuantityException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static org.inventory.product.helpers.UserHelpers.validateUser;
 
@@ -29,10 +31,11 @@ public class ProductService {
     private final WarehouseClient warehouseClient;
     private final ProductMapper productMapper;
 
-    public List<ProductResponse> getAllProducts(String userId) {
-        return productRepository.findAllByUserId(Integer.parseInt(userId))
+    public List<ProductResponse> getAllProducts(String loggedInUserId, String teamAdminId) {
+        Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
+        return productRepository.findAllByUserId(adminId)
                 .stream()
-                .map(product -> productMapper.toProductResponse(product, userId))
+                .map(productMapper::toProductResponse)
                 .toList();
     }
 
@@ -44,7 +47,7 @@ public class ProductService {
 
         List<InventoryResponse> inventories = product.getInventory().stream()
                 .map(inventory -> {
-                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId(), userId);
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
                     return InventoryMapper.toInventoryResponse(inventory, warehouse);
                 })
                 .toList();
@@ -60,12 +63,16 @@ public class ProductService {
                 .build();
     }
 
-    public ServerResponse<Integer> createProduct(CreateProductRequest productRequest, String userId) {
+    public ServerResponse<Integer> createProduct(CreateProductRequest productRequest,
+                                                 String userId, String teamAdminId) {
+
+        Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : userId);
 
         Category productCategory = categoryRepository.findByName(productRequest.categoryName())
                 .orElseGet(() -> {
                     Category newCategory = Category.builder()
                             .name(productRequest.categoryName().toLowerCase())
+                            .userId(adminId)
                             .build();
                     return categoryRepository.save(newCategory);
                 });
@@ -82,7 +89,7 @@ public class ProductService {
                 .description(productRequest.description())
                 .price(productRequest.price())
                 .category(productCategory)
-                .userId(Integer.parseInt(userId))
+                .userId(adminId)
                 .width(productRequest.width())
                 .height(productRequest.height())
                 .depth(productRequest.depth())
@@ -99,12 +106,10 @@ public class ProductService {
         return ServerResponse.<Integer>builder().response(productId).build();
     }
 
-    public ServerResponse<Integer> updateProduct(UpdateProductRequest productRequest, String userId) {
+    public ServerResponse<Integer> updateProduct(UpdateProductRequest productRequest) {
 
         Product existingProduct = productRepository.findById(productRequest.productId())
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productRequest.productId() + " not found"));
-
-        validateUser(userId, existingProduct.getUserId());
 
         Category category = categoryRepository.findByName(productRequest.categoryName())
                 .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.categoryName() + " not found"));

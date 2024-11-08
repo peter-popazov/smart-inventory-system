@@ -1,4 +1,4 @@
-package org.inventory.appuser.team.requests;
+package org.inventory.appuser.team.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

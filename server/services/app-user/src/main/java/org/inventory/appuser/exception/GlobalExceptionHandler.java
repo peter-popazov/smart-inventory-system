@@ -17,7 +17,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
-                        ErrorResponse.builder().error(exp.getMessage()).build()
+                        ErrorResponse.builder()
+                                .businessErrorDesc("User not found")
+                                .error(exp.getMessage())
+                                .build()
                 );
     }
 

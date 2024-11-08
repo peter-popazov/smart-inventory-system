@@ -15,10 +15,10 @@ public class ProductMapper {
 
     private final WarehouseClient warehouseClient;
 
-    public ProductResponse toProductResponse(Product product, String userId) {
+    public ProductResponse toProductResponse(Product product) {
         List<InventoryResponse> inventories = product.getInventory().stream()
                 .map(inventory -> {
-                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId(), userId);
+                    WarehouseResponse warehouse = warehouseClient.getWarehouseById(inventory.getWarehouseId());
                     return InventoryMapper.toInventoryResponse(inventory, warehouse);
                 })
                 .toList();

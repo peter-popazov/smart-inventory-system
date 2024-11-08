@@ -10,7 +10,7 @@ export function useUpdateUser() {
   const { mutate: updateUser, isLoading: isUpdating } = useMutation({
     mutationFn: (userData) => updateUserFn(jwtToken, userData),
     onSuccess: (userData) => {
-      toast.success("User updated");
+      toast.success("Firstname and lastname were updated");
       queryClient.invalidateQueries("user");
       queryClient.setQueryData("user", {
         ...authData,

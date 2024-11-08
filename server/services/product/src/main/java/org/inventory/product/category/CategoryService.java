@@ -5,12 +5,11 @@ import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.CategoryResponse;
 import org.inventory.product.dto.CreateCategoryRequest;
 import org.inventory.product.exceptions.CategoryNotFoundException;
-import org.inventory.product.product.Product;
-import org.inventory.product.product.ProductRepository;
+import org.inventory.product.product.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import static org.inventory.product.helpers.UserHelpers.*;
 
@@ -19,12 +18,13 @@ import static org.inventory.product.helpers.UserHelpers.*;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
 
-    public List<CategoryResponse> getAllCategories(String userId) {
-        List<Category> categories = categoryRepository.findAllByUserId(Integer.parseInt(userId));
+    public List<CategoryResponse> getAllCategories(String loggedInUserId, String teamAdminId) {
+        Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
 
-        return categories.stream().map(CategoryMapper::toCategoryResponse).toList();
+        return categoryRepository.findAllByUserId(adminId).stream()
+                .distinct()
+                .map(CategoryMapper::toCategoryResponse).toList();
     }
 
     public CategoryResponse getCategoryByName(String name, String userId) {
@@ -36,11 +36,14 @@ public class CategoryService {
         return CategoryMapper.toCategoryResponse(category);
     }
 
-    public ServerResponse<String> createCategory(CreateCategoryRequest request, String loggedInUserId) {
+    public ServerResponse<String> createCategory(CreateCategoryRequest request,
+                                                 String loggedInUserId, String teamAdminId) {
+        Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
+
         Category category = categoryRepository.findByName(request.name())
                 .orElseGet(() -> Category.builder()
                         .name(request.name())
-                        .userId(Integer.parseInt(loggedInUserId))
+                        .userId(adminId)
                         .build());
 
         if (category != null) {
