@@ -9,48 +9,18 @@ import { ArrowRightIcon } from "lucide-react";
 import Button from "@/ui/Button";
 import Table from "@/ui/Table";
 import RecentMovementsRow from "./RecentMovementsRow";
+import { useInventoryMovements } from "./useProductsMovements";
+import SpinnerFS from "@/ui/SpinnerFS";
 
 const headers = ["ID", "Item", "Type", "Quantity", "Date"];
 
-const recentMovements = [
-  {
-    id: "001",
-    item: "Laptop",
-    type: "Inbound",
-    quantity: 50,
-    date: "2023-06-15",
-  },
-  {
-    id: "002",
-    item: "T-shirt",
-    type: "Outbound",
-    quantity: 100,
-    date: "2023-06-14",
-  },
-  {
-    id: "003",
-    item: "Coffee Maker",
-    type: "Inbound",
-    quantity: 30,
-    date: "2023-06-13",
-  },
-  {
-    id: "004",
-    item: "Novel",
-    type: "Outbound",
-    quantity: 75,
-    date: "2023-06-12",
-  },
-  {
-    id: "005",
-    item: "Headphones",
-    type: "Inbound",
-    quantity: 200,
-    date: "2023-06-11",
-  },
-];
-
 function RecentMovements() {
+  const { isLoading, data: movements } = useInventoryMovements();
+
+  console.log(movements);
+  if (isLoading) {
+    return <SpinnerFS />;
+  }
   return (
     <div className="relative col-span-2">
       <Card>
@@ -71,9 +41,12 @@ function RecentMovements() {
               )}
             />
             <Table.Body
-              data={recentMovements}
+              data={movements}
               render={(movement) => (
-                <RecentMovementsRow key={movement.id} movement={movement} />
+                <RecentMovementsRow
+                  key={movement.stockMovementId}
+                  movement={movement}
+                />
               )}
             />
           </Table>

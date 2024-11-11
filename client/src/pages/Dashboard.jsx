@@ -8,7 +8,7 @@ export default function InventoryDashboard() {
   return (
     <>
       <PageHeader icon={<Package />}>Dashboard</PageHeader>
-      <main className="grid gap-x-8 gap-y-8 p-4 md:grid-cols-[5fr_3fr] md:grid-rows-1 md:p-6">
+      <main className="gap-6 space-y-6 p-4 sm:p-6 md:grid md:grid-cols-[5fr_2.5fr] lg:grid-cols-[5fr_2fr]">
         <Charts />
         <Cards />
         <RecentMovements />
