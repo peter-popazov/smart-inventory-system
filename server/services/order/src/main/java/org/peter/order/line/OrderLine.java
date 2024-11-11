@@ -24,6 +24,8 @@ public class OrderLine extends BaseEntity {
     @Column(nullable = false)
     private Integer productId;
 
+    private Integer productOwner;
+
     @Column(nullable = false)
     private double quantity;
 

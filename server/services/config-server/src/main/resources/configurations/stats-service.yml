@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stats
+    username: user_java
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+server:
+  port: 8080
+
+application:
+  product-server:
+    url: http://localhost:8050/api/v1/products
+  app-user-server:
+    url: http://localhost:8090/api/v1/teams
+  order-server:
+    url: http://localhost:8040/api/v1/orders

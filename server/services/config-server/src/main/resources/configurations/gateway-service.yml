@@ -78,5 +78,12 @@ spring:
           filters:
             - name: AuthFilter
 
+        - id: stats-service
+          uri: lb://STATS-SERVICE
+          predicates:
+            - Path=/api/v1/stats/**
+          filters:
+            - name: AuthFilter
+
 server:
   port: 8222

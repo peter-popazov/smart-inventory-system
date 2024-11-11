@@ -12,4 +12,7 @@ public interface TeamMembershipRepository extends JpaRepository<TeamMembership, 
 
     @Query("SELECT tm.team FROM TeamMembership tm WHERE tm.appUser.registeredUserId = :registeredUserId AND tm.role.name = 'ADMIN'")
     List<Team> findTeamsByRegisteredUserIdAndRole(@Param("registeredUserId") Integer registeredUserId);
+
+    @Query("SELECT SUM(size(t.teamMembership)) FROM Team t JOIN t.teamMembership tm WHERE tm.appUser.registeredUserId = :userId AND tm.role.name = 'ADMIN'")
+    Integer countTotalTeamMembersByUserId(@Param("userId") Integer userId);
 }

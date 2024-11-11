@@ -3,6 +3,7 @@ package org.inventory.product.product;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.*;
+import org.inventory.product.dto.ProductStats;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,10 @@ public class ProductController {
     @PostMapping("/purchase")
     public ResponseEntity<List<PurchaseProductsResponse>> purchaseProducts(@RequestBody List<PurchaseProductsRequest> purchaseProductsRequests) {
         return new ResponseEntity<>(productService.purchaseProducts(purchaseProductsRequests), HttpStatus.OK);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<ProductStats> getAllCategories(@RequestHeader("userId") String userId) {
+        return new ResponseEntity<>(productService.getProductStats(userId), HttpStatus.OK);
     }
 }

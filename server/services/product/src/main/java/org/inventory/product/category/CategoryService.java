@@ -3,13 +3,17 @@ package org.inventory.product.category;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.CategoryResponse;
+import org.inventory.product.dto.CategoryStats;
 import org.inventory.product.dto.CreateCategoryRequest;
 import org.inventory.product.exceptions.CategoryNotFoundException;
-import org.inventory.product.product.ProductService;
+import org.inventory.product.product.Product;
+import org.inventory.product.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.inventory.product.helpers.UserHelpers.*;
 
@@ -18,6 +22,7 @@ import static org.inventory.product.helpers.UserHelpers.*;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     public List<CategoryResponse> getAllCategories(String loggedInUserId, String teamAdminId) {
         Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
@@ -91,5 +96,20 @@ public class CategoryService {
         return ServerResponse.<String>builder()
                 .response("Category was deleted.")
                 .build();
+    }
+
+    public List<CategoryStats> getCategoriesForProduct(String loggedInUserId, String teamAdminId) {
+        Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
+        List<Product> products = productRepository.findAllByUserId(adminId);
+
+        Map<String, Long> categoryCount = products.stream()
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory().getName(),
+                        Collectors.counting()
+                ));
+
+        return categoryCount.entrySet().stream().
+                map(e -> new CategoryStats(e.getKey(), e.getValue()))
+                .toList();
     }
 }

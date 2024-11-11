@@ -13,7 +13,6 @@ public class OrderMapper {
                 .reference(orderRequest.reference())
                 .totalPrice(orderRequest.totalAmount())
                 .paymentMethod(orderRequest.paymentMethod())
-                .registeredCustomerId(Integer.parseInt(loggedInUserId))
                 .build();
     }
 }

@@ -35,8 +35,4 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     private String customerId;
-
-    @Column(nullable = false)
-    private Integer registeredCustomerId;
-
 }

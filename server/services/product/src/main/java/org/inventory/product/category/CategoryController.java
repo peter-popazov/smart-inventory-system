@@ -3,6 +3,7 @@ package org.inventory.product.category;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.CategoryResponse;
+import org.inventory.product.dto.CategoryStats;
 import org.inventory.product.dto.CreateCategoryRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,5 +48,11 @@ public class CategoryController {
     public ResponseEntity<ServerResponse<String>> deleteCategory(@PathVariable String name,
                                                                  @RequestHeader("loggedInUserId") String loggedInUserId) {
         return new ResponseEntity<>(categoryService.deleteCategory(name, loggedInUserId), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<List<CategoryStats>> getCategoriesForProduct(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                                       @RequestHeader("teamAdminId") String teamAdminId) {
+        return new ResponseEntity<>(categoryService.getCategoriesForProduct(loggedInUserId, teamAdminId), HttpStatus.OK);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.inventory.product.category.Category;
 import org.inventory.product.inventory.Inventory;
+import org.inventory.product.movements.StockMovements;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -66,6 +67,9 @@ public class Product {
     @PositiveOrZero(message = "Cannot be negative")
     @Column(nullable = false)
     private Integer maxStockLevel;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StockMovements> stockMovements;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -9,6 +9,8 @@ public record PurchaseProductsRequest(
         @NotNull(message = "Product is required")
         Integer productId,
 
+        Integer productOwner,
+
         @NotNull(message = "Quantity is required")
         Integer quantity,
 

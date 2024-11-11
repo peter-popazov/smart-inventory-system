@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.category.Category;
 import org.inventory.product.category.CategoryRepository;
-import org.inventory.product.clints.UserClient;
 import org.inventory.product.dto.*;
 import org.inventory.product.exceptions.CategoryNotFoundException;
 import org.inventory.product.exceptions.InsufficientQuantityException;
@@ -12,8 +11,10 @@ import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.inventory.Inventory;
 import org.inventory.product.inventory.InventoryMapper;
 import org.inventory.product.inventory.InventoryRepository;
+import org.inventory.product.dto.ProductStats;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -221,5 +222,28 @@ public class ProductService {
         return purchasedProducts;
     }
 
+    public ProductStats getProductStats(String userId) {
+        List<Product> products = productRepository.findAllByUserId(Integer.parseInt(userId));
 
+        Integer productCount = products.size();
+        BigDecimal totalValue = BigDecimal.ZERO;
+
+        for (Product product : products) {
+            List<Inventory> inventoryList = product.getInventory();
+            BigDecimal price = product.getPrice();
+            BigDecimal totalInventoryValue = BigDecimal.ZERO;
+
+            for (Inventory inventory : inventoryList) {
+                int stockAvailable = inventory.getStockAvailable();
+                BigDecimal inventoryValue = price.multiply(BigDecimal.valueOf(stockAvailable));
+                totalInventoryValue = totalInventoryValue.add(inventoryValue);
+            }
+            totalValue = totalValue.add(totalInventoryValue);
+        }
+
+        return ProductStats.builder()
+                .totalItems(productCount)
+                .inventoryValue(totalValue)
+                .build();
+    }
 }

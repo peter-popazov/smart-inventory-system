@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public record OrderLineRequest(
 
         Integer productId,
+        Integer productOwner,
         Integer orderId,
         BigDecimal unitPrice,
         double quantity

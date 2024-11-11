@@ -5,6 +5,7 @@ import org.inventory.appuser.team.dto.AddTeamMemberRequest;
 import org.inventory.appuser.team.dto.CreateTeamRequest;
 import org.inventory.appuser.team.dto.RemoveTeamMemberRequest;
 import org.inventory.appuser.team.dto.TeamResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +59,10 @@ public class TeamController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> adminForUserTeam(@PathVariable Integer userId) {
         return ResponseEntity.ok(teamService.getAdminIdForUserTeam(userId));
+    }
+
+    @GetMapping("/size")
+    public ResponseEntity<Integer> getTeamSize(@RequestHeader("userId") String userId) {
+        return new ResponseEntity<>(teamService.getTeamsSize(userId), HttpStatus.OK);
     }
 }
