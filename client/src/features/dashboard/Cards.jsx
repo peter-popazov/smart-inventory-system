@@ -2,12 +2,8 @@ import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardStats } from "./useDashboardStats";
 import SpinnerFS from "@/ui/SpinnerFS";
-// {
-//   "totalIncome": 152157.0,
-//   "inventoryValue": 258588.86,
-//   "totalItems": 4,
-//   "teamSize": 3
-// }
+import { formatCurrency } from "@/utils/utils";
+
 function Cards() {
   const { isLoading, data: dahboardStats } = useDashboardStats();
 
@@ -23,7 +19,9 @@ function Cards() {
           <ArrowUpIcon className="h-4 w-4 text-green-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${dahboardStats.totalIncome}</div>
+          <div className="text-2xl font-bold">
+            {formatCurrency(dahboardStats.totalIncome)}
+          </div>
           <p className="text-xs text-muted-foreground">
             %+20.1%% from last month
           </p>
@@ -37,7 +35,7 @@ function Cards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            ${dahboardStats.inventoryValue}
+            {formatCurrency(dahboardStats.inventoryValue)}
           </div>
           <p className="text-xs text-muted-foreground">
             % +12.5% from last month%

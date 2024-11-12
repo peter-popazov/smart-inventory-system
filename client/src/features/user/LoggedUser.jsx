@@ -29,20 +29,20 @@ function LoggedUser() {
           <div>
             <FaRegUser size={ICONS_SIZE - 4} />
           </div>
-          <div className="flex w-full flex-col gap-1">
+          <div className="flex w-full flex-col">
             <div className="flex flex-row items-center justify-between">
-              <p className="text-md font-bold">
+              <p className="text-sm font-bold">
                 <span>{loggedInUser.firstName} </span>
                 <span>{loggedInUser.lastName}</span>
               </p>
-              <div className="mr-1 rounded-xl bg-blue-500 p-1 px-2 opacity-80">
-                <p className="text text-[10px] text-gray-50">
+              <div className="mr-1 rounded-lg bg-blue-500 p-1 px-2 opacity-80">
+                <p className="text text-[10px] tracking-wider text-gray-50">
                   {capitalize(loggedInUser.role)}
                 </p>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">{loggedInUser.email}</p>
+              <p className="text-xs text-gray-500">{loggedInUser.email}</p>
               <div className="flex w-full justify-center">
                 <button onClick={handleLogout}>
                   <IoLogInOutline size={ICONS_SIZE - 4} />

@@ -16,7 +16,6 @@ function AddUserInfo() {
   } = useForm();
 
   function onSubmit(data) {
-    console.log(data);
     updateUser(data);
     setButtonClicked((prev) => prev + 1);
   }
@@ -28,7 +27,6 @@ function AddUserInfo() {
   if (isUpdating) {
     return <SpinnerFS />;
   }
-  console.log(buttonClicked);
 
   if (buttonClicked >= 1) {
     return <div className="text-sm font-medium">Submitted</div>;

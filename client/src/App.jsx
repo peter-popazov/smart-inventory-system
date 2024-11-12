@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import RegisterForm from "./features/auth/RegisterForm";
 import AuthLayout from "./features/auth/AuthLayout";
 import LoginForm from "./features/auth/LoginForm";
-import Messages from "@/pages/Messages";
+import Messages from "@/pages/Alerts";
 import Team from "./pages/Team";
 import ProtectedRoute from "./ui/ProtectedRoute";
 

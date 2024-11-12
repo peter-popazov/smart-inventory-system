@@ -6,11 +6,12 @@ import ConfirmDelete from "@/ui/ComfirmDelete";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { useDeleteProduct } from "./useDeleteInventory";
+import { formatCurrency } from "@/utils/utils";
 
 function InventoryRow({ item }) {
   const { deleteProduct, isDeleting } = useDeleteProduct();
   if (isDeleting) return <div>Loading...</div>;
-  
+
   return (
     <Modal>
       <td>
@@ -23,7 +24,7 @@ function InventoryRow({ item }) {
         <span>{item.product}</span>
       </td>
       <td>
-        <span>${item.price}</span>
+        <span>{formatCurrency(item.price)}</span>
       </td>
       <td>
         <span>{item.quantity}</span>

@@ -17,7 +17,6 @@ const headers = ["ID", "Item", "Type", "Quantity", "Date"];
 function RecentMovements() {
   const { isLoading, data: movements } = useInventoryMovements();
 
-  console.log(movements);
   if (isLoading) {
     return <SpinnerFS />;
   }

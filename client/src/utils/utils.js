@@ -49,3 +49,13 @@ export function filterMembers(teamMembers, searchTerm) {
 export function getFullName(member) {
   return `${member.firstName || ""} ${member.lastName || ""}`;
 }
+
+
+export function formatCurrency(amount, currency = "USD", locale = "en-US") {
+  const formatter = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  });
+  
+  return formatter.format(amount);
+}

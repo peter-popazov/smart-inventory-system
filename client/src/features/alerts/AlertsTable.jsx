@@ -20,30 +20,22 @@ import { useState } from "react";
 import Table from "@/ui/Table";
 import AlertsRow from "./AlertsRow";
 
-const headers = [
-  "Item",
-  "Current Stock",
-  "Reorder Point",
-  "Supplier",
-  "",
-];
+const headers = ["Item", "Current Stock", "Reorder Point", "Price", ""];
 
 function AlertsTable({ stockAlerts }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("currentStock");
+  const [sortBy, setSortBy] = useState("currentQuantity");
 
   const filteredAlerts = stockAlerts
-    .filter(
-      (alert) =>
-        alert.item.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        alert.supplier.toLowerCase().includes(searchTerm.toLowerCase()),
+    .filter((alert) =>
+      alert.productName.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     .sort((a, b) => {
-      if (sortBy === "currentStock") {
-        return a.currentStock - b.currentStock;
-      } else if (sortBy === "reorderPoint") {
+      if (sortBy === "currentQuantity") {
+        return a.currentQuantity - b.currentQuantity;
+      } else if (sortBy === "reorderStock") {
         return (
-          a.reorderPoint - a.currentStock - (b.reorderPoint - b.currentStock)
+          a.reorderStock - a.currentQuantity - (b.reorderStock - b.currentQuantity)
         );
       }
       return 0;
@@ -62,7 +54,7 @@ function AlertsTable({ stockAlerts }) {
               placeholder="Search items or suppliers"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
+              className="w-full h-10"
               icon={<CiSearch size={18} />}
             />
           </div>
@@ -71,10 +63,10 @@ function AlertsTable({ stockAlerts }) {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="currentStock">
+              <SelectItem value="currentQuantity">
                 Current Stock (Low to High)
               </SelectItem>
-              <SelectItem value="reorderPoint">Reorder Priority</SelectItem>
+              <SelectItem value="reorderStock">Reorder Priority</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -89,7 +81,7 @@ function AlertsTable({ stockAlerts }) {
           />
           <Table.Body
             data={filteredAlerts}
-            render={(alert) => <AlertsRow alert={alert} />}
+            render={(alert) => <AlertsRow key={alert.alertId} alert={alert} />}
           />
         </Table>
       </CardContent>

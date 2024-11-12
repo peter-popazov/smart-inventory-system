@@ -19,7 +19,6 @@ const headers = ["Name", "Email", "Role", "Actions"];
 function ManageTeam({ team }) {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData("user");
-  console.log(user);
   const [searchTerm, setSearchTerm] = useState("");
 
   const teamMembers = team.members;

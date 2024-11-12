@@ -75,7 +75,7 @@ function Body({ data, render, hilightRow }) {
       {data.map((item, index) => (
         <Row
           key={index}
-          bgColor={hilightRow && hilightRow(item) ? "!bg-violet-100" : ""}
+          bgColor={hilightRow && hilightRow(item) ? "!bg-violet-100 rounded-lg my-1.5" : ""}
         >
           {render(item)}
         </Row>

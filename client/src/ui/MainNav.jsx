@@ -30,7 +30,7 @@ const navItems = [
   {
     to: "/messages",
     icon: <BiMessageDetail size={ICONS_SIZE} />,
-    label: "Messages",
+    label: "Stock alerts",
   },
 ];
 
