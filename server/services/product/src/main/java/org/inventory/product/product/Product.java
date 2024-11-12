@@ -5,8 +5,10 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.inventory.product.category.Category;
 import org.inventory.product.inventory.Inventory;
+import org.inventory.product.lowstock.LowStockAlert;
 import org.inventory.product.movements.StockMovements;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
@@ -57,7 +59,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Inventory> inventory;
 
     @PositiveOrZero(message = "Cannot be negative")
@@ -71,14 +73,45 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StockMovements> stockMovements;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LowStockAlert> stockAlerts;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @PositiveOrZero(message = "Cannot be negative")
     @Column(nullable = false)
     private Integer userId;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", productCode='" + productCode + '\'' +
+                ", barcode='" + barcode + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", weight=" + weight +
+                ", height=" + height +
+                ", depth=" + depth +
+                ", width=" + width +
+                ", category=" + category +
+                ", minStockLevel=" + minStockLevel +
+                ", maxStockLevel=" + maxStockLevel +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", userId=" + userId +
+                '}';
+    }
+
+    public Integer getCurrentStock() {
+        return this.inventory.stream()
+                .mapToInt(Inventory::getStockAvailable)
+                .sum();
+    }
 }

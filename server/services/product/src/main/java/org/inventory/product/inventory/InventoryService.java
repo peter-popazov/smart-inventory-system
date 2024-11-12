@@ -7,6 +7,7 @@ import org.inventory.product.dto.UpdateInventoryRequest;
 import org.inventory.product.dto.WarehouseResponse;
 import org.inventory.product.exceptions.InventoryNotFoundException;
 import org.inventory.product.exceptions.ProductNotFoundException;
+import org.inventory.product.lowstock.LowStockAlertService;
 import org.inventory.product.product.Product;
 import org.inventory.product.product.ProductRepository;
 import org.inventory.product.product.WarehouseClient;
@@ -24,6 +25,7 @@ public class InventoryService {
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
     private final WarehouseClient warehouseClient;
+    private final LowStockAlertService lowStockAlertService;
 
     public List<InventoryResponse> getInventoryForProduct(Integer productId, String userId) {
 
@@ -67,4 +69,24 @@ public class InventoryService {
                 .response("Inventory updated successfully for product ID " + productId)
                 .build();
     }
+
+    public void checkLowStockAlert(Product product) {
+        if (product == null) {
+            throw new ProductNotFoundException("Product cannot be null");
+        }
+
+        int minStockLevel = product.getMinStockLevel();
+
+        int totalStock = product.getCurrentStock();
+
+        if (totalStock < minStockLevel) {
+            System.out.printf("LOW STOCK ALERT for product: %s, Total Stock: %d%n",
+                    product.getName(), totalStock);
+            lowStockAlertService.addOrMergeAlert(product);
+        } else {
+            System.out.printf("Sufficient stock available for product: %s, Total Stock: %d%n",
+                    product.getName(), totalStock);
+        }
+    }
+
 }

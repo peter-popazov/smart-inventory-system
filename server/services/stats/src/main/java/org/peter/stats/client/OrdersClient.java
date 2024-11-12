@@ -1,6 +1,5 @@
 package org.peter.stats.client;
 
-import org.peter.stats.ProductStats;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

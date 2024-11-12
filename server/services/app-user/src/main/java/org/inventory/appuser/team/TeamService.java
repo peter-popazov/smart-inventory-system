@@ -11,7 +11,6 @@ import org.inventory.appuser.user.model.AppUser;
 import org.inventory.appuser.user.model.Role;
 import org.inventory.appuser.user.repos.AppUserRepository;
 import org.inventory.appuser.user.repos.RoleRepository;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

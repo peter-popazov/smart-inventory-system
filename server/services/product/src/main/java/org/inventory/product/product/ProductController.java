@@ -3,7 +3,6 @@ package org.inventory.product.product;
 import lombok.RequiredArgsConstructor;
 import org.inventory.product.ServerResponse;
 import org.inventory.product.dto.*;
-import org.inventory.product.dto.ProductStats;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

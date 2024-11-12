@@ -1,6 +1,5 @@
 package org.peter.warehouse.dto;
 
-import jakarta.persistence.*;
 import org.peter.warehouse.transfer.TransferStatus;
 import org.peter.warehouse.warehouse.Warehouse;
 

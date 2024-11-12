@@ -11,7 +11,7 @@ import org.inventory.product.exceptions.ProductNotFoundException;
 import org.inventory.product.inventory.Inventory;
 import org.inventory.product.inventory.InventoryMapper;
 import org.inventory.product.inventory.InventoryRepository;
-import org.inventory.product.dto.ProductStats;
+import org.inventory.product.inventory.InventoryService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,6 +31,7 @@ public class ProductService {
     private final InventoryRepository inventoryRepository;
     private final WarehouseClient warehouseClient;
     private final ProductMapper productMapper;
+    private final InventoryService inventoryService;
 
     public List<ProductResponse> getAllProducts(String loggedInUserId, String teamAdminId) {
         Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
@@ -218,6 +219,8 @@ public class ProductService {
                     .build()
             );
         }
+
+        products.forEach(inventoryService::checkLowStockAlert);
 
         return purchasedProducts;
     }

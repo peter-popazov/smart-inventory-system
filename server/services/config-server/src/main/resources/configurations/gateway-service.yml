@@ -29,6 +29,20 @@ spring:
           filters:
             - name: AuthFilter
 
+        - id: product-service-categories
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/categories/**
+          filters:
+            - name: AuthFilter
+
+        - id: product-service-alerts
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/alerts/**
+          filters:
+            - name: AuthFilter
+
         - id: warehouses-service-warehouses
           uri: lb://WAREHOUSE-SERVICE
           predicates:
@@ -40,13 +54,6 @@ spring:
           uri: lb://WAREHOUSE-SERVICE
           predicates:
             - Path=/api/v1/transfers/**
-          filters:
-            - name: AuthFilter
-
-        - id: product-service-categories
-          uri: lb://PRODUCT-SERVICE
-          predicates:
-            - Path=/api/v1/categories/**
           filters:
             - name: AuthFilter
 
