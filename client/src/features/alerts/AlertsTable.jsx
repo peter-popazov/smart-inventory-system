@@ -20,7 +20,7 @@ import { useState } from "react";
 import Table from "@/ui/Table";
 import AlertsRow from "./AlertsRow";
 
-const headers = ["Item", "Current Stock", "Reorder Point", "Price", ""];
+const headers = ["Item", "Current Stock", "Reorder Point", "Price"];
 
 function AlertsTable({ stockAlerts }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,7 +35,9 @@ function AlertsTable({ stockAlerts }) {
         return a.currentQuantity - b.currentQuantity;
       } else if (sortBy === "reorderStock") {
         return (
-          a.reorderStock - a.currentQuantity - (b.reorderStock - b.currentQuantity)
+          a.reorderStock -
+          a.currentQuantity -
+          (b.reorderStock - b.currentQuantity)
         );
       }
       return 0;
@@ -54,7 +56,7 @@ function AlertsTable({ stockAlerts }) {
               placeholder="Search items or suppliers"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10"
+              className="h-10 w-full"
               icon={<CiSearch size={18} />}
             />
           </div>
@@ -70,7 +72,7 @@ function AlertsTable({ stockAlerts }) {
             </SelectContent>
           </Select>
         </div>
-        <Table cols="grid-cols-[1.5fr_1fr_1fr_1.5fr_1fr]">
+        <Table cols="grid-cols-[2fr_1fr_1fr_1.5fr_1fr_0.5fr]">
           <Table.Header
             data={headers}
             render={(header) => (

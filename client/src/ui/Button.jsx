@@ -32,9 +32,11 @@ function Button({
       disabled={disabled}
     >
       {icon && <span>{icon}</span>}
-      <span className={`${icon && hideText && "hidden md:block"}`}>
-        {children}
-      </span>
+      {children && (
+        <span className={`${icon && hideText && "hidden md:block"}`}>
+          {children}
+        </span>
+      )}
     </button>
   );
 }

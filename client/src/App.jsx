@@ -57,7 +57,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/messages",
+        path: "/alerts",
         element: (
           <ProtectedRoute>
             <Messages />

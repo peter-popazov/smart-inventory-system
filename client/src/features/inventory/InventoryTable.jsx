@@ -14,7 +14,7 @@ const headers = [
   "Quantity",
   "Category",
   "Reorder Level",
-  "Provider",
+  "Warehouses",
 ];
 
 function InventoryTable() {
@@ -29,8 +29,6 @@ function InventoryTable() {
   if (isLoading) {
     return <SpinnerFS />;
   }
-
-  console.log(inventoryFiltered);
 
   return (
     <div className="mx-2 mt-2 shadow-md shadow-purple-200 lg:mx-6 lg:mt-6">

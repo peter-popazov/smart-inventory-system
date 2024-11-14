@@ -1,8 +1,9 @@
 export function transformData(apiData) {
   return apiData.map((item) => {
-    const inventory = item.inventories[0] || {};
-    const warehouse = inventory.warehouse || {};
-
+    const warehouseNames = (item.inventories || [])
+      .map((inv) => inv.warehouse?.name)
+      .filter((name) => name) // This removes undefined or null names
+      .join(", ");
     return {
       productId: item.productId,
       SKU: item.productCode,
@@ -19,11 +20,7 @@ export function transformData(apiData) {
         0,
       ),
       inventories: item.inventories,
-      warehouse: warehouse.name,
-      warehouseLocation: warehouse.location
-        ? `${warehouse.location.address}, ${warehouse.location.city}, ${warehouse.location.postalCode}`
-        : "Unknown",
-      provider: "Unknown",
+      warehouseNames: warehouseNames,
     };
   });
 }
@@ -50,12 +47,11 @@ export function getFullName(member) {
   return `${member.firstName || ""} ${member.lastName || ""}`;
 }
 
-
 export function formatCurrency(amount, currency = "USD", locale = "en-US") {
   const formatter = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,
   });
-  
+
   return formatter.format(amount);
 }

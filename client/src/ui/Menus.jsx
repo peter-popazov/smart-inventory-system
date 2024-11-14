@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { createContext, useContext, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import { createPortal } from "react-dom";
-import { useOutsideClick } from "../../hooks/useOutsideClick";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const MenusContext = createContext();
 

@@ -28,7 +28,7 @@ const navItems = [
     label: "Analytics",
   },
   {
-    to: "/messages",
+    to: "/alerts",
     icon: <BiMessageDetail size={ICONS_SIZE} />,
     label: "Stock alerts",
   },

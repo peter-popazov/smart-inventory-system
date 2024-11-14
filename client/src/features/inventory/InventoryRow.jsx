@@ -11,16 +11,14 @@ import { formatCurrency } from "@/utils/utils";
 function InventoryRow({ item }) {
   const { deleteProduct, isDeleting } = useDeleteProduct();
   if (isDeleting) return <div>Loading...</div>;
+  console.log(item);
 
   return (
     <Modal>
       <td>
         <span>{item.SKU.replace("SKU", "")}</span>
       </td>
-      <td className="flex items-center">
-        <div className="mr-4 hidden w-8 shrink-0 items-center md:flex">
-          <img src="https://via.placeholder.com/50" alt={item.product} />
-        </div>
+      <td>
         <span>{item.product}</span>
       </td>
       <td>
@@ -36,7 +34,7 @@ function InventoryRow({ item }) {
         <span>{item.reorderLevel}</span>
       </td>
       <td>
-        <span>{item.provider}</span>
+        <span>{item.warehouseNames}</span>
       </td>
       <td>
         <Menus.Menu>

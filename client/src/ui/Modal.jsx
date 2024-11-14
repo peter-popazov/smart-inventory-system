@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { IoMdClose } from "react-icons/io";
 import { createPortal } from "react-dom";
 import { cloneElement, createContext, useContext, useState } from "react";
-import { useEscapeKey } from "../../hooks/useEscapeKey";
+import { useEscapeKey } from "../hooks/useEscapeKey";
 // import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const ModalContext = createContext();
