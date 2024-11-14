@@ -13,7 +13,8 @@ public class LowStockAlertMapper {
 
         Integer currentQuantity = alert.getProduct().getCurrentStock();
         Integer reorderStock = alert.getProduct().getMinStockLevel();
-        BigDecimal quantityDifference = BigDecimal.valueOf(reorderStock - currentQuantity);
+        Integer maxQuantity = alert.getProduct().getMaxStockLevel();
+        BigDecimal quantityDifference = BigDecimal.valueOf(maxQuantity - currentQuantity);
         BigDecimal reorderPrice = alert.getProduct().getPrice().multiply(quantityDifference);
 
         return LowStockAlertResponse.builder()

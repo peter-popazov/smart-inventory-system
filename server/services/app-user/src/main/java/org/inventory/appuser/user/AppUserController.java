@@ -32,9 +32,13 @@ public class AppUserController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<AppUserResponse> getUser(@PathVariable String email,
-                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
-        return ResponseEntity.ok(service.getUser(email, loggedInUserId));
+    public ResponseEntity<AppUserResponse> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(service.getUserByEmail(email));
+    }
+
+    @GetMapping
+    public ResponseEntity<AppUserResponse> getUser(@RequestHeader("loggedInUserId") String loggedInUserId) {
+        return ResponseEntity.ok(service.getUser(loggedInUserId));
     }
 
     @GetMapping("/exists/{email}")

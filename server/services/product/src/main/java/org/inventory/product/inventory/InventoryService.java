@@ -65,6 +65,8 @@ public class InventoryService {
 
         productRepository.save(product);
 
+        checkLowStockAlert(product);
+
         return ServerResponse.<String>builder()
                 .response("Inventory updated successfully for product ID " + productId)
                 .build();
@@ -80,12 +82,7 @@ public class InventoryService {
         int totalStock = product.getCurrentStock();
 
         if (totalStock < minStockLevel) {
-            System.out.printf("LOW STOCK ALERT for product: %s, Total Stock: %d%n",
-                    product.getName(), totalStock);
             lowStockAlertService.addOrMergeAlert(product);
-        } else {
-            System.out.printf("Sufficient stock available for product: %s, Total Stock: %d%n",
-                    product.getName(), totalStock);
         }
     }
 

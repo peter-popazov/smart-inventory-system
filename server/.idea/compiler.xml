@@ -14,6 +14,7 @@
         <module name="warehouse-service" />
         <module name="stats" />
         <module name="discovery" />
+        <module name="generator" />
         <module name="app-user" />
         <module name="gateway" />
         <module name="order" />
@@ -29,6 +30,7 @@
       <module name="customer" options="-parameters" />
       <module name="discovery" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="generator" options="-parameters" />
       <module name="notification" options="-parameters" />
       <module name="order" options="-parameters" />
       <module name="product" options="-parameters" />

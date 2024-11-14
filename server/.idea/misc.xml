@@ -21,6 +21,8 @@
         <option value="$PROJECT_DIR$/services/warehouse/pom.xml" />
         <option value="$PROJECT_DIR$/services/order/pom.xml" />
         <option value="$PROJECT_DIR$/services/stats/pom.xml" />
+        <option value="$PROJECT_DIR$/document-generator-server/pom.xml" />
+        <option value="$PROJECT_DIR$/services/document-generator-server/pom.xml" />
       </list>
     </option>
   </component>

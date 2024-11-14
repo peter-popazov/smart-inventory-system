@@ -34,7 +34,22 @@ public class NotificationConsumer {
         } catch (MessagingException e) {
             log.warn("Email confirmation failed to send to {}", emailConfirmation.userEmail(), e);
         }
+    }
 
+    @KafkaListener(topics = "email-low-stock-topic")
+    public void consumeLowStockEmail(LowStockProduct lowStockProduct) {
+        log.info("Consuming message from email low stock topic. Topic:: %s ".formatted(lowStockProduct.toString()));
+        repository.save(Message.builder()
+                .lowStockProduct(lowStockProduct)
+                .notificationTime(LocalDateTime.now())
+                .build()
+        );
+
+        try {
+            emailService.sendEmailLowStock(lowStockProduct);
+        } catch (MessagingException e) {
+            log.warn("Email confirmation failed to send to {}", lowStockProduct.userEmail(), e);
+        }
     }
 }
 

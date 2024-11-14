@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.peter.notification.kafka.EmailConfirmation;
+import org.peter.notification.kafka.LowStockProduct;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,4 +26,6 @@ public class Message {
     private LocalDateTime notificationTime;
 
     private EmailConfirmation emailConfirmation;
+
+    private LowStockProduct lowStockProduct;
 }

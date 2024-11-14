@@ -2,15 +2,15 @@ package org.peter.notification.email;
 
 import lombok.Getter;
 
+@Getter
 public enum EmailTemplates {
 
     EMAIL_CONFIRMATION("email-confirmation.html", "Email confirmation"),
-    ORDER_CONFIRMATION("order-confirmation.html", "Order confirmation");
+    ORDER_CONFIRMATION("order-confirmation.html", "Order confirmation"),
+    LOW_STOCK_ALERT("low-stock-alert.html", "Low stock Alert");
 
-    @Getter
     private final String templateName;
 
-    @Getter
     private final String subject;
 
     EmailTemplates(String templateName, String subject) {

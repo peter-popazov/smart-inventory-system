@@ -39,13 +39,23 @@ public class AppUserService {
         return null;
     }
 
-    public AppUserResponse getUser(String email, String userId) {
+    public AppUserResponse getUserByEmail(String email) {
         AppUser appUser = repository.findByEmail(email).
                 orElseThrow(() -> new UserNotFoundException("Cannot get user. User not found with email: " + email));
 
-        if (appUser.getRegisteredUserId() != Integer.parseInt(userId)) {
-            throw new RuntimeException("Not enough permissions to retrieve user");
-        }
+        return AppUserResponse.builder()
+                .email(appUser.getEmail())
+                .firstName(appUser.getFirstName())
+                .lastName(appUser.getLastName())
+                .role(repository.findUserRole(appUser.getUserId())
+                        .orElse(Role.builder().name("USER").build()).getName())
+                .build();
+    }
+
+    public AppUserResponse getUser(String loggedInUserId) {
+        AppUser appUser = repository.findByRegisteredUserId(Integer.parseInt(loggedInUserId))
+                .orElseThrow(() -> new UserNotFoundException("Cannot get user. User not found"));
+
         return AppUserResponse.builder()
                 .email(appUser.getEmail())
                 .firstName(appUser.getFirstName())

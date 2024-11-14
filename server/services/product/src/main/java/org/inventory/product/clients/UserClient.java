@@ -1,5 +1,6 @@
-package org.inventory.product.clints;
+package org.inventory.product.clients;
 
+import org.inventory.product.clients.dto.AppUserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,4 +16,7 @@ public interface UserClient {
 
     @GetMapping("/teams/{userId}")
     Integer getAdminForUserTeam(@PathVariable Integer userId);
+
+    @GetMapping("/user")
+    AppUserResponse getUser(@RequestHeader("loggedInUserId") String loggedInUserId);
 }
