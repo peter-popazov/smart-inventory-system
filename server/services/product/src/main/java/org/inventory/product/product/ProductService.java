@@ -12,6 +12,9 @@ import org.inventory.product.inventory.Inventory;
 import org.inventory.product.inventory.InventoryMapper;
 import org.inventory.product.inventory.InventoryRepository;
 import org.inventory.product.inventory.InventoryService;
+import org.inventory.product.movements.StockMovementType;
+import org.inventory.product.movements.StockMovementsService;
+import org.inventory.product.movements.dto.StockMovementsRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,6 +35,7 @@ public class ProductService {
     private final WarehouseClient warehouseClient;
     private final ProductMapper productMapper;
     private final InventoryService inventoryService;
+    private final StockMovementsService stockMovementsService;
 
     public List<ProductResponse> getAllProducts(String loggedInUserId, String teamAdminId) {
         Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
@@ -113,11 +117,10 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productRequest.productId())
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productRequest.productId() + " not found"));
 
+        int beforeUpdatetStock = existingProduct.getCurrentStock();
+
         Category category = categoryRepository.findByName(productRequest.categoryName())
                 .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.categoryName() + " not found"));
-
-        Inventory inventory = inventoryRepository.findById(productRequest.inventoryId())
-                .orElseThrow(() -> new RuntimeException("Inventory with ID " + productRequest.inventoryId() + " not found"));
 
         existingProduct.setProductCode(productRequest.productCode());
         existingProduct.setBarcode(productRequest.barcode());
@@ -132,10 +135,18 @@ public class ProductService {
         existingProduct.setMaxStockLevel(productRequest.maxStockLevel());
         existingProduct.setMinStockLevel(productRequest.minStockLevel());
 
-        inventory.setStockAvailable(productRequest.quantityAvailable());
-        inventory.setWarehouseId(productRequest.warehouseId());
+        int currentStock = existingProduct.getCurrentStock();
+        if (beforeUpdatetStock != currentStock) {
+            stockMovementsService.addMovementsForProduct(StockMovementsRequest.builder()
+                    .warehouseId(productRequest.warehouseId())
+                    .movementType(StockMovementType.ADJUSTMENT)
+                    .quantity(Math.abs(beforeUpdatetStock - currentStock))
+                    .productId(productRequest.productId())
+                    .build());
+        }
 
-        inventoryRepository.save(inventory);
+        productRepository.save(existingProduct);
+        inventoryService.checkLowStockAlert(existingProduct);
 
         return ServerResponse.<Integer>builder().response(productRepository.save(existingProduct).getProductId()).build();
     }

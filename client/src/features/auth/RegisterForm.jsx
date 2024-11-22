@@ -80,7 +80,7 @@ function RegisterForm() {
           bgColor="bg-violet-600"
           textColor="text-white"
           type="submit"
-          icon={isLoading ? <Spinner className="text-white" /> : <></>}
+          icon={isLoading && <Spinner className="text-white" />}
         >
           {isLoading ? "Loading..." : "Register"}
         </Button>

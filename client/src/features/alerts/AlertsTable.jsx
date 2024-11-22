@@ -19,8 +19,9 @@ import { useState } from "react";
 
 import Table from "@/ui/Table";
 import AlertsRow from "./AlertsRow";
+import { ICONS_SIZE_SM } from "@/constants/iconSize";
 
-const headers = ["Item", "Current Stock", "Reorder Point", "Price"];
+const headers = ["Item", "Current Stock", "Reorder Point", "Price", "Reorder Form", "Process"];
 
 function AlertsTable({ stockAlerts }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,28 +51,34 @@ function AlertsTable({ stockAlerts }) {
         <CardDescription>Items that need to be reordered soon</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex items-center justify-between">
-          <div className="relative w-64">
+        <div className="mb-4 flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
             <Input
               placeholder="Search items or suppliers"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-10 w-full"
-              icon={<CiSearch size={18} />}
+              className="h-9 w-full sm:h-10 sm:w-[250px]"
+              icon={<CiSearch size={ICONS_SIZE_SM} />}
             />
+
+            <Select
+              value={sortBy}
+              onValueChange={setSortBy}
+              className="w-full sm:w-[250px]"
+            >
+              <SelectTrigger className="w-full sm:w-[250px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="currentQuantity">
+                  Current Stock (Low to High)
+                </SelectItem>
+                <SelectItem value="reorderStock">Reorder Priority</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[250px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="currentQuantity">
-                Current Stock (Low to High)
-              </SelectItem>
-              <SelectItem value="reorderStock">Reorder Priority</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
+
         <Table cols="grid-cols-[2fr_1fr_1fr_1.5fr_1fr_0.5fr]">
           <Table.Header
             data={headers}

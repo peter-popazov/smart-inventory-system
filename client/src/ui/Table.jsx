@@ -43,7 +43,7 @@ function Row({ children, bgColor }) {
   const { cols } = useContext(TableContext);
   return (
     <tr
-      className={`${commonRow} ${cols} ${bgColor} h-12 w-full border-b border-b-gray-200 px-4 hover:bg-gray-50`}
+      className={`${commonRow} ${cols} ${bgColor} min-h-10 w-full border-b border-b-gray-200 px-4 hover:bg-gray-50`}
     >
       {children}
     </tr>
@@ -58,7 +58,7 @@ Row.propTypes = {
 function Body({ data, render, hilightRow }) {
   if (data.length === 0) {
     return (
-      <tbody className="overflow-x-scroll text-gray-700">
+      <tbody className="overflow-x-auto text-gray-700">
         <tr>
           <td colSpan="100%">
             <div className="flex h-16 items-center justify-center rounded-b-xl">

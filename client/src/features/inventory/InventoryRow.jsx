@@ -11,7 +11,6 @@ import { formatCurrency } from "@/utils/utils";
 function InventoryRow({ item }) {
   const { deleteProduct, isDeleting } = useDeleteProduct();
   if (isDeleting) return <div>Loading...</div>;
-  console.log(item);
 
   return (
     <Modal>

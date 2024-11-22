@@ -5,7 +5,7 @@ function AuthLayout() {
   const location = useLocation();
   const isRegister = location.pathname.includes("register");
   return (
-    <main className="min-h-screen w-full bg-transparent text-gray-800 md:overflow-y-hidden md:bg-gradient-to-br md:from-[#ffff] md:from-20% md:via-[#EBD0FC] md:via-100%">
+    <main className="min-h-screen w-full bg-transparent text-gray-800 md:overflow-y-hidden bg-gradient-to-br from-[#ffff] from-20% via-[#EBD0FC] via-100%">
       <div className="mx-auto max-w-[100rem]">
         <div className="grid h-screen grid-cols-1 md:grid-cols-[36rem_1fr]">
           <aside className="mx-auto mt-10 w-[90%] md:w-[26rem]">

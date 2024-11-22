@@ -1,10 +1,11 @@
 import { HiOutlineUserGroup, HiOutlineHome } from "react-icons/hi";
 import SideBarNavLink from "./SideBarNavLink";
 import { MdOutlineInventory2 } from "react-icons/md";
-import { IoAnalyticsOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
 import { ICONS_SIZE } from "@/constants/iconSize";
+import { PiVanBold } from "react-icons/pi";
 import LoggedUser from "@/features/user/LoggedUser";
+import { useIsOpen } from "@/context/SidebarContext";
 
 const navItems = [
   {
@@ -23,9 +24,9 @@ const navItems = [
     label: "Inventory",
   },
   {
-    to: "/analytics",
-    icon: <IoAnalyticsOutline size={ICONS_SIZE} />,
-    label: "Analytics",
+    to: "/movements",
+    icon: <PiVanBold size={ICONS_SIZE} />,
+    label: "Movements",
   },
   {
     to: "/alerts",
@@ -35,6 +36,12 @@ const navItems = [
 ];
 
 function MainNav() {
+  const { isSidebarOpen } = useIsOpen();
+
+  if (!isSidebarOpen) {
+    return;
+  }
+
   return (
     <nav className="mt-4 flex h-full flex-col p-4">
       <ul className="flex flex-grow flex-col gap-6">

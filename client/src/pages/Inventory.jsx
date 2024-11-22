@@ -1,11 +1,11 @@
 import InventoryTable from "@/features/inventory/InventoryTable";
 import PageHeader from "@/ui/PageHeader";
-import { MdOutlineDashboard } from "react-icons/md";
+import { Package } from "lucide-react";
 
 function Inventory() {
   return (
     <div className="h-screen text-gray-800">
-      <PageHeader icon={<MdOutlineDashboard size={24} />}>Inventory</PageHeader>
+      <PageHeader icon={<Package />}>Inventory</PageHeader>
       <InventoryTable />
     </div>
   );

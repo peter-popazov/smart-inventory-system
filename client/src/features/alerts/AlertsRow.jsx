@@ -26,17 +26,17 @@ function AlertsRow({ alert }) {
           className="hover:bg-violet-600"
           onClick={() => getRefilmentEmail(alert.productId)}
         >
-          Reorder
+          Get
         </Button>
       </td>
       <td>
         <Button
           size="iconOnly"
           textColor="text-gray-50"
-          bgColor="bg-teal-500"
+          bgColor="bg-teal-400"
           rounded="rounded-lg"
           icon={<MdOutlineDone />}
-          className="hover:bg-teal-600"
+          className="hover:bg-teal-500"
           onClick={() => processAlert(alert.alertId)}
         />
       </td>

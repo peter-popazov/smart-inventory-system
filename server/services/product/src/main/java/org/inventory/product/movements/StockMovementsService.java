@@ -29,6 +29,7 @@ public class StockMovementsService {
     public List<StockMovementsResponse> getMovementsForProduct(Integer productId) {
         return stockMovementRepository.findByProductId(productId).stream()
                 .map(stockMapper::toStockMovementsResponse)
+                .sorted(Comparator.comparing(StockMovementsResponse::date))
                 .toList();
     }
 
@@ -41,7 +42,7 @@ public class StockMovementsService {
 
         int newStockLevel;
         switch (request.movementType()) {
-            case PURCHASE:
+            case PURCHASE, ADJUSTMENT:
                 newStockLevel = inventory.getStockAvailable() + request.quantity();
                 inventory.setStockAvailable(newStockLevel);
                 break;
