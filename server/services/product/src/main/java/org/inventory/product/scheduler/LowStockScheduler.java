@@ -14,7 +14,7 @@ public class LowStockScheduler {
     private final ProductRepository productRepository;
 
     // every 10 m
-    @Scheduled(fixedRate = 1000 * 60 * 10)
+    @Scheduled(fixedRate = 1000 * 60 * 30)
     public void checkLowStock() {
         productRepository.findAll().forEach(inventoryService::checkLowStockAlert);
     }
