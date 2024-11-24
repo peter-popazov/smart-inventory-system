@@ -1,0 +1,74 @@
+@startuml
+title Process Diagram: Add New Product
+
+start
+:User logs into the system;
+:User navigates to the "Add Product" page;
+
+:User enters product details\n(name, price, stock, etc.);
+if (Are product details valid?) then (Yes)
+    :Send request to Product Service API;
+    :Validate product details in API;
+    if (Validation success?) then (Yes)
+        :Inventory Service receives req about the new product;
+        :Save product details to Product Database;
+        :Return success response to UI;
+        :Display success message to the user;
+    else (No)
+        :Return validation error to UI;
+        :Display error message to the user;
+    endif
+else (No)
+    :Prompt user to correct details;
+endif
+
+stop
+@enduml
+
+
+@startuml
+title Process Diagram: Add New User to Team
+
+start
+:Admin/User logs into the system;
+:Admin navigates to "Team Management" page;
+:Admin selects "Add User" option;
+
+:Admin enters user details\n(email, role, etc.);
+if (Are user details valid?) then (Yes)
+    :Send request to Team Management Service API;
+    :Validate user details in API;
+    if (User already exists?) then (Yes)
+        :Associate user with the team in the database;
+        :Return success response to UI;
+        :Display "User added to team successfully" message;
+    else (No)
+        :Return message "User must be registered first";
+    endif
+else (No)
+    :Prompt admin to correct details;
+endif
+
+stop
+@enduml
+
+@startuml
+title Process Diagram: Low Stock Checking Algorithm
+
+start
+:Fetch product inventory data;
+if (Inventory list is empty?) then (Yes)
+    :Skip processing;
+else (No)
+    :Iterate through each product in the inventory;
+repeat 
+    :Calculate total stock for the product;
+    if (Total stock < Min stock level?) then (Yes)
+        :Trigger "Low Stock Alert" for the product;
+        :Publich alert to message broker;
+    else (No)
+        :Log sufficient stock for the product;
+    endif
+repeat while (There is product?) is (yes) not (no)
+stop
+@enduml
