@@ -11,7 +11,6 @@ export async function getTeams(jwtToken) {
 }
 
 export async function getUserTeams(jwtToken) {
-  console.log("getUserTeams jwtToken", jwtToken);
   const response = await axios.get(`${baseUrl}/teams/user`, {
     headers: {
       Authorization: `Bearer ${jwtToken}`,

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface TeamMembershipRepository extends JpaRepository<TeamMembership, Integer> {
 
-    @Query("SELECT tm.team FROM TeamMembership tm WHERE tm.appUser.registeredUserId = :registeredUserId AND tm.role.name = 'ADMIN'")
+    @Query("SELECT tm.team FROM TeamMembership tm WHERE tm.appUser.registeredUserId = :registeredUserId")
     List<Team> findTeamsByRegisteredUserIdAndRole(@Param("registeredUserId") Integer registeredUserId);
 
     @Query("SELECT SUM(size(t.teamMembership)) FROM Team t JOIN t.teamMembership tm WHERE tm.appUser.registeredUserId = :userId AND tm.role.name = 'ADMIN'")

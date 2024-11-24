@@ -33,7 +33,6 @@ export const SidebarProvider = ({ children }) => {
     };
 
     window.addEventListener("resize", handleResize);
-    console.log(window.innerWidth);
 
     return () => {
       window.removeEventListener("resize", handleResize);

@@ -45,11 +45,10 @@ public class CategoryService {
                                                  String loggedInUserId, String teamAdminId) {
         Integer adminId = Integer.parseInt(!Objects.equals(teamAdminId, "") ? teamAdminId : loggedInUserId);
 
-        Category category = categoryRepository.findByName(request.name())
-                .orElseGet(() -> Category.builder()
-                        .name(request.name())
-                        .userId(adminId)
-                        .build());
+        Category category = Category.builder()
+                .name(request.name())
+                .userId(adminId)
+                .build();
 
         if (category != null) {
             categoryRepository.save(category);

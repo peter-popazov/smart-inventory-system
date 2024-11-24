@@ -19,13 +19,15 @@ public class TeamController {
     private final TeamService teamService;
 
     @GetMapping
-    public ResponseEntity<List<TeamResponse>> getTeams(@RequestHeader("loggedInUserId") String loggedInUserId) {
-        return ResponseEntity.ok(teamService.getTeams(loggedInUserId));
+    public ResponseEntity<List<TeamResponse>> getTeams(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                       @RequestHeader("teamAdminId") String teamAdminId) {
+        return ResponseEntity.ok(teamService.getTeams(loggedInUserId, teamAdminId));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<TeamResponse>> getTeamForUser(@RequestHeader("teamAdminId") String teamAdminId) {
-        return ResponseEntity.ok(teamService.getTeams(teamAdminId));
+    public ResponseEntity<List<TeamResponse>> getTeamForUser(@RequestHeader("loggedInUserId") String loggedInUserId,
+                                                             @RequestHeader("teamAdminId") String teamAdminId) {
+        return ResponseEntity.ok(teamService.getTeams(loggedInUserId, teamAdminId));
     }
 
     @PostMapping

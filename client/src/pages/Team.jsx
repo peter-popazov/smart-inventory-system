@@ -15,7 +15,7 @@ export default function Team() {
     <div className="flex min-h-screen flex-col">
       <PageHeader icon={<LuUsers size={24} />}>Team Management</PageHeader>
       <div className="flex-1 space-y-6 p-4 md:p-6">
-        {user?.role === "ADMIN" ? (
+        {user?.role === "ADMIN" || user?.role === "USER" ? (
           <Tabs defaultValue="userTeams">
             <TabsList>
               <TabsTrigger value="userTeams">My teams</TabsTrigger>

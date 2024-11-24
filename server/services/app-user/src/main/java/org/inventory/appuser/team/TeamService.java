@@ -27,8 +27,15 @@ public class TeamService {
     private final TeamMembershipRepository teamMembershipRepository;
     private final TeamMapper teamMapper;
 
-    public List<TeamResponse> getTeams(String loggedInUserId) {
-        List<Team> teams = teamMembershipRepository.findTeamsByRegisteredUserIdAndRole(Integer.parseInt(loggedInUserId));
+    public List<TeamResponse> getTeams(String loggedInUserId, String teamAdminId) {
+        AppUser appUser = appUserRepository.findByRegisteredUserId(Integer.parseInt(loggedInUserId))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<Team> teams = appUser.getTeamMembership().stream()
+                .filter(teamMembership -> teamMembership.getRole().getName().equals(TeamRoles.ADMIN.name()))
+                .map(TeamMembership::getTeam)
+                .toList();
+
         return teams.stream()
                 .map(teamMapper::toTeamResponse)
                 .toList();
@@ -148,7 +155,7 @@ public class TeamService {
         teamMembershipRepository.delete(membershipToRemove);
     }
 
-    private AppUser getAppuser(String loggedInUserId) {
+    public AppUser getAppuser(String loggedInUserId) {
         return appUserRepository.findByRegisteredUserId(Integer.parseInt(loggedInUserId))
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }

@@ -2,6 +2,7 @@ package org.peter.order.client;
 
 import org.peter.order.dto.PurchaseProductsRequest;
 import org.peter.order.dto.PurchaseProductsResponse;
+import org.peter.order.dto.StockMovementsRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,4 +17,7 @@ public interface ProductClient {
     @PostMapping("/purchase")
     ResponseEntity<List<PurchaseProductsResponse>> purchaseProducts(@RequestBody List<PurchaseProductsRequest> requests,
                                                                     @RequestHeader("loggedInUserId") String loggedInUserId);
+
+    @PostMapping("/movements")
+    ResponseEntity<List<PurchaseProductsResponse>> addMovementForProduct(@RequestBody StockMovementsRequest request);
 }

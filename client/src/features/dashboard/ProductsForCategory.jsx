@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { useProductsForCategory } from "./useProductsForCategory";
 import SpinnerFS from "@/ui/SpinnerFS";
+import NoDataAvailable from "@/ui/NoDataAvailable";
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -32,7 +33,10 @@ const CustomTooltip = ({ active, payload }) => {
 function ProductsForCategory() {
     const { data: categoriesData, isLoading } = useProductsForCategory();
   
-    console.log(categoriesData);
+    if (categoriesData.length === 0) {
+      return <NoDataAvailable />;
+    }
+
     if (isLoading) {
       return <SpinnerFS />;
     }

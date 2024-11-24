@@ -2,13 +2,13 @@ import PropTypes from "prop-types";
 import Button from "../../ui/Button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { useCreateProduct } from "./useCreateProduct";
 import FormRow from "../../ui/FormRow";
@@ -64,7 +64,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         categoryName: data.category,
         minStockLevel: data.minStockLevel,
         maxStockLevel: data.maxStockLevel,
-        quantityAvailable: data.stockAvailable,
+        quantityAvailable: parseInt(data.stockAvailable),
         warehouseId: data.warehouse,
         //
         weight: 0.1,
@@ -80,8 +80,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         )
         .map((inventory) => inventory.inventoryId)
         ?.at(0);
-
-      updateProduct({
+      const obj = {
         inventoryId: inventoryToUpdate,
         productId: data.productId,
         productCode: data.productSKU,
@@ -92,7 +91,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         categoryName: data.category,
         minStockLevel: data.minStockLevel,
         maxStockLevel: data.maxStockLevel,
-        quantityAvailable: data.stockAvailable,
+        quantityAvailable: parseInt(data.stockAvailable),
         warehouseId: data.warehouse,
         //
         weight: 0.1,
@@ -100,7 +99,10 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
         depth: 0.1,
         width: 0.1,
         //
-      });
+      };
+      console.log(obj);
+
+      updateProduct(obj);
     }
     onCloseModal?.();
   }
@@ -186,7 +188,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
           </FormRow>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Warehouse
               errors={errors}
@@ -204,7 +206,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
             />
           </div>
 
-          <FormRow label="Provider" error={errors?.provider?.message}>
+          {/* <FormRow label="Provider" error={errors?.provider?.message}>
             <Select
               defaultValue={isEditItem ? productToEdit.provider : ""}
               onValueChange={(value) => setValue("provider", value)}
@@ -216,7 +218,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
                 <SelectItem value="provider1">Provider 1</SelectItem>
               </SelectContent>
             </Select>
-          </FormRow>
+          </FormRow> */}
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -251,9 +253,7 @@ function AddInventoryForm({ onCloseModal, productToEdit = {} }) {
                     <span
                       className={`${totalStock > 0 ? "text-gray-800" : "text-gray-500"}`}
                     >
-                      {totalStock > 0
-                        ? totalStock
-                        : "Warehouse stock"}
+                      {totalStock > 0 ? totalStock : "Warehouse stock"}
                     </span>
                   )}
                 </span>

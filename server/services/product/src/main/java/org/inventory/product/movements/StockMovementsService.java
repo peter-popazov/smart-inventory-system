@@ -83,21 +83,29 @@ public class StockMovementsService {
 
         for (Product product : products) {
             List<StockMovements> movements = product.getStockMovements();
-
             for (StockMovements movement : movements) {
-
                 YearMonth yearMonth = YearMonth.from(movement.getCreatedAt());
-
                 aggregatedStockLevels.merge(yearMonth, movement.getProductQuantityUpdated(), Integer::sum);
             }
         }
 
-        return aggregatedStockLevels.entrySet().stream()
-                .map(entry -> StockLevelsResponse.builder()
-                        .date(entry.getKey().atEndOfMonth())
-                        .level(entry.getValue())
-                        .build())
-                .sorted(Comparator.comparing(StockLevelsResponse::date))
-                .collect(Collectors.toList());
+        List<Map.Entry<YearMonth, Integer>> sortedEntries = aggregatedStockLevels.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .toList();
+
+        int cumulativeStock = 0;
+        List<StockLevelsResponse> stockLevels = new ArrayList<>();
+        for (Map.Entry<YearMonth, Integer> entry : sortedEntries) {
+            cumulativeStock += entry.getValue(); // Update the rolling total
+            stockLevels.add(
+                    StockLevelsResponse.builder()
+                            .date(entry.getKey().atEndOfMonth()) // Convert YearMonth to end of the month date
+                            .level(cumulativeStock) // Rolling total stock level
+                            .build()
+            );
+        }
+
+        return stockLevels;
     }
+
 }

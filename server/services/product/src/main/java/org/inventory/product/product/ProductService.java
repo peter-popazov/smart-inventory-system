@@ -117,8 +117,6 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productRequest.productId())
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productRequest.productId() + " not found"));
 
-        int beforeUpdatetStock = existingProduct.getCurrentStock();
-
         Category category = categoryRepository.findByName(productRequest.categoryName())
                 .orElseThrow(() -> new CategoryNotFoundException("Category " + productRequest.categoryName() + " not found"));
 
@@ -135,20 +133,21 @@ public class ProductService {
         existingProduct.setMaxStockLevel(productRequest.maxStockLevel());
         existingProduct.setMinStockLevel(productRequest.minStockLevel());
 
-        int currentStock = existingProduct.getCurrentStock();
-        if (beforeUpdatetStock != currentStock) {
-            stockMovementsService.addMovementsForProduct(StockMovementsRequest.builder()
-                    .warehouseId(productRequest.warehouseId())
-                    .movementType(StockMovementType.ADJUSTMENT)
-                    .quantity(Math.abs(beforeUpdatetStock - currentStock))
-                    .productId(productRequest.productId())
-                    .build());
-        }
+        stockMovementsService.addMovementsForProduct(StockMovementsRequest.builder()
+                .warehouseId(productRequest.warehouseId())
+                .movementType(StockMovementType.ADJUSTMENT)
+                .quantity(productRequest.quantityAvailable() - existingProduct.getCurrentStock())
+                .productId(productRequest.productId())
+                .build());
+
 
         productRepository.save(existingProduct);
         inventoryService.checkLowStockAlert(existingProduct);
 
-        return ServerResponse.<Integer>builder().response(productRepository.save(existingProduct).getProductId()).build();
+        return ServerResponse.
+                <Integer>builder().
+                response(existingProduct.getProductId()).
+                build();
     }
 
     public String deleteProductById(Integer id, String userId) {

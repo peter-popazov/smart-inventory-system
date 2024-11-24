@@ -16,15 +16,19 @@ import {
 } from "@/components/ui/card";
 import { useInventoryStock } from "./useInventoryStock";
 import SpinnerFS from "@/ui/SpinnerFS";
+import NoDataAvailable from "@/ui/NoDataAvailable";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const { name, level } = payload[0].payload;
 
     return (
-      <div className="rounded-md bg-white px-4 py-2 text-gray-800 shadow-lg border border-gray-100">
+      <div className="rounded-md border border-gray-100 bg-white px-4 py-2 text-gray-800 shadow-lg">
         <p className="text-xs font-semibold">{name || label}</p>
-        <p className="text-sm">Items: <span className="font-medium">{level || payload[0].value}</span></p>
+        <p className="text-sm">
+          Items:{" "}
+          <span className="font-medium">{level || payload[0].value}</span>
+        </p>
       </div>
     );
   }
@@ -36,6 +40,10 @@ function InventoryStock() {
 
   if (isLoading) {
     return <SpinnerFS />;
+  }
+
+  if (stockData.length === 0) {
+    return <NoDataAvailable />;
   }
 
   return (
