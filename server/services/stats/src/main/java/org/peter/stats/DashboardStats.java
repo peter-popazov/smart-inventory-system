@@ -10,6 +10,8 @@ public record DashboardStats(
         BigDecimal totalIncome,
         BigDecimal inventoryValue,
         Integer totalItems,
-        Integer teamSize
+        Integer teamSize,
+        BigDecimal inventoryChangePercentage,
+        BigDecimal incomeChangePercentage
 ) {
 }

@@ -8,6 +8,6 @@ import java.math.BigDecimal;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    @Query("SELECT SUM(ol.quantity * ol.unitPrice) FROM OrderLine ol WHERE ol.productOwner = :ownerId")
+    @Query("SELECT SUM(ol.quantity * ol.unitPrice) FROM OrderLine ol WHERE ol.order.ownerId = :ownerId")
     BigDecimal calculateTotalEarningsByOwner(@Param("ownerId") Integer ownerId);
 }

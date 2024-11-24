@@ -2,6 +2,7 @@ package org.peter.customer.customer;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.peter.customer.dtos.AuthCustomerResponse;
 import org.peter.customer.dtos.UpdateCustomerRequest;
 import org.peter.customer.dtos.CustomerResponse;
 import org.peter.customer.helpers.ServerResponse;
@@ -20,6 +21,11 @@ public class CustomerController {
     public ResponseEntity<ServerResponse<Boolean>> updateCustomer(@RequestBody @Valid UpdateCustomerRequest request,
                                                                   @RequestHeader("loggedInUserId") String loggedInUserId) {
         return new ResponseEntity<>(customerService.updateCustomer(request, loggedInUserId), HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/{email}")
+    public ResponseEntity<AuthCustomerResponse> getCustomer(@PathVariable("email") String email) {
+        return new ResponseEntity<>(customerService.findCustomerByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

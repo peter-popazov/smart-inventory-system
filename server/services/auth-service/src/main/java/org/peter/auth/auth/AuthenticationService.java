@@ -3,13 +3,14 @@ package org.peter.auth.auth;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.peter.auth.ServerResponse;
+import org.peter.auth.client.CustomerClient;
 import org.peter.auth.exception.TokenExpiredException;
 import org.peter.auth.exception.TokenNotFoundException;
 import org.peter.auth.exception.UserNotFoundException;
-import org.peter.auth.helpers.AuthUserRequest;
-import org.peter.auth.helpers.AuthenticationResponse;
-import org.peter.auth.helpers.RegisterRequest;
-import org.peter.auth.helpers.UserResponse;
+import org.peter.auth.dto.AuthUserRequest;
+import org.peter.auth.dto.AuthenticationResponse;
+import org.peter.auth.dto.RegisterRequest;
+import org.peter.auth.dto.UserResponse;
 import org.peter.auth.kafka.Email;
 import org.peter.auth.kafka.EmailProducer;
 import org.peter.auth.kafka.RegisteredProducer;
@@ -21,7 +22,7 @@ import org.peter.auth.repository.AppUserRepository;
 import org.peter.auth.repository.TokenRepository;
 import org.peter.auth.security.JWTService;
 import org.peter.auth.security.UserDetailsServiceIml;
-import org.peter.auth.user.UserClient;
+import org.peter.auth.client.UserClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +56,7 @@ public class AuthenticationService {
     private final EmailProducer emailProducer;
     private final RegisteredProducer registeredProducer;
     private final UserClient userClient;
+    private final CustomerClient customerClient;
 
     public ServerResponse<Integer> register(@Valid RegisterRequest request) {
         AppUser appUser = AppUser.builder()
@@ -61,6 +64,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.password()))
                 .accountLocked(false)
                 .accountEnabled(false)
+                .role(request.registeringPerson())
                 .build();
 
         AppUser appUserRegistered = appUserRepository.save(appUser);
@@ -142,14 +146,20 @@ public class AuthenticationService {
             claims.put("email", appUser.getEmail());
             var jwt = jwtService.generateToken(claims, appUser);
 
-            UserResponse user = userClient.getUser(appUser.getEmail(), String.valueOf(appUser.getUserId()));
+            UserResponse user = null;
+            if (appUser.getRole() == RoleType.USER) {
+                user = userClient.getUser(appUser.getEmail(), String.valueOf(appUser.getUserId()));
+            } else if (appUser.getRole() == RoleType.CUSTOMER) {
+                user = customerClient.getUser(appUser.getEmail(), String.valueOf(appUser.getUserId()));
+            }
 
+            assert user != null;
             return AuthenticationResponse.builder()
                     .token(jwt)
                     .email(user.email())
                     .firstName(user.firstName())
                     .lastName(user.lastName())
-                    .role(user.role())
+                    .role(!Objects.equals(user.role(), "") ? user.role() : "")
                     .build();
 
         } catch (DisabledException ex) {

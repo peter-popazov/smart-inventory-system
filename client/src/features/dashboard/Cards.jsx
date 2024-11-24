@@ -1,4 +1,4 @@
-import { ArrowUpIcon } from "lucide-react";
+import { ArrowUpIcon, ArrowDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardStats } from "./useDashboardStats";
 import SpinnerFS from "@/ui/SpinnerFS";
@@ -6,6 +6,10 @@ import { formatCurrency } from "@/utils/utils";
 
 function Cards() {
   const { isLoading, data: dahboardStats } = useDashboardStats();
+  console.log(dahboardStats);
+
+  const formatNumberWithPlus = (number) =>
+    number > 0 ? `+${number}` : number * -1;
 
   if (isLoading) {
     return <SpinnerFS />;
@@ -16,14 +20,19 @@ function Cards() {
       <Card className="col-span-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Income</CardTitle>
-          <ArrowUpIcon className="h-4 w-4 text-green-600" />
+          {dahboardStats.incomeChangePercentage > 0 ? (
+            <ArrowUpIcon className={`h-4 w-4 text-green-600`} />
+          ) : (
+            <ArrowDown className={`h-4 w-4 text-red-600`} />
+          )}
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
             {formatCurrency(dahboardStats.totalIncome)}
           </div>
           <p className="text-xs text-muted-foreground">
-            %+20.1%% from last month
+            {formatNumberWithPlus(dahboardStats.incomeChangePercentage)}% from
+            last month
           </p>
         </CardContent>
       </Card>
@@ -31,14 +40,19 @@ function Cards() {
       <Card className="col-span-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-          <ArrowUpIcon className="h-4 w-4 text-green-600" />
+          {dahboardStats.inventoryChangePercentage > 0 ? (
+            <ArrowUpIcon className={`h-4 w-4 text-green-600`} />
+          ) : (
+            <ArrowDown className={`h-4 w-4 text-red-600`} />
+          )}
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
             {formatCurrency(dahboardStats.inventoryValue)}
           </div>
           <p className="text-xs text-muted-foreground">
-            % +12.5% from last month%
+            {formatNumberWithPlus(dahboardStats.inventoryChangePercentage)}%
+            from last month
           </p>
         </CardContent>
       </Card>

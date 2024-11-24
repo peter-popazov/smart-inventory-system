@@ -1,4 +1,4 @@
-package org.peter.auth.helpers;
+package org.peter.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

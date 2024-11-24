@@ -36,6 +36,9 @@ public class AppUser implements UserDetails, Principal {
     @JsonIgnore
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

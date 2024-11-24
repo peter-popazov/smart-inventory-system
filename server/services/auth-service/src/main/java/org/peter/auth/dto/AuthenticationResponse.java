@@ -1,4 +1,4 @@
-package org.peter.auth.helpers;
+package org.peter.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

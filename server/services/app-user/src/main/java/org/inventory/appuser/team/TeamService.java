@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -161,8 +162,13 @@ public class TeamService {
     }
 
     public Integer getAdminIdForUserTeam(Integer loggedInUserId) {
-        AppUser appUser = appUserRepository.findByRegisteredUserId(loggedInUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        Optional<AppUser> user = appUserRepository.findByRegisteredUserId(loggedInUserId);
+
+        if (user.isEmpty()) {
+            return -1;
+        }
+
+        AppUser appUser = user.get();
 
         return teamRepository.findAll().stream()
                 .filter(team -> team.getTeamMembership().stream()

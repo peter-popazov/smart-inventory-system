@@ -19,5 +19,5 @@ public interface ProductClient {
                                                                     @RequestHeader("loggedInUserId") String loggedInUserId);
 
     @PostMapping("/movements")
-    ResponseEntity<List<PurchaseProductsResponse>> addMovementForProduct(@RequestBody StockMovementsRequest request);
+    ResponseEntity<Void> addMovementForProduct(@RequestBody StockMovementsRequest request);
 }

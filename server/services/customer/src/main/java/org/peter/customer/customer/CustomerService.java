@@ -2,6 +2,7 @@ package org.peter.customer.customer;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.peter.customer.dtos.AuthCustomerResponse;
 import org.peter.customer.dtos.UpdateCustomerRequest;
 import org.peter.customer.dtos.CustomerResponse;
 import org.peter.customer.exceptions.CustomerNotFoundException;
@@ -9,6 +10,7 @@ import org.peter.customer.exceptions.InsufficientPrivilegesException;
 import org.peter.customer.helpers.AddressMapper;
 import org.peter.customer.helpers.CustomerMapper;
 import org.peter.customer.helpers.ServerResponse;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -78,5 +80,16 @@ public class CustomerService {
         if (request.address() != null) {
             customer.setAddress(addressMapper.toAddress(request.address()));
         }
+    }
+
+    public AuthCustomerResponse findCustomerByEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with email: " + email));
+        return AuthCustomerResponse.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .role("")
+                .build();
     }
 }

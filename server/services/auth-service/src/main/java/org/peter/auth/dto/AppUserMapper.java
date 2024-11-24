@@ -1,4 +1,4 @@
-package org.peter.auth.helpers;
+package org.peter.auth.dto;
 
 import org.peter.auth.model.AppUser;
 import org.springframework.stereotype.Service;

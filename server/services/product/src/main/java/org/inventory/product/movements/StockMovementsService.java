@@ -47,11 +47,12 @@ public class StockMovementsService {
                 inventory.setStockAvailable(newStockLevel);
                 break;
             case SALE:
-                newStockLevel = inventory.getStockAvailable() - request.quantity();
+                // request.quantity() is negative from order ms
+                // quantity is updated in purchase method, here is just a check
+                newStockLevel = inventory.getStockAvailable() + request.quantity();
                 if (newStockLevel < 0) {
                     throw new IllegalArgumentException("Insufficient stock available");
                 }
-                inventory.setStockAvailable(newStockLevel);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid stock movement type");

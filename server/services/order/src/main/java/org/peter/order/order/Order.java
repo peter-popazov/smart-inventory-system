@@ -24,6 +24,8 @@ public class Order extends BaseEntity {
 
     private String reference;
 
+    private Integer ownerId;
+
     @Column(nullable = false, precision = 8, scale = 2)
     private BigDecimal totalPrice;
 

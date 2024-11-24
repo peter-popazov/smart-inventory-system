@@ -2,7 +2,7 @@ package org.peter.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.peter.auth.helpers.UpdateUserRequest;
+import org.peter.auth.dto.UpdateUserRequest;
 import org.peter.auth.model.AppUser;
 import org.peter.auth.service.AppUserService;
 import org.springframework.http.ResponseEntity;

@@ -27,3 +27,4 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getTotalEarnings(userId), HttpStatus.OK);
     }
 }
+
