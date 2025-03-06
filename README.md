@@ -40,11 +40,14 @@ The coursework presents the development of a system for efficient warehouse stoc
 ##### Dashboard
 ![preview](./diagrams/dashboard.png)
 
-#### Inventory Page
-![](./diagrams/inventory.png)
+[//]: # (#### Inventory Page)
 
-### Alerts Page
-![](./diagrams/ui-alert.png)
+[//]: # (![]&#40;./diagrams/inventory.png&#41;)
+
+[//]: # ()
+[//]: # (### Alerts Page)
+
+[//]: # (![]&#40;./diagrams/ui-alert.png&#41;)
 
 #### Low Stock alert
 
